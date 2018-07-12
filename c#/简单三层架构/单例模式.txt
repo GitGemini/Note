@@ -1,0 +1,73 @@
+class Program
+    {
+        private static readonly object o = new object();
+        static void Main(string[] args)
+        {
+            //Singleton obj1 = Singleton.GetSingleton();
+            //Singleton obj2 = Singleton.GetSingleton();
+            //Singleton obj3 = Singleton.GetSingleton();
+            //Singleton obj4 = Singleton.GetSingleton();
+
+            for (int i = 0; i < 1000; i++)
+            {
+                Thread thread = new Thread(new ThreadStart(() =>
+                {
+                    //效率低
+                    //lock (o)
+                    //{
+                    //    Singleton obj4 = Singleton.GetSingleton();
+                    //}
+                }));
+
+                thread.Start();
+            }
+
+            Console.ReadKey();
+        }
+    }
+    /// <summary>
+    /// 单例类写法1
+    /// </summary>
+    public class Singleton
+    {
+        private static Singleton _single = null;
+        private Singleton()
+        {
+
+        }
+        private static readonly object o = new object();
+        public static Singleton GetSingleton()
+        {
+            //效率比较高一点
+            if(_single==null)
+            {
+                lock(o)
+                {
+                    if (_single == null)
+                    {
+                        _single = new Singleton();
+                        Console.WriteLine(".");
+                    }
+                }
+            }
+            return _single;
+        }
+    }
+
+    /// <summary>
+    /// 单例模式写法2
+    /// </summary>
+    public class Singleton2
+    {
+        private Singleton2()
+        {
+            Console.WriteLine(".");
+        }
+
+        private static readonly Singleton2 _single = new Singleton2();
+
+        public static Singleton2 GetSingleton()
+        {
+            return _single;
+        }
+    }

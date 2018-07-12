@@ -1,0 +1,10 @@
+//需安装以下文件
+1.VisualSVN-Server
+2.TortoiseSVN
+3.VisualSVN
+
+可以创建用户，组
+
+创建仓储来存储代码
+
+不要把编译过的文件提交到版本控制器中

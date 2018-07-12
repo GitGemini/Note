@@ -1,0 +1,136 @@
+--create database School
+--on primary
+--(
+--	name = "School", --主数据文件的逻辑名称
+--	filename = 'F:\code\c#\SqlServer\DataBase\School.mdf',
+--	size = 5MB,
+--	maxsize = 100MB,
+--	filegrowth = 20%
+--)
+--log on
+--(
+--	name = 'School_log.ldf',
+--	filename = 'F:\code\c#\SqlServer\DataBase\School_log.ldf',
+--	size = 5MB,
+--	maxsize = 100MB,
+--	filegrowth = 10%
+--)
+--use School
+--create table tblStudent
+--(
+--	tSId int identity(1,1) primary key,
+--	tSName nvarchar(50) not null,
+--	tSGender nchar(1) not null,
+--	tSAddress nvarchar(100) not null,
+--	tSAge int not null,
+--	tSBirthday datetime,
+--	tSCardId varchar(18) not null,
+--	tSClassId int not null
+--)
+
+--create table tblClass
+--(
+--	tClassId int identity(1,1) primary key,
+--	tClassName nvarchar(50) not null,
+--)
+
+--create table tblScore
+--(
+--	tScoreId int identity(1,1) primary key,
+--	tSId int not null,
+--	tEnglish float,
+--	tMath float
+--)
+
+--create table tblTeacher
+--(
+--	tTId int identity(1,1) primary key,
+--	tTName nvarchar(50) not null,
+--	tTGender bit,
+--	tTSalary money,
+--	tTAge int,
+--	tTBirthday datetime
+--)
+
+--insert into tblTeacher(tTName,tTSalary,tTAge,tTBirthday)
+--values('貂蝉',3500,32,'1900-3-12')
+
+--select * from tblTeacher
+--update tblTeacher set tTGender = '女' 
+
+--select * from tblScore
+--update tblScore set TEnglish = case when TEnglish+5>100 then 100 else tEnglish+5 end
+
+--update tblScore set TMath = case when TMath+5>100 then 100 else TMath+5 end
+
+--通过t-Sql语句来设置约束
+--use MyDataBase
+--create table Employees
+--(
+--	EmpId int identity(1,1),
+--	EmpName nvarchar(50),
+--	EmpGender char(2),
+--	EmpAge int,
+--	EmpEmail varchar(100),
+--	EmpAdress varchar(500)
+--)
+
+--create table Department
+--(
+--	DepId int identity(1,1),
+--	DepName varchar(50)
+--)
+
+--删除表中的一列（修改表结构）
+alter table Employees drop column EmpAdress
+
+--向表中增加一列
+alter table Employees add EmpAddr varchar(100)
+
+--手动修改表中的列的信息
+alter table Employees alter column EmpAddr varchar(200)
+
+--为员工表增加主键约束(add constraint)
+alter table Employees add constraint PK_Employees_EmpId primary key (EmpId)
+
+--为员工姓名增加非空约束(修改列)alert column
+alter table Employees alter column EmpName nvarchar(50) not null
+
+--为员工姓名增加唯一约束 add constraint
+alter table Employees add constraint UQ_Employees_EmpName unique(EmpName)
+
+--为性别增加默认值，男（默认约束）
+alter table Employees add constraint DF_Employees_EmpGender default('男') for EmpGender
+
+--为性别增加一个检查约束
+alter table Employees add constraint CK_Employees_EmpGender check(EmpGender='男' or EmpGender='女') 
+
+--为年龄增加检查约束 0-120
+alter table Employees add constraint CK_Employees_EmpAge check(EmpAge>=0 and EmpAge<=120) 
+
+--为部门表增加主键
+alter table Department add constraint PK_Department_DepId primary key(DepId)
+
+--为员工表增加一列EmpDepId
+alter table Employees add EmpDepId int not null
+
+--为员工表增加外键约束
+alter table Employees add constraint Fk_Employees_Department 
+foreign key(EmpDepId) references Department(DepId) -- on delete cascade(级联删除)
+
+
+--删除约束 alter table 表名 drop constraint 约束名称（FK_....,DF_...)（删除多个约束用，隔开） 
+
+--增加多个约束 alter table 表名 add constraint 约束，constraint 约束....
+
+--创建表时增加约束
+--create table Employees
+--(
+--	EmpId int identity(1,1) primary key,
+--	EmpName nvarchar(50) not null unique check (len(EmpName)>=2 and len(EmpName)<=20),
+--	EmpGender char(2) default('男'),
+--	EmpAge int check(EmpAge>=0 and EmpAge<=20),
+--	EmpEmail varchar(100) unique,
+--	EmpAdress varchar(500) not null,
+--	EmpDepId int foreign key references Department(DepId) on delete cascade
+--)

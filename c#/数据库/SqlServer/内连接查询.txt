@@ -1,0 +1,26 @@
+1.查询所有学生的姓名，年龄，班级
+select 
+	t1.tsname,
+	t1.tsage,
+	t2.tclassname
+from TblStudent as t1
+inner join TblClass as t2 on t1.tsclassid=t2.tclassid
+
+2.查询年龄超过20岁的学生的姓名，年龄，班级
+select 
+	t1.tsname,
+	t1.tsage,
+	t2.tclassname
+from TblStudent as t1
+inner join TblClass as t2 on t1.tsclassid=t2.tclassid
+where t1.tsage>20
+
+3.查询年龄超过20岁的学生的姓名，年龄，班级,成绩
+select 
+	t1.tsname,
+	t1.tsage,
+	t2.tclassname,
+	t3.tMath
+from TblStudent as t1
+inner join TblClass as t2 on t1.tsclassid=t2.tclassid
+inner join TblScore as t3 on t1.tsid = t3.tsid

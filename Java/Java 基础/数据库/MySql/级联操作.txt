@@ -1,0 +1,23 @@
+级联操作
+在主表数据发生改变时，与之关联的从表数据应该如何处理
+主表更新
+	on update 
+
+主表删除
+	on delete 
+
+允许的级联动作
+	cascade 主表更新或者删除，从表也会执行相应的操作
+	
+	set null 设置为null，表示从表不指向任何主表记录
+	
+	restrict 拒绝主表的相关操作  默认操作
+
+修改这个外键
+	先删除，在新建，通过修改表完成
+	
+	删除外键
+	alter table tb  drop  foreign key tb_tb2_class_id;
+	
+	增加外键
+	alter table tb add constraint tb_tb2_classId foreign key(列) references tb2(classId) on delete set null;

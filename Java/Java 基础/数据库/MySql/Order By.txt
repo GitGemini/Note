@@ -1,0 +1,25 @@
+Order By 
+排序
+校对规则决定排序关系
+
+Order by 字段 升序|降序(asc|desc) 
+默认asc 
+允许多字段排序
+
+select * from student order by stu_date;
+
+limit 限制获得的记录数量
+
+select * from student order by stu_date limit 1;
+
+limit的语法
+limit offset,row_count
+offset 偏移量，从零开始
+row_count 记录数
+
+select distinct * from teaach_class;
+distinct 去掉[重复记录](每个字段都相同)
+可以指定去掉某些字段的重复记录
+select distinct days from teaach_class;
+
+

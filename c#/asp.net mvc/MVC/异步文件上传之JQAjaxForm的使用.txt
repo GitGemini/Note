@@ -1,0 +1,58 @@
+//结合Html5 的FileReader实现文件预览和上传
+
+ <form id="ajaxForm" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="file" name="filebox" onchange="showImg()" class="hidden" id="filebox" />//隐藏的file 绑定它的onchange事件
+                <div class="center-block" id="pImgShow">
+                    <p class='text-center'><i class='fa fa-picture-o'></i></p>
+                </div>
+                <p class="text-center">
+
+                    <input class="btn-primary" type="button" value="选择图片" onclick="selectFile()" /> //点击时触发 $("#filebox").trigger("click");
+
+                    <input class="btn-warning" type="button" value="上传图片" onclick="uploadFile()" />
+                </p>
+</form>
+//选择文件
+//filebox 为隐藏的input file 
+function selectFile() {
+    $("#filebox").trigger("click");
+}
+
+//文件预览
+function showImg() {
+        var fileBox = document.getElementById("filebox");
+        var file = fileBox.files[0];
+        if (/^image\/(png)|(jpg)|(jpeg)|(gif)$/ig.test(file.type)) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                $("#pImgShow").empty();
+                $("<p class='text-center'><img class='img-rounded' src='" + this.result + "' style='max-height:100px;max-width:100px;'/></p>").appendTo($("#pImgShow"));
+            };
+        } else {
+            alert("请选择图片文件(png)|(jpg)|(jpeg)|(gif)!");
+        }
+    }
+	
+//异步文件上传
+  function uploadFile() {
+        $("#ajaxForm").ajaxSubmit({
+            type: 'post',
+            url: '/Admin/ChangePhoto',
+            dataType: "json",
+            success: function (data) {
+                if (data.status == "ok") {
+                    $("#user_img").prop("src", data.imgsrc);
+                    $("#adminImg").prop("src", data.imgsrc);
+                    $(this).resetForm();
+                    $("#dvChangePhoto").dialog("close");
+                } else {
+                    alert(data);
+                }
+            },
+            error: function (aa) {
+                alert("失败!");
+            }
+        });
+    }

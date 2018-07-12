@@ -1,0 +1,37 @@
+装饰设计模式
+ 		当对一组对象的功能进行增强时，就可以使用该模式进行问题的解决
+public class Person
+{
+	public void chifan()
+	{
+		sop("吃饭");
+	}
+	
+}
+
+public class NewPerson()
+{
+	private Person p;
+	
+	public NewPerson(Person p)
+	{
+		this.p=p;
+	}
+	
+	public void chifan()
+	{
+		sop("开胃酒");
+		p.chifan();
+		sop("甜点");
+	}
+}
+
+ /**
+ 	装饰设计模式
+ 		特点：装饰类和被装饰类都必须属于同一个接口或者父类
+ 		当对一组对象的功能进行增强时，就可以使用该模式进行问题的解决
+ 	装饰和继承都能实现一样的特点，进行功能的扩展增强，有什么区别？
+ 		只是为了提高功能，如果继承使用的太多，会导致继承体系越来越臃肿，不够灵活
+ 		而装饰的设计模式就更加灵活
+ 
+ */

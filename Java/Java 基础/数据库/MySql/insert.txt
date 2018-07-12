@@ -1,0 +1,24 @@
+insert 使用细节
+基本使用
+1、insert into tab() values();
+
+2、insert into tab set t_name='',c_name=''
+
+两种方式都能插入数据，
+区别在于
+值列表的语法可以一次性插入多条数据
+1、insert into tab(列1,列2) values
+(值1,值2),(值1,值2),(值1,值2);
+
+1、插入数据时，如果出现主键冲突，不会插入成功，
+但是可以在insert语法内，控制在主键冲突时，改成执行更新操作。
+
+insert into tab(列1,列2) values(值1,值2) on duplicate key update 列1=值1，列2=值2;
+
+
+插入的数据源:
+除了使用自定义数据外，
+还可以使用select
+查询到数据，作为插入的数据源
+如:
+insert into teacher_class select t_name,c_name from teacher_class

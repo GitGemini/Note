@@ -1,0 +1,115 @@
+发送邮件的基本步骤:
+//发送普通邮件
+//1.创建邮件对象使用System.Net.Mail命名空间
+MaiMessage mailObject = new MailMessage();
+//设置发件人
+mailObject.From = new MailAddress("ca@ph.cn");
+//设置收件人
+mailObject.To.Add(new MailAddress("lac@ph.cn"));
+//mailObject.CC 获取包含此电子邮件的抄送(CC)收件人的地址集合
+//设置邮件主题
+//为了防止乱码设置编码格式
+mailObject.SubjectEncoding=Encoding.UTF8;
+mailObject.Subject="Hello";
+//设置邮件正文
+mailObject.BodyEncoding=Encoding.UTF8;
+mailObject.Body = "我是XXXXXX";
+
+
+//2/创建一个发送邮件的对象
+SmtpClient smtpClient = new SmtpClient("127.0.0.1",25);
+smtpClient.Credentials = new NetWorkCredential("ca","123");
+smtpClient.Send(mailObject);
+
+
+
+===========================================================
+
+
+
+
+//发送Html格式的邮件
+//1.创建邮件对象使用System.Net.Mail命名空间
+MaiMessage mailObject = new MailMessage();
+//设置发件人
+mailObject.From = new MailAddress("ca@ph.cn");
+//设置收件人
+mailObject.To.Add(new MailAddress("lac@ph.cn"));
+//mailObject.CC 获取包含此电子邮件的抄送(CC)收件人的地址集合
+//设置邮件主题
+//为了防止乱码设置编码格式
+mailObject.SubjectEncoding=Encoding.UTF8;
+mailObject.Subject="Hello";
+//设置邮件正文
+mailObject.BodyEncoding=Encoding.UTF8;
+//---------------方法一---------------------------------------
+mailObject.Body = "hehe<font color='red'>我是XXXXXX</font>";
+mailObject.IsBodyHtml=true;
+//----------------方法二--------------------------------------------
+//创建一个Html正文对象
+AlternateView htmlBody = AlternateView.CreateAlternateViewFromString("
+hehe<font color='red'>我是XXXXXX</font>",null,"text/html");
+//把正文对象添加到mailObect
+mailObject.AlternateViews.Add(htmlBody); 
+//------------------------------------------------------------------
+//2/创建一个发送邮件的对象
+SmtpClient smtpClient = new SmtpClient("127.0.0.1",25);
+smtpClient.Credentials = new NetWorkCredential("ca","123");
+smtpClient.Send(mailObject);
+
+
+
+=============================================
+
+
+
+//===================发送带图片的邮件=========================
+MaiMessage mailObject = new MailMessage();
+//设置发件人
+mailObject.From = new MailAddress("ca@ph.cn");
+//设置收件人
+mailObject.To.Add(new MailAddress("lac@ph.cn"));
+//mailObject.CC 获取包含此电子邮件的抄送(CC)收件人的地址集合
+//设置邮件主题
+//为了防止乱码设置编码格式
+mailObject.SubjectEncoding=Encoding.UTF8;
+mailObject.Subject="Hello";
+//设置邮件正文
+mailObject.BodyEncoding=Encoding.UTF8;
+mailObject.Body = "hehe<font color='red'>我是XXXXXX</font>";
+mailObject.IsBodyHtml=true;
+//创建一个带Img标签的Html正文对象
+AlternateView htmlBody = AlternateView.CreateAlternateViewFromString("
+hehe<font color='red'>我是XXXXXX</font><img src='cid:zfp'/>",null,"text/html");
+
+//创建一个资源，该资源与html文件中的相关内容一一对应
+LinkedResource lr = new LinkedResource(@"1.gif","image/gif");
+lr.ContentId="zfp";
+htmlBody.LinkedResources.Add(lr);
+//把正文对象添加到mailObect
+mailObject.AlternateViews.Add(htmlBody); 
+//------------------------------------------------------------------
+//2/创建一个发送邮件的对象
+SmtpClient smtpClient = new SmtpClient("127.0.0.1",25);
+smtpClient.Credentials = new NetWorkCredential("ca","123");
+smtpClient.Send(mailObject);
+
+
+
+
+==============================================================
+
+
+
+//===================发送带附件的邮件=========================
+
+基本发送格式与刚才一样
+添加附件：有几个附件加几个Attachment
+Attachment attach1 = new Attachment(@"c:\1.txt");
+Attachment attach2 = new Attachment(@"c:\1.xls");
+Attachment attach3 = new Attachment(@"c:\1.docx");
+
+//将附件对象加入到邮件对象中
+mailObject.Attachments.Add(attach1);
+mailObject.Attachments.Add(attach2);
+mailObject.Attachments.Add(attach3);

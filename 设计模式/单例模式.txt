@@ -1,0 +1,36 @@
+//单例设计模式写法一
+//懒汉式 延迟加载
+//使用同步于语句保证对象的唯一性
+class Single{
+	private static Single single = null;
+	private final static Object o = new Object();
+	private Single() {
+		
+	}
+	
+	public static Single getInstance() {
+		if(single==null) {
+			synchronized(o) {//这个时候很容易创建两个Single对象，所以要加同步
+				 if(single==null)
+		            {
+					 	single=new Single();
+		            }
+			}
+		}
+		return single;
+	}
+}
+
+//单例设计模式写法二
+//饿汉式 
+class Single2{
+	private static Single2 single = new Single2();
+	
+	private Single2() {
+		
+	}
+	
+	public static Single2 getInstance() {
+		return single;
+	}
+}

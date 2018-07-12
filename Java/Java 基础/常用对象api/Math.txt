@@ -1,0 +1,12 @@
+/* Math java提供的数学运算类
+ * 全是静态方法
+ * 常用方法:
+ * static double ceil(double a) 返回大于参数的最小整数
+ * static double floor(double a) 返回小于参数的最大整数
+ * static double round(double a) 四舍五入
+ * static float max(Num a, Num b) 返回两个 数 值中较大的一个 
+ * static double pow(double a, double b)  返回第一个参数的第二个参数次幂的值。 
+ * static double random() 返回带正号的 double 值，该值大于等于 0.0 且小于 1.0 [0,1)
+ * 
+ * Random 类 随机数类
+ */

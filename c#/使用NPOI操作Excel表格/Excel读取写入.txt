@@ -1,0 +1,69 @@
+Excel介绍：每一个单元格数字右对齐，字符串左对齐
+
+NPOI介绍
+1.描述工作簿的类:IWorkbook（接口),HSSFWorkbook（具体的实现类，一个HSSFWorkbook就表示了一个Excel文件，读写Excel文件都需要首先创建这个类的实例对象)
+
+2.描述工作表的类ISheet(接口),HSSFSheet(具体实现类)
+
+3.其他样式类，如设计颜色，格式等
+//首先先添加对NPOI中dll文件的引用
+Excel写入
+List<Person> list = new List<peron>(){
+	new Person(){Name="zs",Age=12,Email=1111@qq.com},
+	new Person(){Name="zs",Age=12,Email=1111@qq.com},
+	new Person(){Name="zs",Age=12,Email=1111@qq.com},
+	new Person(){Name="zs",Age=12,Email=1111@qq.com}
+};
+
+//把list集合中的内容导入Excel
+//1.创建工作簿对象,
+IWorkbook wkbook = new HSSFWorkbook();
+
+//2.在工作簿中创建工作表对象
+ISheet sheet= wkbook,CreateSheet("List for Person.xls");
+//2.1向该工作表中插入行和单元格
+for(int i=0; i<list.Count; i++)
+{
+	//在sheet中创建一行
+	IRow row = sheet.CreatRow(i);
+	//在改行中创建单元格
+	//ICell cell = row.CreatCell(0);
+	//cell.SetCellValue(lsit[i].Name);
+	row.CreatCell(0).SetCellValue(lsit[i].Name);
+	row.CreatCell(1).SetCellValue(lsit[i].Age);
+	row.CreatCell(2).SetCellValue(lsit[i].Email);
+}
+
+//3.写入磁盘
+using(FileStream fw = File.OpenWrite("list.xls")
+{
+	wkbook.Write(fw);
+}
+MessgeBox.Show("写入成功！");
+
+
+
+//Excel读取
+//1.创建IWorkbook
+using(FileStream fr = File.OpenRead(xlsFilePath)
+{
+	IWorkbook wkbook =  new HSSFWorkbook(fr);
+	//遍历每个Sheet
+	for(int i=0; i<wkbook.NumberOfSheets; i++)
+	{	//获取每个Sheet对象
+		ISheet sheet = wk.GetSheetAt(i);
+		Console.WriteLine("======="+sheet.SheetName+"=======");
+		//获取每个工作表中的行
+		for(int j=0; j<=sheet.LastRowNum; i++)
+		{
+			IRow currentRow = sheet.GetRow(j);
+			//遍历获取每个单元格
+			for(int c=0; c<currentRow.LastCellNum; c++)
+			{
+				ICell cell = currentRow.GetCell(c);
+				string value = cell.ToString();
+				Consoel.Write("{0}\t|\t",value);
+			}
+		}
+	}
+}

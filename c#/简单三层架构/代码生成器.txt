@@ -1,0 +1,21 @@
+一、动软代码生成器使用
+
+//下载网址http://www.maticsoft.com/
+//点击.msi文件安装
+
+
+
+注意事项:
+1.设置安装文件权限
+2.通过代码生成器生成的代码中，有一个bool?和bool的转换bug
+3.自己新建UI层的时候需要选择.net framework版本，使之和动软代码生成器生成时的版本相同,同时需要重写config文件中的连接字符串
+4.通过它的GetList()返回的是一个DataSet,要把数据绑定到DataGridView上的时候需要设置ds.Tables[0](设置具体某个Table)
+
+二、CodeSmith代码生成器使用
+1.模板使用
+1.1.<%@Template Language="" TargetLanguage="" %>指明当前模板使用的语言，生成模板使用的语言
+<@ Property Name = "xxxxxxx" Categroy="发信人" Description="描述" Default="默认值" Type="C#类别(比如System.String)" Optional="是否必须填写(true|false)" %> 
+引用程序集:<%@ Assembly Name="" %>
+导入命名空间:<%@ Import Namespace="" %>
+1.2.不变的内容直接写，变化的内容使用<%=xxxxxxx%>替换
+

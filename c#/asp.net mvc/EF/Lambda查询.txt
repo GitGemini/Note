@@ -1,0 +1,19 @@
+//简单查询
+
+var data = dbContext.UserInfo.Where(u=>u.ID>0);
+
+//分页
+
+var pageData = dbContext.UserInfo.Where(u=>u.ID>0).
+//OrderBy<UserInfo,int>(u=>u.ID) //升序
+OrderByDescending(u=>u.ID)//降序
+//一页五条 ，取第三页
+.Skip(5*(3-1)).Take(5);
+
+
+查询部分列
+
+var data = from u in dbContext.UserInfo
+			select new{u.UName};
+			
+var data = UserInfo.Where(u=>u.ID>0).Select(u=>new{u.UName})

@@ -1,0 +1,98 @@
+二、条件和循环 
+1、条件语句
+
+if then\ elseif then\ else\ end if
+复制代码
+
+# if条件语句
+
+delimiter \\
+CREATE PROCEDURE proc_if ()
+BEGIN
+    
+    declare i int default 0;
+    if i = 1 THEN
+        SELECT 1;
+    ELSEIF i = 2 THEN
+        SELECT 2;
+    ELSE
+        SELECT 7;
+    END IF;
+
+END\\
+delimiter ;
+
+复制代码
+ 2、循环语句
+
+分为三种循环语句：while循环、repeat循环、loop循环
+
+while循环
+
+语法：while 条件 do/end while
+复制代码
+
+delimiter \\
+CREATE PROCEDURE proc_while ()
+BEGIN
+
+    DECLARE num INT ;
+    SET num = 0 ;
+    WHILE num < 10 DO
+        SELECT
+            num ;
+        SET num = num + 1 ;
+    END WHILE ;
+
+END\\
+delimiter ;
+
+复制代码
+
+ 
+
+ repeat循环
+
+语法：repeat /end repeat
+复制代码
+
+delimiter \\
+CREATE PROCEDURE proc_repeat ()
+BEGIN
+
+    DECLARE i INT ;
+    SET i = 0 ;
+    repeat
+        select i;
+        set i = i + 1;
+        until i >= 5
+    end repeat;
+
+END\\
+delimiter ;
+
+复制代码
+
+ 
+
+loop循环
+复制代码
+
+delimiter \\
+CREATE PROCEDURE proc_loop ()
+BEGIN
+    
+    declare i int default 0;
+    loop_label: loop
+        select i;
+        set i=i+1;
+        if i>=5 then
+            leave loop_label;
+            end if;
+    end loop;
+
+END\\
+delimiter ;
+
+复制代码
+

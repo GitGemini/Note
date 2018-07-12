@@ -1,0 +1,19 @@
+HttpPostedFile file = context.Request.Files["imgFile"];
+
+            if(file==null)
+            {
+                context.Response.End();
+            }
+            Image image = Image.FromStream(file.InputStream);
+
+            Bitmap smallImg = new Bitmap(100, 100);
+            //在缩略图上创建画布
+            Graphics g = Graphics.FromImage(smallImg);
+            g.DrawImage(image,new Rectangle(0,0,100,100),new Rectangle(0,0,image.Width,image.Height),GraphicsUnit.Pixel);
+
+            string path = "/UpLoad/" + "_samllimage_" + Path.GetFileName(file.FileName);
+            smallImg.Save(context.Request.MapPath(path));
+            //context.Response.Write(string.Format("<html><head></head><body><img src='{0}'/></body></html>", path));
+            MemoryStream ms = new MemoryStream();
+            smallImg.Save(ms,ImageFormat.Jpeg);
+            context.Response.BinaryWrite(ms.ToArray());

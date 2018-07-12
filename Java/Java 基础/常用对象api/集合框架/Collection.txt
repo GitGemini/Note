@@ -1,0 +1,35 @@
+/* 集合类的由来：
+ * 	对象用于封装特有数据，对象多了需要存储，如果对象的个数不确定，就是用集合容器进行存储
+ * 
+ * 集合特点：
+ * 	1、用于存储对象的容器
+ *  2、集合的长度是可变的
+ *  3、集合中不可以存储基本数据类型值
+ *  
+ * 集合体系:
+ *  集合因为内部的数据结构不同，有多种具体容器，不断向上抽取形成了集合框架
+ * 	1、Collection 不断向上抽取的顶层   public interface Collection<E>extends Iterable<E>   集合的根接口
+ * 
+ * 	常见方法：
+ *  	1、增加
+ *      	 boolean add(E e) 确保此 collection 包含指定的元素（可选操作）。 添加成功返回true，失败返回false
+ *		     boolean addAll(Collection<? extends E> c) 将指定 collection 中的所有元素都添加到此 collection 中（可选操作）。 
+ * 
+ *
+ *      2、删除
+ *      	 boolean remove(Object o)  从此 collection 中移除指定元素的单个实例，如果存在的话（可选操作）。 
+ *			 boolean removeAll(Collection<?> c) 移除此 collection 中那些也包含在指定 collection 中的所有元素（可选操作）。 
+ *           void clear() 移除此 collection 中的所有元素（可选操作）。 清空集合
+ *      
+ *      3、判断
+ *      	 boolean contains(Object o) 如果此 collection 包含指定的元素，则返回 true。 
+ *			 boolean containsAll(Collection<?> c) 如果此 collection 包含指定 collection 中的所有元素，则返回 true。 
+ *			 boolean isEmpty()  如果此 collection 不包含元素，则返回 true。 
+ *
+ *      4、获取
+ *      	 int size() 返回此 collection 中的元素数 
+ *           Iterator<E> iterator() 返回在此 collection 的元素上进行迭代的迭代器对象。 用于遍历集合，必须依赖具体的容器，所以迭代器是在容器内部中具体实现的
+ *           Object[] toArray() 返回包含此 collection 中所有元素的数组。 
+ *           <T> T[] toArray(T[] a) 返回包含此 collection 中所有元素的数组；返回数组的运行时类型与指定数组的运行时类型相同。 
+ *           boolean retainAll(Collection<?> c) 仅保留此 collection 中那些也包含在指定 collection 的元素（可选操作）。 取交集
+ * */

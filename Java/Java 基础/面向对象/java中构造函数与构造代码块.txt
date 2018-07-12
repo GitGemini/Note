@@ -1,0 +1,101 @@
+1.在java中当创建子类对象时，会先创建父类对象，调用父类的构造函数，若父类的构造函数是无参构造函数则不用在
+子类构造函数中通过super()调用，否则需要在子类构造函数中显示调用super(参数)；
+注意：在子类的构造函数中调用父类构造函数时，super语句必须放在子类构造函数的第一行
+例如：
+
+class A
+{
+	public A(){}    	//①
+	//public A(T){} 	②
+}
+class B extends A
+{
+	B()
+	{
+		super();//可以不用显示的写出，java会自动调用父类的无参构造函数
+	}  
+
+	/**当父类中只有 ② 时
+	
+	B()
+	{
+		super(T);                //需要在子类构造函数中显示调用super(参数)；
+	}
+	*/
+}
+
+
+
+2.关于构造代码块，静态代码块，和代码块的区别 ，以及和构造函数，静态函数的异同
+
+先来看一个例子
+
+public class Construction
+{
+	public static void main(String args[])
+	{
+		Person p1=new Student();
+		
+		System.out.println("程序结束！");
+	}
+}
+
+class Person
+{
+	// 静态代码块
+	static 
+	{
+		System.out.println("Person 静态代码块！");
+	}
+	
+	// 无参构造函数
+	public Person()
+	{
+		//代码块 主要用来设置变量的生存周期 无特别作用
+		{
+			System.out.println("Person 无参构造函数！");
+		}
+	}
+	
+	//构造代码块
+	{
+		System.out.println("Person 构造代码块！");
+	}
+}
+
+class Student extends Person
+{
+	// 静态代码块
+	static 
+	{
+		System.out.println("Student 静态代码块！");
+	}
+	
+	// 无参构造函数
+			
+	public Student()
+	{
+			super();   					 //父类为无参构造函数时可以不用显示调用
+			System.out.println("Student 无参构造函数！");
+	}
+	
+	//构造代码块
+	{
+		System.out.println("Student 构造代码块！");
+	}
+}
+
+其运行结果如下：
+
+Person 静态代码块！
+Student 静态代码块！
+Person 构造代码块！
+Person 无参构造函数！
+Student 构造代码块！
+Student 无参构造函数！
+程序结束！
+
+从这里可以看到，在创建对象时，先是调用了Person 和 Student的静态代码块，因为静态代码块是这个类的所有对象共有的，在实例化对象之前必须先生成，其可以直接通过类名来调用；
+其次就是Person的构造代码块和构造函数，最后才是子类Student的构造代码块和无参构造函数。 构造代码块是在构造函数之前运行的。
+
+

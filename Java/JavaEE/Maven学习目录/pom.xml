@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>study</groupId>
+
+    <artifactId>lib</artifactId>
+
+    <version>1.0</version> 
+	<packaging>jar</packaging>
+    <dependencies>
+<!-- 需要下载什么jar包 添加相应依赖 其余部分无需在意-->
+		<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.3.3</version>
+		</dependency>
+    </dependencies>
+
+</project>

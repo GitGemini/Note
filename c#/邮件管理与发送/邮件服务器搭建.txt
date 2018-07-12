@@ -1,0 +1,27 @@
+一.为什么公司要搭建自己的邮件服务器?
+1.对于本公司内部成员来说没有限制，使用别人的邮件服务器有可能被视为垃圾邮
+件屏蔽，导致公司内部人员接收不到，上传文件大小限制等等
+
+
+二.搭建自己的邮件服务器(将自己的电脑搭建为邮件服务器)
+一.使用hmailserver工具配置邮件服务器
+步骤：
+1.安装，记住密码。123456
+2.汉化，把chinese.ini文件拷贝到hmailserver/languages目录下。修改hmailserver/bin/hmailserver.ini文件中的validlanguages=english,swedish,chinese。
+3.在服务管理器中重启服务(servces.msc 下的hmailserver)，然后打开，选择语言为chinese即可
+4.配置域名。添加域名
+5.为指定域名下添加账户。选中域名->账号->添加账号.（注意:设置->高级->自动停用功能禁掉。设置->高级->默认域名）
+6.邮件服务器配置完毕
+7.配置web管理工具。找到hmailserver/phpwebadmin目录。启动迷你php服务器配置到该目录下。修改config->dist.php为config.php
+8.输入用户名、密码登录。页面转向出错，修改config.php文件中的$hmail_config['rooturl']中的路径为正确的ip(不要用localhost)以及端口
+
+0.0.0.0:25 SMTP	默认发送邮件服务器
+0.0.0.0:110 POP3默认接收邮件服务器
+0.0.0.0:143 IMAP默认邮件服务
+
+使用foxmail来管理账户
+
+
+
+ 
+

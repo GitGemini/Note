@@ -1,0 +1,27 @@
+/* URL
+ * 类 URL 代表一个统一资源定位符，它是指向互联网“资源”的指针。
+ * 
+ * 构造函数:
+ * 		URL(String spec) 根据 String 表示形式创建 URL 对象。 
+   		URL(String protocol, String host, int port, String file)  根据指定 protocol、host、port 号和 file 创建 URL 对象。 
+   		URL(String protocol, String host, int port, String file, URLStreamHandler handler)  根据指定的 protocol、host、port 号、file 和 handler 创建 URL 对象。 
+		URL(String protocol, String host, String file) 根据指定的 protocol 名称、host 名称和 file 名称创建 URL。 
+		URL(URL context, String spec) 通过在指定的上下文中对给定的 spec 进行解析创建 URL。 
+		URL(URL context, String spec, URLStreamHandler handler) 通过在指定的上下文中用指定的处理程序对给定的 spec 进行解析来创建 URL。 
+	实例方法:
+		一堆get***方法获取资源的信息
+		
+	URI 统一资源标识符 (URI) 
+	URI 是统一资源标识符，而 URL 是统一资源定位符。因此，笼统地说，每个 URL 都是 URI，但不一定每个 URI 都是 URL。
+	这是因为 URI 还包括一个子类，即统一资源名称 (URN)，它命名资源但不指定如何定位资源。上面的 mailto、news 和 isbn URI 都是 URN 的示例。 
+	
+URLConnection 抽象类
+直接子类
+HttpURLConnection, JarURLConnection
+
+	一堆get***，set****方法获取各种信息，如请求方法Get/POST等
+	 void addRequestProperty(String key, String value) 添加由键值对指定的一般请求属性。 
+	abstract  void connect() 打开到此 URL 引用的资源的通信链接（如果尚未建立这样的连接）。 
+
+
+ */

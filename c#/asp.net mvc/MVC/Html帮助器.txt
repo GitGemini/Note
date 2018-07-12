@@ -1,0 +1,31 @@
+
+//Html帮助器中的强类型方法 如Html.TextBox 等内部是通过扩展方法实现的
+//在扩展方法中可以返回string和MvcHtmlString或者HtmlString，两者的区别在于string对象返回后可以对其进行HtmlEncode编码
+//而后者返回的方法在HtmlEncode中不会被编码
+
+//模拟.net 源码实现Html帮助器
+
+//扩展方法三大要求
+
+    // 它必须在一个非嵌套、非泛型的静态类中（所以扩展方法一定是静态方法）
+    // 它至少要有一个参数
+    // 第一个参数必须加上this关键字作为前缀
+    // 第一个参数类型也称为扩展类型（extended type），表示该方法对这个类型进行扩展
+    // 第一个参数不能用其他任何修饰符（比如out或ref）
+    // 第一个参数的类型不能是指针类型
+
+// 使用时需注意以下特点
+
+    // 实例方法的优先级高于扩展方法
+    // 当有扩展方法跟实例方法签名一致的时候，编译器不会给出任何警告，而是默认调用实例方法
+    // 如果存在多个适用的扩展方法，它们可以应用于不同的扩展类型（使用隐式转换），那么通过在重载的方法中应用的"更好的转换"规则，编译器会选择最合适的一个
+    // 在扩展方法的调用中，还有一个规则，编译器会调用最近的namespace下的扩展方法
+
+public static class MyHtmlHelper
+{
+	public static MvcHtmlString MyLabel(this HtmlHelper helper,string title)
+	{
+		string s=string.Format("<span style=\"color:red;\">{0}</span>",title);
+		return new MvcHtmlString(s);
+	}
+}

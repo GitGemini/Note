@@ -1,0 +1,25 @@
+FileWriter 与 FileReader 其实就是转换流制定了本机默认编码的体现 ，可以简单地操作文本文件 简单说就是操纵文件的字节流+本机默认编码表
+	如果操纵文件需要明确的编码，必须使用转换流，OutputStreamWriter 与  InputStreamReader
+	
+	
+	try(OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream("gbk.txt"),"gbk"))
+	{
+		osw.write("你好");
+	}
+	catch (IOException e) 
+	{
+		// TODO: handle exception
+	}
+	
+	
+	try(InputStreamReader isr = new InputStreamReader(new FileInputStream("gbk.txt"),"gbk"))
+	{
+		char[] buf = new char[10];
+		int len = isr.read(buf);
+		System.out.println(new String(buf,0,len));
+	}
+	catch (IOException e) 
+	{
+		// TODO: handle exception
+		throw new RuntimeException();
+	}

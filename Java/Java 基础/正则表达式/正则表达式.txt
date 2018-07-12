@@ -1,0 +1,139 @@
+/*
+ * 正则表达式 用于操作字符串，通过特定的符号来体现的 
+ * Pattern 正则表达式的编译表示形式。
+ * 指定为字符串的正则表达式必须首先被编译为此类的实例。
+ * 然后，可将得到的模式用于创建 Matcher 对象，依照正则表达式，该对象可以与任意字符序列匹配。
+ * 执行匹配所涉及的所有状态都驻留在匹配器中，所以多个匹配器可以共享同一模式。
+ * 典型的调用顺序是 
+ *  	Pattern p = Pattern.compile("a*b"); 
+ *  	Matcher m = p.matcher("aaaaab"); boolean b =
+ * 		m.matches();
+ * 
+ * 在仅使用一次正则表达式时，可以方便地通过此类定义 matches 方法。
+ * 此方法编译表达式并在单个调用中将输入序列与其匹配。语句 
+ * 		boolean b = Pattern.matches("a*b", "aaaaab");
+ *
+ * java 正则表达式的符号简介: 
+ * 	字符类
+ *		[abc] a、b 或 c（简单类）
+ *  	[^abc] 任何字符，除了 a、b 或 c（否定）
+ *  	[a-zA-Z] a到 z 或 A 到 Z，两头的字母包括在内（范围）
+ *  	[a-d[m-p]] a 到 d 或 m 到 p：[a-dm-p]（并集）
+ *      [a-z&&[def]]d、e 或 f（交集） 
+ *      [a-z&&[^bc]] a 到 z，除了 b 和 c：[ad-z]（减去） 
+ *      [a-z&&[^m-p]] a 到 z，而非 m 到
+ * 		p：[a-lq-z]（减去）
+ * 
+ * 预定义字符类 
+ * 		. 任何字符（与行结束符可能匹配也可能不匹配） 
+ * 		\d 数字：[0-9]
+ *  	\D 非数字： [^0-9] 
+ *  	\s 空白字符：[\t\n\x0B\f\r] 
+ *  	\S 非空白字符：[^\s] 
+ *  	\w 单词字符：[a-zA-Z_0-9]
+ *  	\W 非单词字符：[^\w]
+ * 
+ * 	边界匹配器 
+ * 		 ^ 行的开头 
+ * 		 $ 行的结尾
+ *  	\b 单词边界 
+ * 		\B 非单词边界
+ *   	\A 输入的开头 
+ *   	\G 上一个匹配的结尾
+ *    	\Z 输入的结尾，仅用于最后的结束符（如果有的话）
+ *      \z 输入的结尾
+ * 
+ * 	Greedy 数量词 
+ * 		X? X，一次或一次也没有 
+ * 		X* X，零次或多次 
+ * 		X+ X，一次或多次 
+ * 		X{n} X，恰好 n 次 
+ * 		X{n,} X，至少 n 次
+ *	   S X{n,m} X，至少 n 次，但是不超过 m 次
+ *
+ *
+ * 	引用 Back 反向引用 
+ * 		\n 任何匹配的 nth 捕获组
+ * 
+ * 	引用 
+ * 	 	\ Nothing，但是引用以下字符
+ * 	 	\Q Nothing，但是引用所有字符，直到 \E 
+ * 		\E Nothing，但是结束从 \Q 开始的引用
+ * 
+ * Logical 运算符 
+ * 		XY X 后跟 Y
+ * 	    X|Y X 或 Y (X) 
+ * 		X，作为捕获组 正则提取组
+ * 
+ * 特殊构造（非捕获）
+ * 		(?:X) X，作为非捕获组
+ * 	    (?idmsux-idmsux) Nothing，但是将匹配标志i d m s u x on - off
+ * 		(?idmsux-idmsux:X) X，作为带有给定标志 i d m s u x on - off
+ * 		(?=X) X，通过零宽度的正 lookahead
+ * 		(?!X) X，通过零宽度的负 lookahead 
+ * 		(?<=X) X，通过零宽度的正 lookbehind 
+ * 		(?<!X) X，通过零宽度的负lookbehind
+ *      (?>X) X，作为独立的非捕获组
+ *
+ * Pattern 类的一些字段和方法,没有构造方法，
+ * 通过compile 方法来返回一个Pattern 
+ * 		对象 字段: 
+ * 				static int CANON_EQ启用规范等价。
+ * 			 	static int CASE_INSENSITIVE 启用不区分大小写的匹配。
+ * 				static int COMMENTS模式中允许空白和注释。 
+ * 				static int DOTALL 启用 dotall 模式。
+ * 				static int LITERAL 启用模式的字面值解析。
+ * 				static int MULTILINE 启用多行模式。
+ * 				static int UNICODE_CASE 启用 Unicode 感知的大小写折叠。
+ *				static int UNIX_LINES 启用 Unix 行模式。 
+ *		方法: 
+ *			static Pattern compile(String regex) 将给定的正则表达式编译到模式中。
+ *			static Pattern compile(String regex, int flags)将给定的正则表达式编译到具有给定标志的模式中。
+ *			int flags() 返回此模式的匹配标志。
+ *			Matcher matcher(CharSequenceinput) 创建匹配给定输入与此模式的匹配器。
+ *			static boolean matches(String regex, CharSequence input) 编译给定正则表达式并尝试将给定输入与其匹配。
+ *			String pattern() 返回在其中编译过此模式的正则表达式。
+ *			static String quote(String s) 返回指定 String 的字面值模式 String。 
+ *			String[] split(CharSequence,input) 围绕此模式的匹配拆分给定输入序列。
+ *			String[] split(CharSequence input, int limit)围绕此模式的匹配拆分给定输入序列。
+ *		    String toString() 返回此模式的字符串表示形式。 
+ *
+ *	Matcher 对象
+ * 	通过调用模式的 matcher方法从模式创建匹配器。创建匹配器后，
+ * 	可以使用它执行三种不同的匹配操作：
+ *  	matches 方法尝试将整个输入序列与该模式匹配。 
+ * 		lookingAt尝试将输入序列从头开始与该模式匹配。 
+ * 		find 方法扫描输入序列以查找与该模式匹配的下一个子序列。
+ *
+ *	 	Matcher appendReplacement(StringBuffer sb, String replacement) 实现非终端添加和替换步骤。
+ * 		StringBuffer appendTail(StringBuffer sb) 实现终端添加和替换步骤。 
+ * 		int end()返回最后匹配字符之后的偏移量。
+ * 		int end(int group) 返回在以前的匹配操作期间，由给定组所捕获子序列的最后字符之后的偏移量。
+ * 		boolean find() 尝试查找与该模式匹配的输入序列的下一个子序列。 
+ * 		boolean find(int start)重置此匹配器，然后尝试查找匹配该模式、从指定索引开始的输入序列的下一个子序列。 
+ * 		String group() 返回由以前匹配操作所匹配的输入子序列。
+ * 		String group(int group) 返回在以前匹配操作期间由给定组捕获的输入子序列。 
+ * 		int groupCount()返回此匹配器模式中的捕获组数。 
+ * 		boolean hasAnchoringBounds() 查询此匹配器区域界限的定位。 
+ * 		boolean hasTransparentBounds() 查询此匹配器区域边界的透明度。
+ * 		boolean hitEnd()如果匹配器执行的最后匹配操作中搜索引擎遇到输入结尾，则返回 true。
+ * 		boolean lookingAt()尝试将从区域开头开始的输入序列与该模式匹配。
+ * 		boolean matches() 尝试将整个区域与模式匹配。 
+ * 		Pattern pattern()返回由此匹配器解释的模式。 
+ * 		static String quoteReplacement(String s) 返回指定 String 的字面值替换String。 
+ * 		Matcher region(int start, int end) 设置此匹配器的区域限制。
+ * 		int regionEnd()报告此匹配器区域的结束索引（不包括）。 
+ * 		int regionStart() 报告此匹配器区域的开始索引。
+ * 		String replaceAll(String, replacement) 替换模式与给定替换字符串相匹配的输入序列的每个子序列。
+ * 		String replaceFirst(String,replacement) 替换模式与给定替换字符串匹配的输入序列的第一个子序列。 
+ * 		boolean requireEnd()如果很多输入都可以将正匹配更改为负匹配，则返回 true。 Matcher reset() 重置匹配器。 Matcher
+ * 		reset(CharSequence input) 重置此具有新输入序列的匹配器。
+ *		int start() 返回以前匹配的初始索引。
+ *		int start(int group) 返回在以前的匹配操作期间，由给定组所捕获的子序列的初始索引。
+ *		MatchResult toMatchResult()作为 MatchResult 返回此匹配器的匹配状态。 
+ *		String toString() 返回匹配器的字符串表示形式。
+ * 		Matcher useAnchoringBounds(boolean b) 设置匹配器区域界限的定位。 
+ * 		Matcher usePattern(Pattern,newPattern) 更改此 Matcher 用于查找匹配项的 Pattern。
+ * 		MatcheruseTransparentBounds(boolean b) 设置此匹配器区域边界的透明度。
+ *
+ */

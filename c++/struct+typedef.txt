@@ -1,0 +1,449 @@
+一、typedef的用法
+
+在C/C++语言中，typedef常用来定义一个标识符及关键字的别名，它是语言编译过程的一部分，但它并不实际分配内存空间，实例像： typedef int INT; typedef int ARRAY[10]; typedef (int*) pINT; typedef可以增强程序的可读性，以及标识符的灵活性，但它也有“非直观性”等缺点。
+
+ 二、#define的用法
+
+#define为一宏定义语句，通常用它来定义常量(包括无参量与带参量)，以及用来实现那些“表面似和善、背后一长串”的宏，它本身并不在编 译过程中进行，而是在这之前(预处理过程)就已经完成了，但也因此难以发现潜在的错误及其它代码维护问题，它的实例像： #define INT int #define TRUE 1 #define Add(a,b) ((a)+(b)); #define Loop_10 for (int i=0; i<10; i++) 在Scott Meyer的Effective C++一书的条款1中有关于#define语句弊端的分析，以及好的替代方法，大家可参看。
+
+ 三、typedef与#define的区别
+
+从以上的概念便也能基本清楚，typedef只是为了增加可读性而为标识符另起的新名称(仅仅只是个别名)，而#define原本在C中是为了定义常量 ，到了C++，const、enum、inline的出现使它也渐渐成为了起别名的工具。有时很容易搞不清楚与typedef两者到底该用哪个好，如#define INT int这样的语句，用typedef一样可以完成，用哪个好呢？我主张用typedef，因为在早期的许多C编译器中这条语句是非法的，只是现今的编译器又做了扩充。为了尽可能地兼容，一般都遵循#define定义“可读”的常量以及一些宏语句的任务，而typedef则常用来定义关键字、冗长的类型的别名。 宏定义只是简单的字符串代换(原地扩展)，而typedef则不是原地扩展，它的新名字具有一定的封装性，以致于新命名的标识符具有更易定义变 量的功能。请看上面第一大点代码的第三行： typedef (int*) pINT; 以及下面这行: #define pINT2 int* 效果相同？实则不同！实践中见差别：pINT a,b;的效果同int *a; int *b;表示定义了两个整型指针变量。而pINT2 a,b;的效果同int *a, b; 表示定义了一个整型指针变量a和整型变量b。 注意：两者还有一个行尾;号的区别哦！
+
+一 const基础
+
+如果const关键字不涉及到指针，我们很好理解，下面是涉及到指针的情况：
+
+int b = 500; const int* a = &b; [1] int const *a = &b; [2] int* const a = &b; [3] const int* const a = &b; [4]
+如果你能区分出上述四种情况，那么，恭喜你，你已经迈出了可喜的一步。不知道，也没关系，我们可以参考《Effective c++》Item21上的做法，如果const位于星号的左侧，则const就是用来修饰指针所指向的变量，即指针指向为常量；如果const位于星号的右侧，const就是修饰指针本身，即指针本身是常量。因此，[1]和[2]的情况相同，都是指针所指向的内容为常量（const放在变量声明符的位置无关），这种情况下不允许对内容进行更改操作，如不能*a = 3 ；[3]为指针本身是常量，而指针所指向的内容不是常量，这种情况下不能对指针本身进行更改操作，如a++是错误的；[4]为指针本身和指向的内容均为常量。
+另外const 的一些强大的功能在于它在函数声明中的应用。在一个函数声明中，const 可以修饰函数的返回值，或某个参数；对于成员函数，还可以修饰是整个函数。有如下几种情况，以下会逐渐的说明用法：
+
+A& operator=(const A& a); void fun0(const A* a ); void fun1( ) const; // fun1( ) 为类成员函数 const A fun2( );
+ 二 const的初始化
+
+先看一下const变量初始化的情况
+1) 非指针const常量初始化的情况：
+
+A b; const A a = b;
+2) 指针(引用)const常量初始化的情况：
+
+A* d = new A(); const A* c = d; 或者：const A* c = new A(); 引用： A f; const A& e = f; // 这样作e只能访问声明为const的函数，而不能访问一般的成员函数；
+[思考1]： 以下的这种赋值方法正确吗？
+const A* c=new A();
+A* e = c;
+[思考2]： 以下的这种赋值方法正确吗？
+A* const c = new A();
+A* b = c;
+
+ 三 作为参数和返回值的const修饰符
+
+其实，不论是参数还是返回值，道理都是一样的，参数传入时候和函数返回的时候，初始化const变量
+1 修饰参数的const，如 void fun0(const A* a ); void fun1(const A& a);
+调用函数的时候，用相应的变量初始化const常量，则在函数体中，按照const所修饰的部分进行常量化，如形参为const A* a，则不能对传递进来的指针的内容进行改变，保护了原指针所指向的内容；如形参为const A& a，则不能对传递进来的引用对象进行改变，保护了原对象的属性。
+[注意]：参数const通常用于参数为指针或引用的情况;
+2 修饰返回值的const，如const A fun2( ); const A* fun3( );
+这样声明了返回值后，const按照"修饰原则"进行修饰，起到相应的保护作用。
+
+const Rational operator*(const Rational& lhs, const Rational& rhs) { return Rational(lhs.numerator() * rhs.numerator(), lhs.denominator() * rhs.denominator()); }
+返回值用const修饰可以防止允许这样的操作发生:
+
+Rational a,b; Radional c; (a*b) = c;
+一般用const修饰返回值为对象本身（非引用和指针）的情况多用于二目操作符重载函数并产生新对象的时候。
+[总结] 一般情况下，函数的返回值为某个对象时，如果将其声明为const时，多用于操作符的重载。通常，不建议用const修饰函数的返回值类型为某个对象或对某个对象引用的情况。
+原因如下：
+如果返回值为某个对象为const（const A test = A 实例）或某个对象的引用为const（const A& test = A实例） ，则返回值具有const属性，则返回实例只能访问类A中的公有（保护）数据成员和const成员函数，并且不允许对其进行赋值操作，这在一般情况下很少用到。
+
+[思考3]： 这样定义赋值操作符重载函数可以吗？
+const A& operator=(const A& a);
+
+ 四 类成员函数中const的使用
+
+一般放在函数体后，形如：void fun() const;
+如果一个成员函数的不会修改数据成员，那么最好将其声明为const，因为const成员函数中不允许对数据成员进行修改，如果修改，编译器将报错，这大大提高了程序的健壮性。
+
+ 五 使用const的一些建议
+
+1 要大胆的使用const，这将给你带来无尽的益处，但前提是你必须搞清楚原委；
+2 要避免最一般的赋值操作错误，如将const变量赋值，具体可见思考题；
+3 在参数中使用const应该使用引用或指针，而不是一般的对象实例，原因同上；
+4 const在成员函数中的三种用法（参数、返回值、函数）要很好的使用；
+5 不要轻易的将函数的返回值类型定为const;
+6除了重载操作符外一般不要将返回值类型定为对某个对象的const引用;
+
+ 
+
+第一篇：typedef struct与struct的区别
+
+1. 基本解释
+
+typedef为C语言的关键字，作用是为一种数据类型定义一个新名字。这里的数据类型包括内部数据类型（int,char等）和自定义的数据类型（struct等）。
+
+在编程中使用typedef目的一般有两个，一个是给变量一个易记且意义明确的新名字，另一个是简化一些比较复杂的类型声明。
+
+至于typedef有什么微妙之处，请你接着看下面对几个问题的具体阐述。
+
+2. typedef & 结构的问题
+
+当用下面的代码定义一个结构时，编译器报了一个错误，为什么呢？莫非C语言不允许在结构中包含指向它自己的指针吗？请你先猜想一下，然后看下文说明：
+
+typedef struct tagNode
+{
+　char *pItem;
+　pNode pNext;
+} *pNode;
+
+答案与分析：
+
+1、typedef的最简单使用
+
+typedef long byte_4;
+
+给已知数据类型long起个新名字，叫byte_4。
+
+2、 typedef与结构结合使用
+
+typedef struct tagMyStruct
+{ 
+　int iNum;
+　long lLength;
+} MyStruct;
+
+这语句实际上完成两个操作：
+
+1) 定义一个新的结构类型
+
+struct tagMyStruct
+{ 
+　int iNum; 
+　long lLength; 
+};
+
+分析：tagMyStruct称为“tag”，即“标签”，实际上是一个临时名字，struct 关键字和tagMyStruct一起，构成了这个结构类型，不论是否有typedef，这个结构都存在。
+
+我们可以用struct tagMyStruct varName来定义变量，但要注意，使用tagMyStruct varName来定义变量是不对的，因为struct 和tagMyStruct合在一起才能表示一个结构类型。
+
+2) typedef为这个新的结构起了一个名字，叫MyStruct。
+
+typedef struct tagMyStruct MyStruct;
+
+因此，MyStruct实际上相当于struct tagMyStruct，我们可以使用MyStruct varName来定义变量。
+
+答案与分析
+
+C语言当然允许在结构中包含指向它自己的指针，我们可以在建立链表等数据结构的实现上看到无数这样的例子，上述代码的根本问题在于typedef的应用。
+
+根据我们上面的阐述可以知道：新结构建立的过程中遇到了pNext域的声明，类型是pNode，要知道pNode表示的是类型的新名字，那么在类型本身还没有建立完成的时候，这个类型的新名字也还不存在，也就是说这个时候编译器根本不认识pNode。
+
+解决这个问题的方法有多种：
+
+1)、
+
+typedef struct tagNode 
+{
+　char *pItem;
+　struct tagNode *pNext;
+} *pNode;
+
+2)、
+
+typedef struct tagNode *pNode;
+struct tagNode 
+{
+　char *pItem;
+　pNode pNext;
+};
+
+注意：在这个例子中，你用typedef给一个还未完全声明的类型起新名字。C语言编译器支持这种做法。
+
+3)、规范做法：
+
+typedef uint32 (* ADM_READDATA_PFUNC)( uint16*, uint32 );
+
+这个以前没有看到过,个人认为是宇定义一个uint32的指针函数,uint16*, uint32 为函数里的两个参数; 应该相当于#define uint32 (* ADM_READDATA_PFUNC)( uint16*, uint32 );
+
+struct在代码中常见两种形式： 
+struct A 
+{ 
+//... 
+};
+
+struct 
+{ 
+//... 
+} A; 
+这其实是两个完全不同的用法： 
+前者叫做“结构体类型定义”，意思是：定义{}中的结构为一个名称是“A”的结构体。 
+这种用法在typedef中一般是： 
+typedef struct tagA //故意给一个不同的名字，作为结构体的实名 
+{ 
+//... 
+} A; //结构体的别名。
+
+后者是结构体变量定义，意思是：以{}中的结构，定义一个名称为"A"的变量。这里的结构体称为匿名结构体，是无法被直接引用的。 
+也可以通过typedef为匿名结构体创建一个别名，从而使得它可以被引用： 
+typedef struct 
+{ 
+//... 
+} A; //定义匿名结构体的别名为A
+
+第二篇：在C和C++中struct和typedef struct的区别
+
+在C和C++有三种定义结构的方法。
+
+typedef struct {
+
+int data;
+
+int text;
+
+} S1;
+
+//这种方法可以在c或者c++中定义一个S1结构
+
+struct S2 {
+
+int data;
+
+int text;
+
+};
+
+// 这种定义方式只能在C++中使用，而如果用在C中，那么编译器会报错
+
+struct {
+
+int data;
+
+int text;
+
+} S3;
+
+这种方法并没有定义一个结构，而是定义了一个s3的结构变量，编译器会为s3内存。
+
+void main()
+
+{
+
+S1 mine1;// OK ,S1 是一个类型
+
+S2 mine2;// OK,S2 是一个类型
+
+S3 mine3;// OK,S3 不是一个类型
+
+S1.data = 5;// ERRORS1 是一个类型
+
+S2.data = 5;// ERRORS2 是一个类型
+
+S3.data = 5;// OKS3是一个变量
+
+}
+
+另外，对与在结构中定义结构本身的变量也有几种写法
+
+struct S6 {
+
+S6* ptr;
+
+};
+
+// 这种写法只能在C++中使用
+
+typedef struct {
+
+S7* ptr;
+
+} S7;
+
+// 这是一种在C和C++中都是错误的定义
+
+如果在C中，我们可以使用这样一个“曲线救国的方法“
+
+typedef struct tagS8{
+
+tagS8 * ptr;
+
+} S8;
+
+第三篇：struct和typedef struct
+
+分三块来讲述：
+1 首先：
+在C中定义一个结构体类型要用typedef:
+typedef struct Student
+{
+int a;
+}Stu;
+于是在声明变量的时候就可：Stu stu1;
+如果没有typedef就必须用struct Student stu1;来声明
+这里的Stu实际上就是struct Student的别名。
+
+
+另外这里也可以不写Student（于是也不能struct Student stu1;了）
+typedef struct
+{
+int a;
+}Stu;
+但在c++里很简单，直接
+struct Student
+{
+int a;
+};
+于是就定义了结构体类型Student，声明变量时直接Student stu2；
+===========================================
+2其次：
+在c++中如果用typedef的话，又会造成区别：
+struct Student 
+{ 
+int a; 
+}stu1;//stu1是一个变量 
+typedef struct Student2 
+{ 
+int a; 
+}stu2;//stu2是一个结构体类型 
+使用时可以直接访问stu1.a
+但是stu2则必须先 stu2 s2;
+然后 s2.a=10;
+===========================================
+3 掌握上面两条就可以了，不过最后我们探讨个没多大关系的问题
+如果在c程序中我们写：
+typedef struct
+{
+int num;
+int age;
+}aaa,bbb,ccc;
+这算什么呢？
+我个人观察编译器（VC6）的理解，这相当于
+typedef struct
+{
+int num;
+int age;
+}aaa；
+typedef aaa bbb;
+typedef aaa ccc;
+也就是说aaa,bbb,ccc三者都是结构体类型。声明变量时用任何一个都可以,在c++中也是如此。但是你要注意的是这个在c++中如果写掉了typedef关键字，那么aaa，bbb，ccc将是截然不同的三个对象。
+
+第四篇：C/C++中typedef struct和struct的用法
+
+struct _x1 { ...}x1; 和 typedef struct _x2{ ...} x2; 有什么不同？ 
+
+其实, 前者是定义了类_x1和_x1的对象实例x1, 后者是定义了类_x2和_x2的类别名x2 , 
+
+所以它们在使用过程中是有取别的.请看实例1. 
+
+[知识点] 
+
+结构也是一种数据类型, 可以使用结构变量, 因此, 象其它 类型的变量一样, 在使用结构变量时要先对其定义。 
+
+定义结构变量的一般格式为: 
+
+struct 结构名 
+
+{ 
+
+类型 变量名; 
+
+类型 变量名; 
+
+... 
+
+} 结构变量;  //结构体的变量
+
+结构名是结构的标识符，不是变量名。 
+
+另一种常用格式为: 
+
+typedef struct 结构名 
+
+{ 
+
+类型 变量名; 
+
+类型 变量名; 
+
+... 
+
+} 结构别名;  //结构别名:只是结构的标示符——结构体类型
+
+另外注意: 在C中，struct不能包含函数。在C++中，对struct进行了扩展，可以包含函数。 
+
+====================================================================== 
+
+实例1: struct.cpp 
+
+#include <iostream> 
+
+using namespace std; 
+
+typedef struct _point{ 
+
+int x; 
+
+int y; 
+
+}point; //定义类，给类一个别名 
+
+struct _hello{ 
+
+int x,y; 
+
+} hello; //同时定义类和对象 
+
+int main() 
+
+{ 
+
+point pt1; 
+
+pt1.x = 2; 
+
+pt1.y = 5; 
+
+cout<< "ptpt1.x=" << pt1.x << "pt.y=" <<pt1.y <<endl; 
+
+//hello pt2; 
+
+//pt2.x = 8; 
+
+//pt2.y =10; 
+
+//cout<<"pt2pt2.x="<< pt2.x <<"pt2.y="<<pt2.y <<endl; 
+
+//上面的hello pt2;这一行编译将不能通过. 为什么? 
+
+//因为hello是被定义了的对象实例了. 
+
+//正确做法如下: 用hello.x和hello.y 
+
+hello.x = 8; 
+
+hello.y = 10; 
+
+cout<< "hellohello.x=" << hello.x << "hello.y=" <<hello.y <<endl; 
+
+return 0; 
+
+}
+
+第五篇：问答
+
+Q：用struct和typedef struct 定义一个结构体有什么区别？为什么会有两种方式呢？
+
+struct Student 
+{ 
+int a; 
+} stu; 
+typedef struct Student2 
+{ 
+int a; 
+}stu2;
+
+A：
+
+事实上，这个东西是从C语言中遗留过来的，typedef可以定义新的复合类型或给现有类型起一个别名，在C语言中，如果你使用 
+struct xxx 
+{ 
+}; 的方法，使用时就必须用 struct xxx var 来声明变量，而使用 
+typedef struct 
+{ 
+}的方法 就可以写为 xxx var; 
+不过在C++中已经没有这回事了，无论你用哪一种写法都可以使用第二种方式声明变量，这个应该算是C语言的糟粕。

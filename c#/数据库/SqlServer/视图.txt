@@ -1,0 +1,20 @@
+视图：
+对查询语句的一个封装，是一个虚表，表示一张表的部分数据或者多张表的综合数据，其结构和数据是建立在对表的查询上。
+视图在操作上和数据表没有什么不同，但两者的本质差异是：表是实际存储数据的，然而视图并不保存任何记录
+视图的好处：
+1.降低数据库的复杂程度
+2.防止未经允许的用户访问数据库
+
+create view VW_Area 
+as
+select 
+	t2.AreaId 城市编号,
+	t2.AreaName 城市名称,
+	t1.AreaName 省份名称
+from Area as t1
+inner join Area as t2 on t1.AreaId=t2.AreaPId
+
+select * from VW_Area where 城市编号。。。。
+注意：
+1.如果视图的查询语句中包含了重名的列，必须为该列起别名
+2.视图as后面的查询语句中不能跟order by 语句，除非前面使用了Top

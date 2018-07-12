@@ -1,0 +1,20 @@
+--union 联合查询 将两个查询的结果联合起来，行联合，而join是列联合
+--union all 与 union的差别，union会去除重复
+--联合的两次查询必须列数相等，且同列的数据必须可以相互兼容
+
+(select t.name,days from teacher where c_name='0115' order  by days desc limit 1)
+union
+(select t.name,days from teacher where c_name='0125' order  by days desc limit 1)
+
+
+union注意事项
+
+1.将子语句包裹在括号内(建议，可以不加)
+2.子语句的order by 只有配合limit时才生效，原因是union在做自语句优化时，会忽略limit的order by 
+3.联合的两次查询必须列数相等，且同列的数据必须可以相互兼容(不一致就会存在类型转换，必须能够转换成功)
+
+对所有结果进行统一排序
+(select t.name,days from teacher where c_name='0115')
+union
+(select t.name,days from teacher where c_name='0125')
+order by days;

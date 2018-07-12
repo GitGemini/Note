@@ -1,0 +1,38 @@
+ //二进制序列化 将对象变成流的过程，即byte[] BinaryFormatter
+            /**
+             * 1、创建二进制序列化器
+             * 2、创建一个文件流
+             * 3、序列化写入文件
+             * 注意事项：
+             * 1、被序列化的类型必须被标识为可序列化
+             * 2、被序列化的类的父类必须也被标记为序列化
+             * 3、当前类的所有属性或字段也必须被标识为可序列化的
+             * */
+
+
+
+
+//反序列化
+            /**
+            * 1、创建二进制序列化器
+            * 2、创建一个文件流
+            * 3、将文件中的序列化的内容还原成对像
+            * 注意事项：
+            * 1、如果序列化的对象不在此程序集中需要引入原来的程序集
+            * 2、
+            * 3、
+            * */
+
+
+
+ //json 序列化
+//            JavaScriptSerializer json = new JavaScriptSerializer();
+//            string str = json.Serialize(p);
+//            Console.WriteLine(str);
+ //XML序列化
+            //XmlSerializer xml = new XmlSerializer(typeof(People));
+            //using (FileStream fsWrite = new FileStream(@"F:\code\c#\StreamTest\StreamTest\文件\People.xml", FileMode.Create,FileAccess.Write))
+            //{
+            //    xml.Serialize(fsWrite, p);
+            //}
+            //Console.WriteLine("OK!");

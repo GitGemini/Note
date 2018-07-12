@@ -1,0 +1,41 @@
+outfile
+
+select * into outfile "文件地址" from  tbl;
+
+需要注意secure_file_priv
+必须在my.ini 文件中
+[mysqld]下设置secure_file_priv=
+
+ure_file_priv的值为null ，表示限制mysqld 不允许导入|导出
+
+当secure_file_priv的值为/tmp/ ，表示限制mysqld 的导入|导出只能发生在/tmp/目录下
+
+当secure_file_priv的值没有具体值时，表示不对mysqld 的导入|导出做限制
+
+查看secure-file-priv参数的值：
+SHOW VARIABLES LIKE '%secure%';
+
+select * into outfile "文件地址" from  tbl;
+
+可以自动创建文件，但不能覆盖文件
+
+为了满足某些特定的需求，会采用不同的分割方式
+通过如下的选项:
+fields:设置字段选项
+lines:设置行选项
+先看默认值：
+字段:fields terminated by '\t' enclosed by '' escaped by '\\'
+记录: lines terminated by '\n' starting by ''
+eg:
+select * into outfile "文件地址" 
+fields terminated  by '\,' 
+line terminated by '\n' 
+starting by ':' 
+from  tbl;
+
+
+常规的，所有的记录应该通过行来显示，
+例外是保存二进制数据：blob，binary等
+使用into dumpfile,而不是outfile
+
+select * into dumpfile "文件地址" from  tbl;

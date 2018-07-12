@@ -1,0 +1,27 @@
+/*
+ * 消费者生产者问题
+ * 
+ * 多生产者多消费者时 
+ * 需要使用while来判断标记  notifyAll来唤醒所有线程，使用notify会导致有可能唤醒本方线程导致死锁
+ * while 解决了线程获取执行权后是否要运行的问题 
+ * notifyAll 解决了一定会唤醒对方线程
+ * 
+ * 同步中执行的线程只有一个，但活着的线程不止一个
+ * jdk 1.5 新功能
+ * 
+ * Lock接口 封装了 synchronized 语句和方法，使用Lock可以更方便得解决同步问题，也更强大，将显示动作变成了隐式动作
+ * 使用Condition 接口 将 Object 监视器方法（wait、notify 和 notifyAll）分解成截然不同的对象，以便通过将这些对象与任意 Lock 实现组合使用，
+ * 为每个对象提供多个等待 set（wait-set）。其中，Lock 替代了 synchronized 方法和语句的使用，Condition 替代了 Object 监视器方法的使用。 
+ * 一个Lock可以支持多个相关的 Condition 对象。 可以创建多个监视器
+
+ * 已知子类 实现ReentrantLock, ReentrantReadWriteLock.ReadLock, ReentrantReadWriteLock.WriteLock
+ * 使用Lock时都应该将unlock放在finally中
+ *  Lock l = ...; 
+     l.lock();
+     try {
+         // access the resource protected by this lock
+     } finally {
+         l.unlock();
+     }
+
+ **/

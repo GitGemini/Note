@@ -1,0 +1,84 @@
+1. sessionState的4种mode模式
+
+　　在ASP.NET中Session的sessionState的4中mode模式：Off、InProc、StateServer及SqlServer。
+2. Off模式
+
+<sessionState mode="Off"></sessionState>
+
+　　关闭模式，即不需要使用Session。
+
+单个页面关闭Session：
+
+<%@ Page EnableSessionState="false" %>
+
+3. InProc模式(缺省模式)
+
+<sessionState mode="InProc" cookieless="false" timeout="20"></sessionState>
+
+mode设置为"InProc"时，Session直接存储在IIS进程中。
+
+　　优点：获取session状态的速度快
+
+　　缺点：易丢失
+
+mode为InProc可能造成Session丢失的情况：
+
+　　1>. ASP.NET进程（aspnet_wp.exe）、IIS进程（w3wp.exe）默认的20分钟重启应用程序；
+
+　　2>. 缓冲池填满后重启；
+
+　　3>. 进程保护措施重启。
+4. StateServer模式
+
+mode设置为"StateServer"时，Session 存储在单独的内存缓冲区中，再由单独一台服务器上运行的ASP.NET State Service（aspnet_state.exe）来控制这个缓冲区。
+
+　　优点：session状态单独存储在一个进程中，不会因为iis或者应用的重启而丢失状态。
+
+　　缺点：
+
+　　1>. 由于是两个不同的进程,获取Session数据比InProc慢；
+
+　　2>. Session数据存储在内存中，重启ASP.NET State Service服务，Session数据将丢失。
+
+<sessionState mode="StateServer" stateConnectionString="tcpip=tcpip=127.0.0.1:42424" cookieless="false" timeout="20"></sessionState>
+
+　　以上设置的ASP.NET State Service在127.0.0.1的42424端口（默认端口）上运行，要在服务器上改变端口，可编辑HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\aspnet_state\Parameters注册表项中的Port值。（打开注册表方式：运行 regedit）
+
+mode设置为"StateServer"需要注意：
+
+　　1>. 启动ASP.NET State Service；
+
+　　2>. 如果stateConnectionString的值不是127.0.0.1或者localhost等代表本地地址的值，需要修改注册表：HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\aspnet_state \Parameters 节点 → 将 AllowRemoteConnection 的键值设置成“1”（1 为允许远程电脑的连接，0 代表禁止）→ 设置 Port (端口号) 
+5. SqlServer模式
+
+　　mode设置为"SqlServer"时，Session存储在SQL Server数据库中持久化保持，ASP.NET尝试将会话数据存储到由sqlConnectionString属性（其中包含数据源以及登录服务器所需的安全凭证）指定的SQL Server中。可应用场景：网络负载均衡（NLB）环境。
+
+设置SqlServer模式步骤：
+
+　　1>. 配置SQL erver创建ASPState数据库
+
+　　创建ASPState数据库，运行C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallSqlState.sql，可以通过SQL查询分析器来执行语句，也可以使用sqlcmd来执行。
+
+sqlcmd -S [server name] -U [user] -P [password] -i C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallSqlState.sql
+
+此时SQLServer会创建数据库ASPState，但是没有表。
+
+　　若创建ASPState数据库后要删除，可以运行C:\Windows\Microsoft.NET\Framework\v4.0.30319\UninstallSqlState.sql，但要先停止w3svc进程。
+
+net stop w3svc
+
+　　2>. ASPState创建表
+
+aspnet_regsql.exe  -ssadd -sstype p -S [server name] -U [user] -P [password]
+
+　　运行cmd：
+
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regsql.exe  -ssadd -sstype p -S (local) -U sa -P '1'
+
+　　此时数据库中创建两张表：ASPStateTempApplications、ASPStateTempSessions。
+
+　　3>. 设置sessionState
+
+<sessionState mode="SQLServer" sqlConnectionString="data source=127.0.0.1;user id=sa;password=1" cookieless="false" timeout="20"></sessionState>
+
+由于数据不存储在本地内存，存储Session状态的对象需要进行序列化和反序列化，以便通过网络传给数据库服务器，以及从数据库服务器传回。

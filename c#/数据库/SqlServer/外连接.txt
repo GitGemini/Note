@@ -1,0 +1,64 @@
+--左外连接
+--left (outer) join
+--会将所有左表中的数据全部显示，同时对于左表中的数据，在右表中
+--能找到匹配的数据，那么则会显示右表中的数据，在右表中找不到对
+--应的匹配则显示null
+
+查询出所有参加考试的同学的姓名，年龄，英语成绩，数学成绩
+
+select 
+	t1.tsname,
+	t1.tsage,
+	t2.tEnglish,
+	t2.tMath
+from TblStudent as t1
+inner join TblScore as t2 on t1.tsid=t2.tsid	
+
+查询出所有同学的姓名，年龄，英语成绩，数学成绩
+
+select 
+	t1.tsname,
+	t1.t1.tsage,
+	t2.tEnglish,
+	t2.tMath
+from TblStudent as t1
+left join TblScore as t2 on t1.tsid=t2.tsid
+
+查询出没有参加考试同学的id，姓名，年龄
+select 
+	t1.tsid,
+	t1.tsname,
+	t1.tsage
+where tsid not in (select tsid from TblScore)
+等同于 左外连
+select 
+	t1.tsid,
+	t1.tsname,
+	t1.tsage
+from TblStudent as t1
+left join TblScore as t2 on t1.tsid=t2.tsid
+where t2.tscoreId is null
+
+等同于 右外连
+
+select 
+	t1.*,
+	t2.*
+from TblScore as t2
+right join TblStudent as t1 on t1.tsid=t2.tsid
+where t2.tscoreId is null
+
+注意：当使用连接查询的时候，如果同时要指定查询的条件，一定要使用where语句，不要直接在on条件后面跟and来编写其他查询条件
+
+--自连接
+
+
+查询所有英语及格的学生姓名，年龄及成绩
+
+select 
+	t1.tsname,
+	t1.tsage,
+	t2.tEnglish,
+from TblStudent as t1
+inner join TblScore as t2 on t1.tsid=t2.tsid
+where t2.tEnglish>=60

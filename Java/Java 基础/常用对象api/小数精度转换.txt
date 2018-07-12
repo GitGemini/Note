@@ -1,0 +1,17 @@
+有两种情况：
+1、只要输出结果的时候可以用以下方法：
+double x1 = 0.026;
+System.out.println(String.format("%.2f", x1));
+结果：0.03
+2、使用数据转换（4种方法）
+//方案一:
+get_double = (double)(Math.round(result_value*100)/100.0)
+//方案二:
+DecimalFormat df = new DecimalFormat("#.##");
+get_double = Double.ParseDouble(df.format(result_value));
+//方案三:
+get_double = Double.ParseDouble(String.format("%.2f",result_value));
+//方案四:
+BigDecimal bd = new BigDecimalresult_value();
+BigDecimal bd2 = bd.setScale(2,BigDecimal .ROUND_HALF_UP);
+get_double = Double.ParseDouble(bd2.ToString())

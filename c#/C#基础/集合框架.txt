@@ -1,0 +1,66 @@
+ C#开发经常用到.NET框架为我们提供的集合接口和集合类，接下来做一个总结，如有差错，希望各位大神指正。
+
+      首先是集合接口，自己画了一张图（嘿嘿，有点丑），来说明集合接口的继承关系。
+
+
+
+       个人觉得，了解集合接口，首先要把握他们的继承关系。如上图，所有的集合接口和集合类都继承/实现IEnumerable接口。IEnumerable只有一个方法GetEnumerator。签名如下：
+
+IEnumerator GetEnumerator()
+
+        这个方法返回值类型为IEnumerator，正是IEnumerator 接口定义了集合遍历的基本方法，使得我们可以通过遍历来访问集合中的元素。
+
+public interface IEnumerator
+
+{
+
+    bool MoveNext();
+
+    object Current {  get; }
+
+    void Reset();
+
+}
+
+MoveNext方法是将游标移动到下一个位置，Current
+属性表示当前项，Reset方法是将游标重置到第一个项的位置。
+
+其他的各个接口都提供了各种方法，这些都可以直接在开发工具上查看，暂时略过。接下来说说集合类。
+
+集合类是在实现集合接口的基础上，做进一步的扩展。分为非泛型集合类、泛型集合类、线程安全集合类。
+
+非泛型集合类:
+
+1:ArrayList,ArrayList是可变长度的数组，它的出现就是为了弥补数组的长度是固定的这个缺陷。但他也带来了另一个问题，ArrayList可以存储任意类型的数据，所以它也存在装箱拆箱所带来的性能问题。所以，后来.NET2.0以后，就用List<T>取代ArrayList 
+
+2:HashTable 键值对存取，Key不能重复。通过Key来查找Value时，速度非常快，但是存取时也存在装箱拆箱操作。所以后来就被Dictionary<TKey,TValue>所取代。
+
+3:Stack 先进后出，个人一直觉得 栈是一个非常伟大的发明。
+
+4:Queue 先进先出。
+
+泛型集合类：
+
+1:List<T> 可变长度，并且是有序的。所以如果在其尾部增加或删除数据，那速度比较快。如果在其头部或中间增加或删除数据，那速度比较慢，因为还要重新排序。
+
+2:LinkedList<T> 它是一个双向链表，这也是为了弥补List<T>的缺陷而出现的。不管在什么位置删除数据，速度都很快。
+
+3:HashSet<T> 它是无序的，不允许通过下标访问。当对两个集合进行差集、并集运算的时候，它的性能非常好。
+
+4:SortedSet<T>它是有序的，与HashSet<T>对应。它可以通过Key来索引，也可以通过下标来索引。但是他的性能比HashTable差。
+
+5:Stack<T> 先进后出
+
+6:Queue<T> 先进先出
+
+7:Dictionary<TKey, TValue> 它是对HashTable的优化，不必进行装箱拆箱操作。多线程情况下推荐使用HashTable,因为Dictionary<TKey, TValue>是非线程安全的，在多线程情况下，要进行lock锁定，这时效率就比较差了。
+
+线程安全集合类   一般情况下，非线程安全的集合类，可以通过加上lock来锁定。.NET提供了线程安全集合类
+
+1:ConcurrentDictionary  线程安全的Dictionary
+
+2:ConcurrentQueue    线程安全版本的Queue
+
+3:ConcurrentStack    线程安全版本的Stack
+
+4:ConcurrentBag      线程安全版本的List

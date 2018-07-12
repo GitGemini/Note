@@ -1,0 +1,14 @@
+HttpPostedFile file = context.Request.Files["imgFile"];
+            if(file==null)
+            {
+                context.Response.End();
+            }
+
+            //为图片加上水印
+            Image image = Image.FromStream(file.InputStream);
+            Graphics graphics = Graphics.FromImage(image);
+            string str = "shit";
+            graphics.DrawString(str, new Font("华文行楷", 24), new SolidBrush(Color.Red), new Point(image.Width-(24*str.Length),image.Height-24));
+            string path = "/UpLoad/" +"_upload_"+ file.FileName;
+            image.Save(context.Request.MapPath(path),ImageFormat.Jpeg);
+            context.Response.Write(string.Format("<html><head></head><body><img src='{0}'/></body></html>", path));

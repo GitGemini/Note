@@ -1,0 +1,29 @@
+存储引擎就是表的管理方式，表的数据结构
+
+不同的存储引擎所具有的性能和功能是不一样的
+
+默认的服务器表类型通过 my.ini配置
+mysql 默认的类型 是INNODB
+default-storage-engine=INNODB
+
+在创建表或者编辑表时可以指定表的存储引擎
+利用表属性 
+常用的两个引擎
+
+engine INNODB
+engine myisam
+
+区别：
+保存文件的方式不同
+innodb: .ibd 结构文件
+所有的innodb表都使用相同的文件来保存数据和索引
+
+
+myisam：.sdi 结构文件
+		.myd 数据文件
+		.myi 索引
+			
+
+选择依据：
+	1.性能
+	2.功能

@@ -1,0 +1,25 @@
+/* 打印流   需要将数据原样写入时，用打印流最方便
+ * 	OutputStream
+ * 		l--FilterOutputStream
+ * 			l--PrintStream
+ * 	字节流:PrintStream
+ * 		PrintStream 为其他输出流添加了功能，使它们能够方便地打印各种数据值表示形式。它还提供其他两项功能。
+ * 		与其他输出流不同，PrintStream 永远不会抛出 IOException；而是，异常情况仅设置可通过 checkError 方法测试的内部标志。
+ * 		PrintStream 打印的所有字符都使用平台的默认字符编码转换为字节。在需要写入字符而不是写入字节的情况下，应该使用 PrintWriter 类
+ * 		
+ * 		1、提供了多种打印方法，对各种数据进行打印
+ * 		2、不抛出IOException
+ * 
+ * 		构造函数：接收三种类型的值  可指定编码，可指定是否自动刷新
+ * 			1、File对象
+ * 			2、字符串路径
+ * 			3、字节输出流 
+ * 	Writer
+ * 		l--PrintWriter
+ * 	字符流:PrintWriter 与PrintStream 一样 可指定编码，可指定是否自动刷新
+ *  	构造函数:
+ *  		1、File对象
+ * 			2、字符串路径
+ * 			3、字节输出流 
+ * 			4、字符输出流
+ * */

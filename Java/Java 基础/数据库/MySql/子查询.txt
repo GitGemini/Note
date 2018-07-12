@@ -1,0 +1,54 @@
+子查询
+子查询需要用括号括起来
+
+子查询分类：
+	根据返回值分类:
+		标量子查询：返回一个值
+			使用<,>,<>,=,!=进行判断
+			1.代课天数最多的老师的姓名
+			select t_name 
+			from teacher_class
+			where days=(select max(days) 
+			from teacher_class);
+		列子查询:	 返回一列数据
+			获得一列
+			in,not in,any(任何一个),all(所有),some(一些)
+			=any() 等同于 in
+			!=any()  不等于任何一个就行，只要集合中的数据大于一个，基本上是就是检索所有的数据
+			<>all(集合) 等同于 not in
+			some==any
+			获得带过0228班的老师的所有带班信息
+			select * from teacher_class
+			where t_name in (select t_name 
+			from teacher where class_name='0228');
+		行子查询:    返回一条记录
+			通过一整行进行判断，需要使用()构造出一行
+			eg:
+			查询所有带过0115班的和李白老师性别一样的所有老师
+			select t_name,gender,c_name 
+			from teacher_class
+			where (gender,c_name)= 
+			(select distinct gender,c_name 
+			from teacher_class
+			where t_name='李白' and c_name='0115')
+		表子查询:	 返回一张表
+			但是select返回的是一个结果集而不是一张表，
+			所以要构造一张表，即给结果集取别名 as
+			select * from 
+			(select t_name,c_name,days 
+			from teacher_class 
+			where days>20) as temp where t_name like '李%';
+	根据位置分类:
+		where子查询:
+		
+			exists子查询: 一个布尔表达式
+			判断依据:
+				如果子查询可以返回数据，则认为exists返回真，否则返回假
+				查询所有选择了计算机课程的学生信息
+				select * from student where exists(select stu_id from course where student.id=course.stu_id and c_name='计算机')
+			
+		from子查询
+			select * from 
+			(select t_name,c_name,days 
+			from teacher_class 
+			where days>20) as temp where t_name like '李%';

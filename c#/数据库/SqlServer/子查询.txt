@@ -1,0 +1,31 @@
+独立子查询：子查询可以独立运行
+
+相关子查询：子查询中引用了父查询中结果,父查询中也引用了子查询
+
+in，exists，not in，not exists
+
+ 
+--查询高二二班的所有学生
+--独立子查询
+select * from TblStudents where TClassId=(select TClassId from TblClass where TClassName='高二二班')
+
+--相关子查询
+select * from TblStudents as ts where exists(select * from TblClass as tc where ts.TClassId = tc.TClassId and TClassName='高二二班')
+
+
+--分页查询，要先排序
+---用top实现分页
+--每页显示7条数据
+--第一页
+select top 7 * from Customers order by CustomerID asc
+
+第二页
+select top 7 * from Customers where CustomerID
+ not in
+（select top(7*(2-1)) * from Customers order  by CustomerId asc）
+order by CustomerID asc
+
+---使用row——number()实现分页
+--第七页数据
+--1.为数据排序编号,可以使用over决定降序或者升序
+select * ，Rn=row_number() over(order by CustomerID asc) from Customers from Customers as t where t.Rn between (8-1)*7+1 and 8*7

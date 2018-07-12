@@ -1,0 +1,47 @@
+约束(列属性)
+
+1.关联，外键 Reference foreign key
+	一般不要用外键，有的存储引擎不支持外键
+	drop table if exists tb;
+	create table tb
+	(	
+		class_id int primary key auto_increment,
+		class_name vvarchar(30) not null default 'nit' comment '班级名称'
+	);
+
+	create table tb2
+	(
+		stu_id  int primary key auto_increment,
+		class_id int,
+		constraint tb2_tb_class_id foreign key (class_id) references tb (class_id)
+	);
+2.auto_increment 自增约束
+	每次插入记录时，将某个字段的值自动增加1
+	必须是整型
+	需要建立在索引之上，主键默认作为索引
+	插入数据时可以选择插入null或者不插入
+	
+	自己设置 alter table tb auto_increment 10; 
+3.default value 默认约束 只有没有值时才会使用默认值
+
+4.not null 非空约束
+
+
+5.primary key 主键约束  
+	一个良好的主键，自身能够保证不重复，
+	虽然主键可以是真实实体的一个属性，
+	但是一般情况下，主键是不属于这个实体的任何一个属性
+	
+	联合主键
+	在创建表的最后用
+	primary key (name,id)，
+	表示使用name和id做联合主键
+	一个主键包含了两个字段
+	主键只能有一个
+	
+6.unique key 唯一索引 当一个字段在这个表里是唯一的，
+
+
+7.Comment  列注释
+
+	为字段增加注释

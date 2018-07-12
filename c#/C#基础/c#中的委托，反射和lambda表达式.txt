@@ -1,0 +1,328 @@
+/*
+ * 由SharpDevelop创建。
+ * 用户： penghao
+ * 日期: 2017/1/26
+ * 时间: 13:45
+ * 
+ * 要改变这种模板请点击 工具|选项|代码编写|编辑标准头文件
+ */
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace 委托事件反射
+{
+	//自定义委托
+	public delegate void MyDelegate();
+	public delegate void MyDelegate1(string s);
+	public delegate int MyDelegate2(int x,int y,int z);
+	public delegate int AddDelegate(params int[] arr);
+	public delegate void MyGenericDelegate<T>(T args);
+	class Program
+	{
+		public static void Main(string[] args)
+		{
+			#region 正则表达式中的委托
+//			while(true)
+//			{
+//				Console.WriteLine("请输入一个邮箱：");
+//				string str = Console.ReadLine();
+//				str = Regex.Replace(str,@"([-a-zA-Z0-9_\.]+)(@([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+)",ReplaceMethod);
+//				Console.WriteLine(str);	
+//			}
+			#endregion
+
+			#region 匿名方法
+			//匿名方法只在某个地方用一次（现在经常用Lam表达式来代替匿名方法）
+			//匿名方法不能直接在类中定义，而是在给委托变量赋值的时候，需要赋值一个方法，此时可以定义一个匿名方法来赋值给委托
+//			MyDelegate md = delegate()     //无返回值无参数的匿名方法
+//			{
+//				Console.WriteLine("无返回值无参数的委托");
+//			};
+//			md();
+//			Console.ReadKey();
+			//有参数无返回值的匿名方法
+//			MyDelegate1 md1 = delegate(string msg)
+//			{
+//				Console.WriteLine(msg);
+//			};
+//			md1("hehe");
+//			Console.ReadKey();
+			//有参数有返回值的匿名方法
+//			MyDelegate2 md2 = delegate(int x,int y,int z)
+//			{
+//				return x+y+z;
+//			};
+//			int sum = md2(3,4,5);
+//			Console.WriteLine(sum);
+//	     	Console.ReadKey();  
+//			
+			#endregion
+			
+			#region Lambda表达式 不需要传数据类型
+			//用lambda表达式代替无参无返回值的方法
+//			MyDelegate md = () =>{Console.WriteLine("无参无返回值的lambda表达式");};
+//			md();
+//			Console.ReadKey();
+			
+			//有参数无返回值的lambda表达式
+//			MyDelegate1 md1 = s =>{Console.WriteLine(s);};
+//			md1("有参无返回值的lambda表达式");
+//			Console.ReadKey();
+			//有参数有返回值的lambda表达式
+//			MyDelegate2 md2 = (x,y,z) =>{return x+y+z;};
+//			Console.WriteLine(md2(1,2,3));
+//			Console.ReadKey();
+			//带返回值的可变参数的lambda表达式
+			
+//			AddDelegate ad = (arr) =>
+//			{
+//				for (int i = 0; i < arr.Length; i++) 
+//				{
+//					Console.WriteLine(arr[i]);
+//				}
+//				return arr.Sum();
+//			};
+//			int x = ad(1,2,3,4,5);
+//			Console.WriteLine(x);
+//			Console.ReadKey();
+			#endregion
+	       
+			#region 泛型委托和系统提供的委托（大多数情况下不需要自己写委托）
+			//Action委托无参无返回值的委托
+			//Action<T>有参无返回值的委托
+			//Func<T，TResult>有参有返回值的委托
+			
+			//1、需要保存一个无参数无返回值的方法
+//			Action action1 = new Action(M1);
+//			action1.Invoke();//<==>action1();
+//			Console.ReadKey(); 
+			
+			//泛型委托
+//			MyGenericDelegate<string> myGenericDelegate = new MyGenericDelegate<string>(M1);
+//			myGenericDelegate("aaaaa");
+//			Console.ReadKey();
+			//系统自带的泛型委托
+//			Action<string> action1 = m => {Console.WriteLine(m);};
+//			action1("ko");
+//			Action<int,int>action2 = (x,y) => {Console.WriteLine(x+y);};
+//			action2(3,4);
+			
+//			Func<int,int,int,int> func = (x,y,z) =>{return x+y+z;};
+//			Console.WriteLine(func(1,2,3));
+//			Console.ReadKey();
+//			Func<int> func = () =>{return 100;};
+//			Console.WriteLine(func());
+//			Console.ReadKey();
+			#endregion
+			
+		
+		
+			#region 泛型委托与Lambda表达式
+//			List<int> list = new List<int>(){1,5,9,12,4,24,15};
+//			//IEnumerable<int> ie = list.Where(Condition);
+//			IEnumerable<int> ie = list.Where(x =>{return x>6;});
+//			IEnumerable<int> ie2 = list.SkipWhile(x =>{return x>6;});
+//			foreach (var element in ie) 
+//			{
+//				Console.WriteLine(element);
+//			}
+//			
+//			Console.WriteLine("=============");
+//			foreach (var element in ie2)
+//			{
+//				Console.WriteLine(element);
+//			}
+//			Console.ReadKey();
+			#endregion
+			
+			#region 多播委托（委托链或委托组合）
+//			Action<string> action = WeiTuoMuti1;
+//			action += WeiTuoMuti2;
+//			action += WeiTuoMuti3;
+//			action += WeiTuoMuti4;
+//			action += WeiTuoMuti4;
+//			
+//			action("hehheh");
+//			Console.WriteLine("==============");
+//			
+//			action -= WeiTuoMuti3;
+//			action("hehheh");
+//			MyDelegate md = new MyDelegate(M1);
+//			md = (MyDelegate)Delegate.Combine(md,new MyDelegate(M2),new MyDelegate(M3));
+//			//md();
+//			Delegate[] delegates = md.GetInvocationList();
+//			for (int i = 0; i < delegates.Length; i++)
+//			{
+//				(delegates[i] as MyDelegate)();
+//			}
+//			Console.ReadKey();
+			
+			#endregion
+			
+			
+		}
+		static bool Condition(int x)
+		{
+			return x>6;
+		}
+		static string ReplaceMethod(Match match)
+		{
+			string uid = match.Groups[1].Value;
+			string others = match.Groups[2].Value;
+			
+			StringBuilder sb = new StringBuilder();
+			
+			for (int i = 0; i < uid.Length; i++)
+			{
+				sb.Append("*");
+			}
+			Console.WriteLine(sb.ToString());
+			return sb.ToString()+others;
+		}
+		static void M1()
+		{
+			Console.WriteLine("Hehheehehhehe");
+		}
+		static void M2()
+		{
+			Console.WriteLine("Hehheehehhehe");
+		}
+		static void M3()
+		{
+			Console.WriteLine("Hehheehehhehe");
+		}
+		static void M4()
+		{
+			Console.WriteLine("Hehheehehhehe");
+		}
+		static void M1(string s)
+		{
+			Console.WriteLine(s);
+		}
+		
+		static void WeiTuoMuti1(string msg)
+		{
+			Console.WriteLine(msg);
+		}
+		static void WeiTuoMuti2(string msg)
+		{
+			Console.WriteLine(msg);
+		}
+		static void WeiTuoMuti3(string msg)
+		{
+			Console.WriteLine(msg+"3");
+		}
+		static void WeiTuoMuti4(string msg)
+		{
+			Console.WriteLine(msg);
+		}
+		static void WeiTuoMuti5(string msg)
+		{
+			Console.WriteLine(msg);
+		}
+	}
+}
+
+
+
+
+#region 反射复习
+			//1、加载程序集
+//			Assembly assem = Assembly.LoadFile(@"F:\code\c#\反射复习\反射复习\Dll文件\_07TestDll.dll");
+			
+			//2、获取类型
+			//获取所有类型assem.GetTypes();
+			//获取所有的public类型assem.GetExportedTypes();
+			//获取指定的类型Person
+//			Type typePerson = assem.GetType("_07TestDll.Person");
+			
+			//3、获取类型中的成员
+			//typePerson.GetMembers();获取所有成员
+//			typePerson.GetMethods();//获取所有方法
+//			typePerson.GetProperties();//获取所有属性
+//			typePerson.GetFields();//获取所有字段
+//			typePerson.GetEvents();//获取所有事件
+//			typePerson.GetConstructors();//获取所有构造函数
+			
+//			MemberInfo[] meminfo = typePerson.GetMembers();
+//			for (int i = 0; i < meminfo.Length; i++) {
+//				Console.WriteLine(meminfo[i].Name);
+//			}
+			
+			//4、调用构造函数创建对象
+			//调用无参构造函数 Activator.CreateInstance(typePerson)
+//			object obj = Activator.CreateInstance(typePerson);
+//			//运行方法
+//			MethodInfo methodSayHi = typePerson.GetMethod("SayHi");
+//			methodSayHi.Invoke(obj,null);
+			#endregion
+			
+			//Type类的其他方法
+			Type typePerson = typeof(Person);
+			Type typeStudent = typeof(Student);
+			Type typeTeacher = typeof(Teacher);
+			
+			#region IsAssignableFrom()方法 检查某个对象是否是某个类型或者接口实例的子类
+			//表示能否将typeStudent类型的对象赋值给typePerson
+//			bool b = typePerson.IsAssignableFrom(typeStudent);
+//			Console.WriteLine(b);
+//			bool b1 = typePerson.IsAssignableFrom(typeTeacher);
+//			Console.WriteLine(b1);
+//			bool b2 = typeStudent.IsAssignableFrom(typePerson);
+//			Console.WriteLine(b2);
+//			bool b3 = typeStudent.IsAssignableFrom(typeTeacher);
+//			Console.WriteLine(b3);
+			#endregion
+			
+			#region IsInstanceOfType()方法 检查某个对象是否是某个类型
+//			object obj1 = Activator.CreateInstance(typePerson);
+//			object obj2 = Activator.CreateInstance(typeStudent);
+//			object obj3 = Activator.CreateInstance(typeTeacher);
+//			
+//			Console.WriteLine(typePerson.IsInstanceOfType(obj1));
+//			Console.WriteLine(typePerson.IsInstanceOfType(obj2));
+//			Console.WriteLine(typePerson.IsInstanceOfType(obj3));
+			#endregion
+			
+			#region IsSubclassOf()方法,检查某个对象是否是从某个类派生的,与接口无关
+//			Console.WriteLine(typePerson.IsSubclassOf(typeTeacher));
+//			Console.WriteLine(typeStudent.IsSubclassOf(typePerson));
+//			Console.WriteLine(typeStudent.IsSubclassOf(typeTeacher));
+			#endregion
+			
+			#region IsAbstract() 判断某个类或接口是否是抽象的（静态类和接口都是抽象的）
+//			Console.WriteLine(typePerson.IsAbstract);
+//			Console.WriteLine(typeof(IFace).IsAbstract);
+			#endregion
+			Console.ReadKey(true);
+			
+		}
+	}
+	
+	public class Person
+	{
+		public string Name{set;get;}
+		public int Age{set;get;}
+		public string Email{set;get;}
+		
+		
+	}
+	
+	public class Student:Person,IFace
+	{
+		
+	}
+	
+	public class Teacher:Person,IFace
+	{
+		 
+	}
+	
+	public interface IFace
+	{
+		
+	}
+}

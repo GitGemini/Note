@@ -1,0 +1,21 @@
+1、插入
+	insert into tbl_name(列1，列2) values('','');//自增字段用null表示
+	
+	为所有的字段都插入值，可以省略字段列表，
+	但要求所有的值得顺序与字段列表的顺序一致，自增的字段可以设置为null
+2、查询
+	select 列1，列2 from tbl_name;//查询所有记录的列1和列2
+	
+	select * from tbl_name; //查询所有记录
+	
+	条件查询
+	//<>表示不等于，=表示等于
+	select * from tbl_name where 1<>1;  
+	select * from tbl_name where 列1=*** and 列2=****; 
+
+3、删除数据
+	
+	delete from tbl_name where .....
+	
+4、修改
+	update tbl_name set 列1=***,列2=*** where ......

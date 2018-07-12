@@ -1,0 +1,32 @@
+/**
+ * Collection:
+ * 	l--List :有序 存入和取出的顺序一致，元素都有索引,允许元素重复
+ *  l--Set  :不允许重复的元素，无序
+ *  
+ *  二者都具有Collection接口的方法，下面说一下二者的特有方法
+ *  
+ *  List常见方法：
+ *  1、添加
+ *  	boolean add(E e) 向列表的尾部添加指定的元素（可选操作）。 
+ *		void add(int index, E element) 在列表的指定位置插入指定元素（可选操作）。 
+ *		boolean addAll(Collection<? extends E> c)  添加指定 collection 中的所有元素到此列表的结尾，顺序是指定 collection 的迭代器返回这些元素的顺序（可选操作）。 
+ *		boolean addAll(int index, Collection<? extends E> c) 将指定 collection 中的所有元素都插入到列表中的指定位置（可选操作）。 
+ *		
+ *	2、删除
+ *  	 E remove(int index) 移除列表中指定位置的元素（可选操作）。  返回删除的元素
+ *  
+ *  3、修改
+ *  	 E set(int index, E element)  用指定元素替换列表中指定位置的元素（可选操作）。  返回被替换的元素
+ *  
+ *  4、获取
+ *  	 E get(int index) 返回列表中指定位置的元素。 
+ * 		 int indexOf(Object o) 返回此列表中第一次出现的指定元素的索引；如果此列表不包含该元素，则返回 -1。 	
+ *       int lastIndexOf(Object o) 返回此列表中最后出现的指定元素的索引；如果列表不包含此元素，则返回 -1。 
+ *       List<E> subList(int fromIndex, int toIndex) 返回列表中指定的 fromIndex（包括 ）和 toIndex（不包括）之间的部分视图。 
+ *       
+ *  5、遍历
+ *  	 Iterator<E> iterator() 返回按适当顺序在列表的元素上进行迭代的迭代器。 不能再迭代的时候修改原集合
+ *  	 
+ *  	 ListIterator 可以再迭代的时候修改原集合
+ *  	 ListIterator<E> listIterator() 返回此列表元素的列表迭代器（按适当顺序）。 
+ *		 ListIterator<E> listIterator(int index) 返回列表中元素的列表迭代器（按适当顺序），从列表的指定位置开始。 

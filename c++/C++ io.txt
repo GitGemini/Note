@@ -1,0 +1,297 @@
+﻿　　前两节介绍了C++的IO流类库，标准设备IO操作流中部分预定义流对象的成员函数以及IO格式控制。那今天我将继续介绍关于C++中的流操作内容——文件IO操作流fstream。并会着重讲解C++是如何对文件进行操作的。
+
+　　文件指存放在外部介质上的数据的集合。大家都知道操作系统是以文件为单位来对数据进行管理的。因此如果你要查找外部介质的数据，则先要按文件名找到指定文件，然后再从文件中读取数据，如果要把数据存入外部介质中，如果没有该文件，则先要建立文件，再向它输入数据。由于文件的内容千变万化，大小各不相同，为了统一处理，在C++中用文件流的形式来处理，文件流是以外存文件为输入输出对象的数据流。输出文件流表示从内存流向外存文件的数据，输入文件流则相反。根据文件中数据的组织形式，文件可分为两类：文本文件和二进制文件。文本文件又称为ASCII文件，它的每个字节存放一个ASCII码，代表一个字符。二进制文件则是把内存中的数据，按照其在内存中的存储形式原样写在磁盘上存放。比如一个整数20000，在内存中在两个字节，而按文本形式输出则占5个字节。因此在以文本形式输出时，一个字节对应一个字符，因而便于字符的输出，缺点则是占用存储空间较多。用二进制形式输出数据，节省了转化时间和存储空间，但不能直接以字符的形式输出。
+
+　　1.在C++中对文件进行操作分为以下几个步骤：(1)建立文件流对象;(2)打开或建立文件;(3)进行读写操作;(4)关闭文件;用于文件IO操作的流类主要有三个fstream(输入输出文件流),ifstream(输入文件流)和ofstream(输出文件流)；而这三个类都包含在头文件fstream中，所以程序中对文件进行操作必须包含该头文件。首先建立流对象，然后使用文件流类的成员函数open打开文件，即把文件流对象和指定的磁盘文件建立关联。成员函数open的一般形式为:
+
+　　文件流对象.open(文件名,使用方式);
+
+其中文件名可以包括路径(如：e:\c++\file.txt)，如果缺少路径，则默认为当前目录。使用方式则是指文件将被如何打开。以下就是文件的部分使用方式，都是ios基类中的枚举类型的值：
+
+
+
+此外打开方式有几个注意点：
+
+(1)因为nocreate和noreplace，与系统平台相关密切，所以在C++标准中去掉了对它的支持。
+
+(2)每一个打开的文件都有一个文件指针，指针的开始位置由打开方式指定，每次读写都从文件指针的当前位置开始。每读一个字节，指针就后移一个字节。当文件指针移到最后，会遇到文件结束符EOF，此时流对象的成员函数eof的值为非0值，表示文件结束。
+
+(3)用in方式打开文件只能用于输入数据，而且该文件必须已经存在。
+
+(4)用app方式打开文件，此时文件必须存在，打开时文件指针处于末尾，且该方式只能用于输出。
+
+(5)用ate方式打开一个已存在的文件，文件指针自动移到文件末尾，数据可以写入到其中。
+
+如果文件需要用两种或多种方式打开，则用"|"来分隔组合在一起。除了用open成员函数打开文件，还可以用文件流类的构造函数来打开文件，其参数和默认值与open函数完全相同。比如：文件流类 stream(文件名,使用方法)；如果文件打开操作失败，open函数的返回值为0，用构造函数打开的话，流对象的值为0。所以无论用哪一种方式打开文件，都需要在程序中测试文件是否成功打开。
+
+ 　　在每次对文件IO操作结束后，都需要把文件关闭，那么就需要用到文件流类的成员函数close，一般调用形式：流对象.close();关闭实际上就是文件流对象和磁盘文件失去关联。
+
+　　2.介绍完文件的打开和关闭，接下来说说文件的读写。我将分别从文本文件读写和二进制文件的读写来介绍。其实文件的读写是十分容易的。流类库中的IO操作<<、>>、put、get、getline、read和write都可以用于文件的输入输出。
+
+　　(1)文本文件的读写：
+
+写文件：
+
+复制代码
+ 1 #include "stdafx.h"
+ 2 #include <iostream>
+ 3 #include <fstream>
+ 4 
+ 5 int main()
+ 6 {
+ 7 //打开文件
+ 8     std::ofstream file("file.txt",std::ios::out|std::ios::ate);
+ 9 if(!file)
+10     {
+11         std::cout<<"不可以打开文件"<<std::endl;
+12         exit(1);
+13     }
+14 
+15 //写文件
+16     file<<"hello c++!\n";
+17 
+18 char ch;
+19 while(std::cin.get(ch))
+20     {
+21 if(ch=='\n')
+22 break;
+23         file.put(ch);
+24     }
+25 
+26 //关闭文件
+27     file.close();
+28 
+29 return0;
+30 }
+复制代码
+键盘输入字符：
+
+
+
+读文件file.txt：
+
+复制代码
+ 1 #include "stdafx.h"
+ 2 #include <iostream>
+ 3 #include <fstream>
+ 4 
+ 5 int main()
+ 6 {
+ 7 //打开文件
+ 8     std::ifstream rfile("file.txt",std::ios::in);
+ 9 if(!rfile)
+10     {
+11         std::cout<<"不可以打开文件"<<std::endl;
+12         exit(1);
+13     }
+14 
+15 //读文件
+16 char str[100];
+17     rfile.getline(str,100);//读到'\n'终止
+18     std::cout<<str<<std::endl;
+19 
+20 char rch;
+21 while(rfile.get(rch))//文件指针指向字符‘\n’的下一个
+22     {
+23         std::cout.put(rch);
+24     }
+25 
+26     std::cout<<std::endl;
+27 
+28 //关闭文件
+29     rfile.close();
+30 
+31 return0;
+32 }
+复制代码
+读出显示字符：
+
+
+
+其实建立ifstream类和ofstream类的对象时，ios:in和ios:out可以省略，因为ifstream类默认为ios:in，ofstream类默认为ios:out；
+
+　　(2)最初设计流的目的是用于文本，因此在默认情况下，文件用文本方式打开。在以文本模式输出时，若遇到换行符"\n"(十进制为10)则自动扩充为回车换行符(十进制为13和10)。所以，如果我们输入的整数10，那么在文件输出时会转化为13和10，然而这并不是我们所需要的。为了解决这样的问题，就要采用而二进制模式，使其所写的字符不转换。在对二进制文件进行IO操作时，打开文件时要指定方式ios::binary，即以二进制形式传送和存储。接下来我用read函数和write函数来对二进制文件进行读写。在示例描述之前先简单介绍一下这两个函数：
+
+　　read函数常用格式为：文件流对象.read(char *buf,int len);
+
+　　write函数常用格式为：文件流对象.write(const char *buf,int len);
+
+两者格式上差不多，第一个参数是一个字符指针，用于指向读入读出数据所放的内存空间的其实地址。第二个参数是一个整数，表示要读入读出的数据的字节数。以下是二进制文件的读写的示例：
+
+定义一个精灵类(用于文件数据处理)：
+
+复制代码
+ 1 class Sprite
+ 2 {
+ 3 private:
+ 4         std::string profession;//职业
+ 5         std::string weapon;//武器
+ 6 staticint count;//个数
+ 7 public:
+ 8         Sprite(){}
+ 9         Sprite(std::string profession,std::string weapon):profession(profession),weapon(weapon)
+10         {
+11         }
+12 void showSprite();//显示精灵信息
+13 };
+14 
+15 int Sprite::count=0;
+16 
+17 void Sprite::showSprite()
+18 {
+19 ++count;
+20     std::cout<<"精灵"<<count<<" 职业:"<<profession<<" 武器:"<<weapon<<std::endl;
+21 }
+复制代码
+写文件：
+
+复制代码
+ 1 #include "stdafx.h"
+ 2 #include <iostream>
+ 3 #include <fstream>
+ 4 #include <string>
+ 5 
+ 6 int main()
+ 7 {
+ 8 //建立对象数组
+ 9     Sprite sprites[3]={
+10         Sprite("法师","魔杖"),
+11         Sprite("战士","屠龙宝刀"),
+12         Sprite("道士","倚天剑")
+13     };
+14 
+15 //打开文件
+16     std::ofstream file("file.dat",std::ios::ate|std::ios::binary);
+17 if(!file)
+18     {
+19         std::cout<<"文件打开失败!";
+20         abort();//等同于exit
+21     }
+22 
+23 //写文件
+24 for(int i=0;i<3;i++)
+25         file.write((char*) &sprites[i],sizeof(sprites[i]));
+26 
+27 //关闭文件
+28     file.close();
+29 
+30 return0;
+31 }
+复制代码
+读文件file.dat：
+
+复制代码
+ 1 #include "stdafx.h"
+ 2 #include <iostream>
+ 3 #include <fstream>
+ 4 #include <string>
+ 5 
+ 6 int main()
+ 7 {
+ 8 //建立对象数组
+ 9     Sprite rsprites[3];
+10 
+11 //打开文件
+12     std::ifstream rfile("file.dat",std::ios::binary);
+13 if(!rfile)
+14     {
+15         std::cout<<"文件打开失败!";
+16 return1;//等同于exit
+17     }
+18 
+19 //读文件
+20 for(int i=0;i<3;i++)
+21     {
+22         rfile.read((char*) &rsprites[i],sizeof(rsprites[i]));
+23         rsprites[i].showSprite();
+24     }
+25 
+26 //关闭文件
+27     rfile.close();
+28 
+29 return0;
+30 }
+复制代码
+读出显示字符：
+
+
+
+在read函数还是write函数里都要把数据转化为char*类型，代码中sizeof函数是用于确定要读入读出的字节数。
+
+　　在文件结束处有个标志位EOF，在用文件流读取文件时，使用成员函数eof()（函数原型：int eof()）可以检测到结束符。如果该函数返回值为非零，则表示到达文件末尾。返回零则表示未达到文件末尾。
+
+　　(3)前面所介绍的文件都是按顺序来读取的的，C++中又提供了针对于文件读写指针的相关成员函数，使得我们可以在IO流中随意移动文件指针，从而对文件的进行随机地读写。类istream针对读指针提供3个成员函数：
+
+　　tellg()//返回输入文件读指针的当前位置；
+
+　　seekg(文件中的位置)//将输入文件中的读指针移动到指定位置
+
+　　seekg(位移量,参照位置)//以参照位置为基准移动若干字节
+
+其中参照位置是枚举值：
+
+beg//从文件开头计算要移动的字节数
+
+cur//从文件指针的当前位置计算要移动的字节数
+
+end//从文件的末尾计算要移动的字节数
+
+如果参照位置省略，则默认为beg。而类ostream针对写指针提供的3个成员函数：
+
+　　tellp()//返回输出文件写指针的当前位置；
+
+　　seekp(文件中的位置)//将输出文件中的写指针移动到指定位置
+
+　　seekp(位移量,参照位置)//以参照位置为基准移动若干字节
+
+现在我对上一示例中读取二进制文件代码稍作更改：
+
+复制代码
+ 1 #include "stdafx.h"
+ 2 #include <iostream>
+ 3 #include <fstream>
+ 4 #include <string>
+ 5 
+ 6 int main()
+ 7 {
+ 8 //建立对象数组
+ 9     Sprite rsprites[3];
+10 
+11 //打开文件
+12     std::ifstream rfile("file.dat",std::ios::binary);
+13 if(!rfile)
+14     {
+15         std::cout<<"文件打开失败!";
+16 return1;//等同于exit
+17     }
+18 
+19 //读文件
+20 for(int i=0;i<3;i++)
+21     {
+22         rfile.read((char*) &rsprites[i],sizeof(rsprites[i]));
+23         rsprites[i].showSprite();
+24     }
+25 
+26     Sprite rsprite;//建立对象
+27 
+28     std::cout<<"改变读取顺序："<<std::endl;
+29     rfile.seekg(sizeof(Sprite)*2,std::ios::beg);//读取精灵道士信息
+30     rfile.read((char*) &rsprite,sizeof(Sprite));
+31     rsprite.showSprite();
+32     
+33     rfile.seekg(-int(sizeof(Sprite)*2),std::ios::end);//读取精灵战士信息
+34     rfile.read((char*) &rsprite,sizeof(Sprite));
+35     rsprite.showSprite();
+36 
+37     rfile.seekg(-int(sizeof(Sprite)*2),std::ios::cur);//读取精灵法师信息
+38     rfile.read((char*) &rsprite,sizeof(Sprite));
+39     rsprite.showSprite();
+40 
+41 //关闭文件
+42     rfile.close();
+43 
+44 return0;
+45 }
+复制代码
+结果：
+

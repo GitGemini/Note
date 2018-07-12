@@ -1,0 +1,57 @@
+/*Date 日期类
+ *  在 JDK 1.1 之前，类 Date 有两个其他的函数。它允许把日期解释为年、月、日、小时、分钟和秒值。它也允许格式化和解析日期字符串。不过这些函数的 API 不易于实现国际化。
+ *  应该使用 Calendar 类实现日期和时间字段之间转换，使用 DateFormat 类来格式化和解析日期字符串。Date 中的相应方法已废弃。
+ * 	在java中月份从0-11 表示 1-12
+ *  星期1-星期日 表示 2,3,4,5,6,7,1，国外星期日是这个星期的第一天，星期六是最后一天
+ *构造方法:
+ *  当前时间
+ *  new Date()  
+ *  毫秒值-》日期对象
+ *  new Date(long value) 将毫秒值转成日期对象
+ *  剩下的构造方法全部过时
+ *  
+ *其他方法   
+ *  日期对象->毫秒值
+ *  getTime()
+ *  boolean after(Date when)  测试此日期是否在指定日期之后。 
+ *	boolean before(Date when) 测试此日期是否在指定日期之前。 
+ * 	Object clone()  返回此对象的副本。 
+ *	int compareTo(Date anotherDate) 比较两个日期的顺序。 
+ *	boolean equals(Object obj) 比较两个日期的相等性 
+ *	String toString() 把此 Date 对象转换为以下形式的 String： dow mon dd hh:mm:ss zzz yyyy 其中： dow 是一周中的某一天 (Sun, Mon, Tue, Wed, Thu, Fri, Sat)。 
+ *  具体的设置/获取年月日方法  全部过时，被Calendar 类中的方法替代
+ *  
+ *  需要格式化日期字符串的显示形式用DateFormat类的方法
+ *  
+ *  Calendar类 Calendar  国际化的日历类 也是抽象类，使用getInstance获取实例对象
+ *  类 是一个抽象类，它为特定瞬间与一组诸如 YEAR、MONTH、DAY_OF_MONTH、HOUR 
+ *  等 日历字段之间的转换提供了一些方法，并为操作日历字段（例如获得下星期的日期）提供了一些方法
+ *  Calendar.getInstance(); 获取实例对象
+ *  get()   通过键获取值
+ *  set(int year,int month,int day) 设置年月日
+ *  add(Calendar.DAY_OF_MONTH, -1); 在当前日期上加减年月日时分秒
+ *  
+ *  
+ *  DateFormat 抽象类 
+ *  DateFormat 是日期/时间格式化子类的抽象类，它以与语言无关的方式格式化并解析日期或时间。
+ *  日期/时间格式化子类（如 SimpleDateFormat）允许进行格式化（也就是日期 -> 文本）、解析（文本-> 日期）和标准化。
+ *  获取实例  myString = DateFormat.getDateInstance().format(myDate);
+ *  DateFormat.getInstance();获取日期+时间格式对象
+ *  DateFormat.getDateInstance() 获取日期格式对象，具有默认的风格
+ *  DateFormat.getTimeInstance() 获取时间格式对象，具有默认的风格
+ *  DateFormat.getDateTimeInstance(); 更加全面的格式，具有默认的风格
+ *  
+ *  已定义好的分格 FULL，LONG，SHORT。。。。。
+ *  
+ *  自定义风格
+ *  SimpleDateFormat
+ *  var sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+ *  
+ *  日期格式字符串转成日期
+ *  先指定格式，在使用parse方法转义
+ *  
+ *  自定义
+ *  var sf2 = new SimpleDateFormat("yyyy#MM#dd hh#mm#ss");
+ *  String s1 = "2018#4#22 21#00#00";
+ *  sf2.parse(s1)
+ */

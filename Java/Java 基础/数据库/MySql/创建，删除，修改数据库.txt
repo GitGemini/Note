@@ -1,0 +1,26 @@
+1、创建数据库
+	CREATE DATABASE [if not exists] `MyDataBase` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+	
+	指定默认编码与排序规则 _ci不区分大小写
+	
+2、删除数据库
+	drop database [if exists] ***
+	
+3、更改数据库上下文环境 
+	use ***
+	
+4、显示本机上的所有数据库
+	show databases;
+	
+5、查看数据库的创建语句
+	show create database ***
+
+6、修改数据库
+	alter database db_name [修改指令]
+	
+	如
+	alter database db_name character set=gbk；
+	
+	数据库 名称修改
+	1、修改文件夹
+	2、备份，删除以前的，重新建立

@@ -1,0 +1,50 @@
+/* Udp协议
+ * 
+ * 	DatagramSocket
+ * 	此类表示用来发送和接收数据报包的套接字。
+ * 	数据报套接字是包投递服务的发送或接收点。每个在数据报套接字上发送或接收的包都是单独编址和路由的。从一台机器发送到另一台机器的多个包可能选择不同的路由，也可能按不同的顺序到达。 
+ * 
+ * 	1、构造函数:
+ * 		  DatagramSocket()  构造数据报套接字并将其绑定到本地主机上任何可用的端口。 
+ *		  protected  DatagramSocket(DatagramSocketImpl impl) 创建带有指定 DatagramSocketImpl 的未绑定数据报套接字。 
+ * 		  DatagramSocket(int port) 创建数据报套接字并将其绑定到本地主机上的指定端口。 
+ * 		  DatagramSocket(int port, InetAddress laddr)  创建数据报套接字，将其绑定到指定的本地地址。 
+ * 		  DatagramSocket(SocketAddress bindaddr) 创建数据报套接字，将其绑定到指定的本地套接字地址。 
+ *	
+ *	2、常用的实例方法
+ *		 void bind(SocketAddress addr)  将此 DatagramSocket 绑定到特定的地址和端口。 
+ *		 void close() 关闭此数据报套接字。 
+ *		 void connect(InetAddress address, int port) 将套接字连接到此套接字的远程地址。 
+ *		 void connect(SocketAddress addr) 将此套接字连接到远程套接字地址（IP 地址 + 端口号）。 
+ *		 void disconnect() 断开套接字的连接。 
+ *		 boolean isBound() 返回套接字的绑定状态。 
+ *		 boolean isClosed() 返回是否关闭了套接字。 
+ *		 boolean isConnected() 返回套接字的连接状态。 
+ *		 void receive(DatagramPacket p) 从此套接字接收数据报包。 
+ * 		 void send(DatagramPacket p) 从此套接字发送数据报包。 
+ *
+ *  DatagramPacket  数据包对象
+ *  	此类表示数据报包。 数据报包用来实现无连接包投递服务。每条报文仅根据该包中包含的信息从一台机器路由到另一台机器
+ *	 	
+ *		1、构造函数  带InetAddress是慵懒发送的
+ *			DatagramPacket(byte[] buf, int length) 构造 DatagramPacket，用来接收长度为 length 的数据包。 
+ *			DatagramPacket(byte[] buf, int length, InetAddress address, int port) 构造数据报包，用来将长度为 length 的包发送到指定主机上的指定端口号。 
+ *			DatagramPacket(byte[] buf, int offset, int length) 构造 DatagramPacket，用来接收长度为 length 的包，在缓冲区中指定了偏移量。 
+ *			DatagramPacket(byte[] buf, int offset, int length, InetAddress address, int port)  构造数据报包，用来将长度为 length 偏移量为 offset 的包发送到指定主机上的指定端口号。 
+ *			DatagramPacket(byte[] buf, int offset, int length, SocketAddress address) 构造数据报包，用来将长度为 length 偏移量为 offset 的包发送到指定主机上的指定端口号。 
+ *			DatagramPacket(byte[] buf, int length, SocketAddress address) 构造数据报包，用来将长度为 length 的包发送到指定主机上的指定端口号。 
+ *
+ *		2、实例方法
+ *			 InetAddress getAddress() 返回某台机器的 IP 地址，此数据报将要发往该机器或者是从该机器接收到的。 
+ *			 byte[] getData() 返回数据缓冲区。 
+ *			 int getLength()  返回将要发送或接收到的数据的长度。 
+ *			 int getOffset()  返回将要发送或接收到的数据的偏移量。 
+ *			 int getPort() 返回某台远程主机的端口号，此数据报将要发往该主机或者是从该主机接收到的。 
+ *			 SocketAddress getSocketAddress()  获取要将此包发送到的或发出此数据报的远程主机的 SocketAddress（通常为 IP 地址 + 端口号）。 
+ *			 void setAddress(InetAddress iaddr) 设置要将此数据报发往的那台机器的 IP 地址。 
+ *			 void setData(byte[] buf)  为此包设置数据缓冲区。 
+ *			 void setData(byte[] buf, int offset, int length) 为此包设置数据缓冲区。 
+ *			 void setLength(int length)  为此包设置长度。 
+ *			 void setPort(int iport) 设置要将此数据报发往的远程主机上的端口号。 
+ *			 void setSocketAddress(SocketAddress address) 设置要将此数据报发往的远程主机的 SocketAddress（通常为 IP 地址 + 端口号）。 
+ * */

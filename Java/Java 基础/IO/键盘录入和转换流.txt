@@ -1,0 +1,11 @@
+/*
+ * 从键盘录入数据 系统标准输入流
+ * System.in 这个流随系统开启而存在，系统关闭而消亡，不能关闭
+ * 
+ * 转换流  
+ *	OutputStreamWriter	 将字符转换成字节的桥梁	  
+ *  InputStreamReader   将字节转换成字符的桥梁
+ *  当需要把字符转成字节进行操作，需要用到转换流OutputStreamWriter
+ *  反之要使用InputStreamReader 	 
+ *
+ * */

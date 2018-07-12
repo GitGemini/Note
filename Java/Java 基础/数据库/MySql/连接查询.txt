@@ -1,0 +1,53 @@
+连接(联结)查询
+
+内连接 Inner join
+	连接的两张表的数据都存在，A∩B
+	tbl inner join tb2 on tb1.id=tb2.id
+	eg:
+	select t1.name,t2.date
+	from teacher as t1 
+	inner join class as t2
+	on t1.tid=t2.tid;
+	
+	mysql中 inner join 是默认的连接，可以省略inner
+	
+	mysql 中on 可以换成 where，得到的结果一样，但是含义不一样
+	on是连接的时候过滤无效连接，
+	where是先形成一个笛卡尔积，再过滤
+	using 要求负责连接的两个实体之间的字段名称一致
+	using(tid)<=> on t1.tid=t2.tid
+	
+	省略连接条件，就是交叉连接即笛卡尔积连接
+	无条件的inner join 等同于 cross join
+	也等同于select * from tb1,tb2
+	
+	
+外连接  outer join
+	左外连接 left (outer) join   A 
+	eg:
+	select t1.name,t2.date
+	from teacher as t1 
+	left outer join class as t2
+	on t1.tid=t2.tid;
+	
+	右外连接 right (outer) join  B
+	select t1.name,t2.date
+	from teacher as t1 
+	right outer join class as t2
+	on t1.tid=t2.tid;
+	
+	全外连接:mysql 暂不支持
+	
+自然连接:
+	通过mysql自己的判断完成连接过程，
+	不需要指定特定连接条件
+	mysql 会使用多表内的相同的字段，作为连接条件
+	
+	自然连接也有内外之分
+	内: natural join
+	外: 左外连接 natural left join
+		右外连接 natural right join
+	
+	select * from one natural join two;
+	select * from one natural left join two;
+	select * from one natural right join two;

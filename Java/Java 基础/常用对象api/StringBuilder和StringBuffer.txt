@@ -1,0 +1,32 @@
+/* StringBuffer 字符串缓冲区  一种特殊的容器，线程安全的，大部分都用synchronized修饰过
+ * 容器的特点：
+ * 1、长度是可变的
+ * 2、可以存储不同类型的数据
+ * 3、最终要转换成字符串进行使用
+ * 4、可以对字符串进行修改
+ * 
+ * 功能:
+ * 1、添加
+ * 		StringBuffer append(data)
+ * 		StringBuffer insert(data)
+ * 2、删除
+ * 		StringBuffer delete(int start, int end); [start,end) 包头不包尾
+ * 		StringBuffer deleteCharAt(int index)  删除指定位置的元素
+ * 		delete(0,sb.length())  清空
+ * 3、查找
+ * 		charAt(index)
+ * 		indexOf(str)
+ * 		lastIndexOf(str)
+ * 4、修改
+ * 		StringBuffer replace(int start, int end, String str) 使用给定 String 中的字符替换此序列的子字符串中的字符。 
+ * 		void setCharAt(int index, char ch) 将给定索引处的字符设置为 ch。
+ * 		void setLength(int newLength)
+ *      StringBuffer reverse() 将此字符序列用其反转形式取代。 
+ *      其他的substring 跟字符串一样
+ *      
+ *  StringBuilder 是StringBuffer的兼容Api 不是线程安全的，方法不用synchronized 修饰
+ *  不保证同步。该类被设计用作 StringBuffer 的一个简易替换，用在字符串缓冲区被单个线程使用的时候（这种情况很普遍）
+ *  如果可能，建议优先采用该类，因为在大多数实现中，它比 StringBuffer 要快。
+ *  
+ * 		
+ */

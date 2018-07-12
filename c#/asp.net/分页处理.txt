@@ -1,0 +1,78 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Common
+{
+    public class DividePage
+    {
+        public static string ShowPageNavigate(int pageSize, int currentPage, int totalCount)
+        {
+            string redirectTo = "AdminNewsList.aspx";
+            pageSize = pageSize == 0 ? 3 : pageSize;
+
+            //总页数
+            var totalPages = Math.Max((totalCount + pageSize - 1) / pageSize, 1);
+            var output = new StringBuilder();
+            output.Append("<p style='float:left'>");
+            if (totalPages > 1)
+            {
+                if (currentPage != 1)
+                {
+                    //处理首页链接
+                    output.AppendFormat("<a class='pageLink' href='{0}?pageIndex=1&pageSize={1}'>首页</a>&nbsp;&nbsp;", redirectTo, pageSize);
+                }
+                if (currentPage > 1)
+                {
+                    //处理上一页的连接
+                    output.AppendFormat("<a class='pageLink' href='{0}?pageIndex={1}&pageSize={2}'>上一页</a>&nbsp;&nbsp;", redirectTo, currentPage - 1, pageSize);
+                }
+                else
+                {
+                    //output.Append("<span class='pageLink'>上一页</span>");
+                }
+                output.Append(" ");
+
+                //最多显示10个页码，前面五个，后面五个
+                int currint = 5;
+                for (int i = 0; i < 10; i++)
+                {
+                    //最多显示10个页码，前面五个，后面五个
+                    if ((currentPage + i - currint) >= 1 && (currentPage + i - currint) <= totalPages)
+                    {
+                        if (currint == i)
+                        {
+                            //当前页处理
+                            output.AppendFormat("<a class='cpb' href='{0}?pageIndex={1}&pageSize={2}'>[{3}]</a>&nbsp;", redirectTo, currentPage, pageSize, currentPage);
+                        }
+                        else
+                        {
+                            //一般页处理
+                            output.AppendFormat("<a class='pageLink' href='{0}?pageIndex={1}&pageSize={2}'>{3}</a>&nbsp;", redirectTo, currentPage + i - currint, pageSize, currentPage + i - currint);
+                        }
+                    }
+                }
+                if (currentPage < totalPages)
+                {
+                    //处理下一页的链接
+                    output.AppendFormat("<a class='pageLink' href='{0}?pageIndex={1}&pageSize={2}'>下一页</a>&nbsp;&nbsp;", redirectTo, currentPage + 1, pageSize);
+                }
+                else
+                {
+                    //output.Append("<span class='pageLink'>下一页</span>");
+                }
+                output.Append(" ");
+                if (currentPage != totalPages)
+                {
+                    //处理末页
+                    output.AppendFormat("<a class='pageLink' href='{0}?pageIndex={1}&pageSize={2}'>末页</a>", redirectTo, totalPages, pageSize);
+                }
+                output.Append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>");
+            }
+            output.AppendFormat("<p style='float:left'>第{0}页/共{1}页</p>", currentPage, totalPages);
+            return output.ToString();
+        }
+    }
+}

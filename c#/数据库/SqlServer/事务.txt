@@ -1,0 +1,52 @@
+------transaction------
+--事务----
+--保证多条sql语句同时执行成功,当有一条执行失败时,
+--数据库回滚到最初的状态
+--1.打开事务
+begin transaction(tran)
+	declare @sum int=0
+	update Bank set balance-=10 where cid='0002'
+	set @sum=@sum+@@ERROR
+	
+	update Bank set balance+=10 where cid='0001'
+	set @sum=@sum+@@ERROR
+	
+	if @sum>0
+	begin
+		---出错回滚
+		rollback
+	end
+	else
+	begin
+		commit
+	end
+
+事务只有begin 没有end
+事务开启后只有commit和rollback两种结果，要么回滚，要么提交
+
+
+--自动提交事务
+每条sql语句执行时，数据库会自动开启一个事务，失败了回滚，成功了提交
+
+--隐式事务 
+每条sql语句执行时，数据库会自动开启一个事务，但需要我们自己提交
+或者回滚，如果不手动提交或者回滚，就没法在对这条语句中设计的表
+进行其他操作
+
+set IMPLICIT_TRANSACTIONS{ ON | OFF }开启或关闭隐式事务
+
+--显示事务
+手动打开一个事务
+begin tran
+--。。。。。。
+commit tran
+--。。。。。
+rollback tran
+
+
+
+事务的ACID特性
+原子性：要么成功，要么失败，不存在一部分成功，一部分失败,即事务是原子工作单位
+一致性:事务完成时，必须使所有的数据都保持一致状态
+隔离性：由并发事务所做的修改必须与其他任何并发事务所做的修改隔离
+持久性：一旦事务执行完毕后，数据就存到数据库中去了，对系统的影响是永久的

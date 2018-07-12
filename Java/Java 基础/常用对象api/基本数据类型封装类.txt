@@ -1,0 +1,43 @@
+/* 基本数据类型包装类
+ * 为了方便操作基本数据类型值，将其封装成了对象，在对象中定义了属性和方法，丰富了该数据的操作
+ * 用于描述该对象的类就称为基本数据类型对象包装类
+ * 
+ * byte Byte
+ * short Short
+ * int   Integer
+ * long  Long
+ * float Float
+ * double Double
+ * char   Character
+ * boolean Boolean
+ * 
+ * 基本数据类型转换成字符串-》String 类的静态方法valueOf 或者 基本数据类型+""
+ * 
+ * 字符串-》基本数据类型  基本数据类型的parse***方法  只有Character没有parse**方法
+ * 
+ * 如果字符串被Integer进行了对象的封装，可使用另一个非静态的方法 intValue 将一个Integer对象转成基本数据类型值
+ * 
+ * 如果字符串被Integer进行对象的封装  可以使用intValue 将一个Integer对象转换成基本数据值类型
+ * 
+ * 整数具备不同的进制运算
+ * 
+ * 十进制转其他进制
+ * 	Integer.toBinaryString()  十进制转换成二进制
+ *  static String toHexString(int i) 以十六进制（基数 16）无符号整数形式返回一个整数参数的字符串表示形式。 
+ *	static String toOctalString(int i) 以八进制（基数 8）无符号整数形式返回一个整数参数的字符串表示形式。 
+ *	Integer.toString(60,n)  转成n进制
+ *  
+ *  其他进制到十进制
+ *  Integer.parseInt("10110", 2)  //22
+ *  
+ *  自动拆箱和装箱
+ * 		 Integer i = 4;  //==>i = new Integer(4); 自动装箱
+ * 		 i = i + 4；    // 自动拆箱
+ * 		 Integer x = 127;
+ *		 Integer y = 127;
+ *		
+ *		 System.out.println(x==y);   //x<=127 & y<=127  true   x>=128 y>=128 false
+ *
+ *       java 1.5 以后 自动装箱 如果装箱的是一个字节，那么该数据会被共享，不会开辟新空间
+ *		 System.out.println(x.equals(y));  //true
+ * */

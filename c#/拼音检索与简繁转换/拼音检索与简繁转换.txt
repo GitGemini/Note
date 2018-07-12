@@ -1,0 +1,43 @@
+//基于Mircosoft VisualStudio International Pack Services Release程式库所
+//提供的拼音检索技术和简繁转换，安装两个.msi文件，并在程序中导入dll文件
+//vsintlpack
+
+//1.导入dll文件
+
+//1.单个字符转换为拼音
+char c = '着';
+//判断是不是一个有效的汉字字符 ChineseChar.IsValidChar()
+//判断是不是一个有效的汉字拼音 ChineseChar.IsValidPinYin()
+if(ChineseChar.IsValidChar(c))
+{
+	ChineseChar cnchar = new ChineseChar(c);
+	StringBuilder sb = new StringBuilder();
+	foreach(var item in cnchar.PinYins)
+	{
+		sb.AppendLine(item);
+		sb.AppendLine("=============");
+	} 
+	txtPy.Text = sb.ToString();
+}
+
+//不考虑多音字 
+private String GetPinYinFromChineseString(string user_input)
+{
+	StringBuilder sb = new StringBuilder();
+	for(int i=0; i<user_input.Length; i++)
+	{
+		ChineseChar cn = new ChineseChar(user_input[i]);
+		if(cn.PinYins.Count>0)
+		{
+			string py = cn.PinYins[0];
+			sb.Append(py.SubString(0,py.Length-1));
+		}	
+	}
+	return sb.ToString();
+}
+
+//简体与繁体转换
+private String GetFanTiFromChineseConvert(string user_JianTi)
+{
+	return ChineseConverter.Convert(user_JianTi,ChineseConversionDirection.SimplifiedToTraditional);  
+}

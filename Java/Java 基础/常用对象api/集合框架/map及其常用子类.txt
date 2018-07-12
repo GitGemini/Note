@@ -1,0 +1,40 @@
+/* Map: 一次添加一对元素，key-value，也称为双列集合
+ * map中必须保持键的唯一性
+ * map再有映射关系时可以优先考虑
+ * 在查表法中较为常见
+ * 1、添加
+ * 		 V put(K key, V value) 将指定的值与此映射中的指定键关联（可选操作）。返回值 以前与 key 关联的值，如果没有针对 key 的映射关系，则返回 null。
+ * 
+ * 2、删除
+ *       void clear();
+ *  	 V remove(Object key) 如果存在一个键的映射关系，则将其从此映射中移除（可选操作）。 以前与 key 关联的值；如果没有 key 的映射关系，则返回 null。 
+ * 3、获取
+ * 		 V get(Object key)  返回指定键所映射的值；如果此映射不包含该键的映射关系，则返回 null。 可以通过返回null判断此集合是否包含key
+ *       int size()  返回此映射中的键-值映射关系数。 
+ *       Set<K> keySet() 返回此映射中包含的键的 Set 视图。 用来遍历
+ *       Set<Map.Entry<K,V>> entrySet()  返回此映射中包含的所有的映射关系的 Set 视图。  用来遍历,同时Entry中setValue也可以修改值
+ *       Collection<v> values() 获取所有的值的集合
+ *       
+ *       Map.Entry的原理 静态内部接口
+ *		 interface MyMap
+ *		{
+ *			public static interface MyEntry{//静态内部接口
+ *	
+ *			}
+ *		}
+ * 4、判断
+ * 		 boolean containsKey(Object key)  如果此映射包含指定键的映射关系，则返回 true。 
+ *		 boolean containsValue(Object value) 如果此映射将一个或多个键映射到指定值，则返回 true。 
+ *		 boolean isEmpty() 如果此映射未包含键-值映射关系，则返回 true。 
+ *
+ *
+ *	Map常用子类
+ *		l--HashTable  1.0 内部是哈希表，是同步的，不允许使用null键和null值
+ *			l--Properties  键值对型的配置信息，用来和IO结合搞配置文件
+ *		l--HashMap  内部是哈希表，不是同步的，允许使用null键和null值
+ *			l--LinkedHashMap 与HashSet和LinkedHashSet一样，能记住元素的加入顺序
+ *		简单来说就是，如果你不需要线程安全，那么使用HashMap，如果需要线程安全，
+ *		那么使用ConcurrentHashMap。HashTable已经被淘汰了，不要在新的代码中再使用它。
+ *
+ *      l--TreeMap  内部是二叉树 特性与TreeSet一样，需要对象有compareTo方法，或者构造时传入比较器Comparetor compare
+ */

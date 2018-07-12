@@ -1,0 +1,42 @@
+-------Trigger
+作用:自动化操作，减少了手动操作及出错的几率
+1.触发器是一种特殊类型的存储过程，不同于前面介绍过的一般的存储过程。【在SQL内部把触发器看做是存储过程但是不能传递参数】
+
+2.一般的存储过程通过存储过程名称直接调用，而触发器主要是通过事件进行触发而被调用 
+
+触发器分为
+DML触发器:insert，delete，update（不支持select)
+after 触发器(for),instead of触发器（不支持before触发器）
+
+DDL触发器:
+create table，create databases，alter，drop
+for==after
+
+语法:
+create trigger triggername on 表名
+after(for) |instead of 
+update |insert|delete(update,insert,delete)
+as
+begin
+
+end 
+
+
+
+-----触发器
+--创建一个和TblClass结构一样的表
+--select top 0 * into TblClassBackup from TblClass
+
+select * from TblClass
+
+go
+---当插入数据到TblClassBackup时,同时将数据插入到TblClass
+create trigger tri_insert_tblclassbackup on TblClassBackup
+after insert
+as
+begin
+	select TClassName,TClassDec from inserted
+	insert into TblClass(TClassName,TClassDec)
+end
+
+insert into TblClassBackup(TClassName,TClassDec) values('火箭','拉拉')

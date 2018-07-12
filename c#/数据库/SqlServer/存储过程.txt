@@ -1,0 +1,266 @@
+----存储过程
+就像数据库中运行方法(函数)
+像c#中的方法一样，由存储过程名/存储过程参数组成/可以有返回结果
+前面的if。。else，while,insert,select等都可以在存储过程中使用
+优点:
+1.执行速度快，数据库中保存的存储过程语句都是编译过的
+2.允许模块化程序设计-类似方法的复用
+3.提高系统安全性
+4.减少网络流通量
+
+系统存储过程：由系统定义，存放在master数据库中，以sp_或者xp_开头，自定义的存储过程可以以usp_开头
+
+
+-----1.系统存储过程-----
+--1.返回当前环境下的所有数据库
+exec sp_databases;
+
+--2.返回当前数据库下的所有视图和表
+exec sp_tables;
+
+--3.返回某张表下所有列
+exec sp_columns 'Employees';
+
+--4.查看某个存储过程源代码
+exec sp_helptext 'sp_databases';
+
+go
+
+create procedure sys.sp_databases  
+as  
+    set nocount on  
+  
+    select  
+        DATABASE_NAME   = db_name(s_mf.database_id),  
+        DATABASE_SIZE   = convert(int,  
+                                    case -- more than 2TB(maxint) worth of pages (by 8K each) can not fit an int...  
+                                    when convert(bigint, sum(s_mf.size)) >= 268435456  
+                                    then null  
+                                    else sum(s_mf.size)*8 -- Convert from 8192 byte pages to Kb  
+                                    end),  
+        REMARKS         = convert(varchar(254),null)  
+    from  
+        sys.master_files s_mf  
+    where  
+        s_mf.state = 0 and -- ONLINE  
+        has_dbaccess(db_name(s_mf.database_id)) = 1 -- Only look at databases to which we have access  
+    group by s_mf.database_id  
+    order by 1 
+    
+    ---自定义存储过程
+    --1创建
+    create proc usp_say_hello
+    as
+    begin
+		print 'Hello World'
+    end
+    
+    --2.执行
+    exec usp_say_hello;
+    
+    --3.修改
+  --  alter proc usp_say_hello
+  --  as
+  --  begin
+		--print 'alter'
+  --  end
+    
+    --4.删除
+    drop proc usp_say_hello
+    
+    
+    create proc usp_select_area
+    as
+    begin
+		select * from Area 
+    end
+    
+    exec usp_select_area
+    
+    
+    --创建带参数的存储过程
+    create proc usp_add
+    @n1 int,@n2 int
+    as
+    begin
+		print @n1+@n2
+    end
+    
+    exec usp_add 3,5
+    
+    
+    create proc usp_select_person
+    @gender bit,@age int
+    as
+    begin
+		select * from TblPerson where Gender=@gender and Age>=@age
+    end
+    
+    exec usp_select_person 1,23
+    
+    
+    --设置存储过程参数的默认值
+  --  create proc usp_add_df
+  --  @n1 int=100,@n2 int
+  --  as
+  --  begin
+		--print @n1+@n2
+  --  end
+    
+  --  exec usp_add_df @n2=80
+    
+  --  alter proc usp_add_df
+  --  @n1 int,@n2 int=100
+  --  as
+  --  begin
+		--print @n1+@n2
+  --  end
+    
+  --  exec usp_add_df 80
+  
+    create proc usp_add_df
+    @n1 int=100,@n2 int=30
+    as
+    begin
+		print @n1+@n2
+    end
+    
+    --exec usp_add_df
+    --exec usp_add_df 10
+    exec usp_add_df 20,30
+    
+    --带返回值的存储过程
+    create proc usp_sec_count
+    @gender bit,@recordcount int output --输出参数
+    as
+    begin
+		select * from TblPerson where Gender=@gender
+		set @recordcount=(select COUNT(*) from TblPerson where Gender=@gender)
+	end
+	
+	declare @count int --外部声明变量
+	exec usp_sec_count @gender=1,@recordcount=@count output --传递作为输出参数
+	
+	print @count
+	
+  
+  
+    ---使用存储过程，实现分页查询
+    
+    select * from Area
+ 
+    create proc usp_getAreaByPage
+    @pagesize int=7,			 --每页的记录条数
+    @pageindex int=1,			 --当前要查看的第几页记录
+    @recordcount int output,	 --总的记录条数
+    @pagecount int output		 --总的页数
+    as
+    begin
+		--1.查询出用户要的数据
+		select * 
+		from (select *,rn=ROW_NUMBER() over (order by AreaId asc)from Area) as t
+		where t.rn between @pagesize*(@pageindex-1)+1 and @pagesize*@pageindex
+		
+		--计算总的记录条数
+		set @recordcount= (select COUNT(*) from Area)
+		
+		--计算总页数
+		set @pagecount=ceiling(@recordcount*1.0/@pagesize)
+    end
+    
+    declare @n1 int 
+    declare @n2 int
+    
+    exec usp_getAreaByPage @pagesize=7,@pageindex=3,@recordcount=@n1 output,@pagecount=@n2 output
+    
+    print @n1
+    print @n2
+
+
+    ------结合事务的转账的存储过程------
+     
+    select * from Bank
+    
+    create proc usp_transfer_accounts
+    @account1 nvarchar(50),
+    @account2 nvarchar(50),
+    @money float,
+    @resultNum int output   ---1.转账成功,2.转账失败，3.余额不足。。。。。
+    as
+    begin
+		declare @IsWrong int=0
+		declare @m float
+		select @m = balance from Bank where cid=@account1
+		if @m-@money>10
+		begin
+			begin transaction
+			update Bank set balance=balance-@money where cid=@account1
+			set @IsWrong=@IsWrong+@@ERROR	
+		
+			update Bank set balance=balance+@money where cid=@account2
+			set @IsWrong=@IsWrong+@@ERROR	
+		
+			if @IsWrong>0
+			begin
+				set @resultNum=2
+				rollback
+			end
+			else
+			begin
+				set @resultNum=1
+				commit
+			end	
+		end
+		else
+		begin
+			set @resultNum=3
+		end
+    end
+    
+    declare @result int
+    exec usp_transfer_accounts '0002','0001',293,@resultNum=@result output
+    print @result
+    
+    
+    
+    
+    ---sql中的try-catch----
+    begin try
+		update Bank set balance=balance-300 
+    end try
+    begin catch
+		print '异常'
+    end catch
+
+
+通过ado.net来调用存储过程与调用带参数的sql语句的区别
+1.把sql语句变成了存储过程名称
+2.设置SqlCommand 对象的CommandType为CommandType.StoredProcedure
+3.根据存储过程的参数来设置SqlCommand对象的参数
+4.如果有输出参数，需要设置输出参数的Direction属性为：
+Direction=ParameterDirection.OutPut
+
+
+5.如果是通过调用command对象的ExecuteReader()方法来执行该
+存储过程，那么要想获取输出参数，必须等到关闭reader对象后，
+才可以获取输出参数
+
+为什么执行存储过程时，需要设置SqlCommand 对象的CommandType为CommandType.StoredProcedure？
+
+
+其实就是在存储过程名前加了一个exec
+
+存储过程中有多个结果集时这样处理
+
+do
+{
+
+	if(reader.HasRow)
+	{
+		while(reader.Read())
+		{
+
+		}
+	}
+
+}while(reader.NextResult)

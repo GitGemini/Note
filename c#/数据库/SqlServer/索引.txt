@@ -1,0 +1,21 @@
+------索引-----
+1.索引的目的：提高查询效率
+2.索引分两种：聚集索引（物理上连续，数据结构中的顺序存储方式）和非聚集索引（逻辑上连续，类似数据结构中的链式存储方式）
+3.增加索引后，会增加额外的存储空间，同时降低了增加新纪录，修改，删除的效率 
+
+
+--创建索引
+1.非聚集索引
+create nonclustered index IX_TableName_ColName on TableName(ColName)
+2.唯一非聚集索引
+create unique index IX_TableName_ColName on TableName(ColName)
+3.聚集索引
+create clustered index IX_TableName_ColName on TableName(ColName)
+4.唯一聚集索引
+create unique clustered index IX_TableName_ColName on TableName(ColName)
+
+--删除索引
+drop index 索引名
+
+数据库引擎优化顾问
+

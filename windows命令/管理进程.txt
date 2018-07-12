@@ -1,0 +1,13 @@
+根据端口号查程序的进程号:
+netstat -ano |findstr 端口号
+
+
+根据程序的进程号查看具体的程序名称
+tasklist|findstr 进程号
+
+taskkill -f -t -im 文件名
+
+
+当以上方法都解决不了端口占用时
+请用
+netsh winsock reset  //重置winsock

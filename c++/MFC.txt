@@ -1,0 +1,70 @@
+14:29 2016/8/18
+Author：PH
+
+在Microsoft的MFC类库中，
+Cwd派生出所有的窗口类
+CFrame窗口框架 GetActiveView（）获取当前视类指针
+CView窗口视图
+SetTimer（标识，间隔，回调函数）
+CDC DrawText
+CreateCaret（）创建游标，ShowCaret（）， SetCaretPos（CPoint）移动游标，
+CString Format设置字符串格式 Left（）获取左边多少位，GetLength（）字符串长度
+CFont 字体对象，依然使用dc.SelectObject（）选到设备描述表
+HDC CDC：：GetDC（） ：：ReleaseDC（）
+pDC->BeginPath()；pDC->EndPath() 路径层
+CClientDC  CWindowDC  构造函数初始化（）dc.Rectangle(坐标) 画矩形， 
+CBrush：：FromHandle（（HBRUSH）GetStockObject（NULL_BRUSH））可以获取一个空白画刷的指针，
+dc.SelectObject()选到设备描述表中
+CPen 当前的画笔  颜色RGB（255，255，255） 
+dc.SelectObject()将画笔与内存关联起来，选到设备描述表中
+（CBrush 画刷对象 dc.FillRect(矩形，画刷)）	CBitmap 位图对象 LoadBitmap（）加载后将之加载到画刷中 brush（&bitmap）填充 
+dc.SetTextColor（） 设置字体颜色，并返回先前颜色，GetBKColor（）得到当前背景颜色
+CDC SetROP2（）设置绘画模式 GetTextExtent（） 返回CSize对象，包含了字符串的宽度和高度 GetTextMetric（）获取字符的属性，
+返回一个字符结构体TEXTMETRIC对象
+CPaintDC
+TEXTMETRIC 字体属性
+CRect矩形
+CPoint 窗口坐标
+（CWnd）GetMenu （）返回菜单栏指针，
+CMenu（）GetSubMenu（）子菜单，
+CheckMenuItem（）改变菜单属性 ，鼠标点击出现菜单TrackPopMenu（）
+（CWnd）ClientToScreen（）客户区到屏幕坐标的转换,CreatePopMenu（）创建弹出菜单对象
+AppendMenu（）添加菜单， InsertMenu（）插入菜单 DeleteMenu（）删除菜单
+（CWnd）DrawMenuBar（）重画菜单栏
+SetDefaultMenu（）设置缺省菜单，SetMenuItemBitmaps（）设置菜单前面的图形标记
+EnableMenuItem（）设置不能用的菜单（必须在CFrame中将m_bAutoMenuEnable设置为False）
+SetMenu（NULL）移走当前菜单，LoadMenu（）加载菜单资源  
+资源的局部对象调用后当前函数结束时会销毁对象
+1>资源局部对象必须Detach（）断开指针与对象的关系或者设置为类成员
+UpdateCommandUI更新菜单状态 CCmdUI SetText（），SetStack（），Enable（）
+SetWindowPos设置窗口位置
+CButton关于按钮的类 Crecte（）创建，ShowWindow（）
+CDlg对话框
+CPropertyPage是属性页资源
+CPropertySheet是属性表单对象在这里添加属性页，用DoModel显示属性表单
+CStringArray 字符串数组对象 Add（）增加，GetAt（）获取元素，GetSize（）；
+在CFrame中可以添加虚函数 OnCommand（） 函数截取在CView中发生的菜单响应并RETURN TRUE
+LOWORD（）低字节序 HIWORD（）高字节序，
+（CWnd） GetWindowText（）获取窗口文本，SetWindowText() 设置窗口文本
+（CWnd） GetDlgItem（）得到关于对话框中的事物的指针
+
+（CWnd） GetDlgItemText（）/SetDlgItemText（）；GetDlgItemInt（）/SetDlgItemInt（）
+
+SendDlgItemMessage()(WM_SETTEXT/WM_GETTEXT)
+
+atoi, itoa,
+
+（CWnd） SetWindowLong（）设置指定窗口的属性
+
+GetFocus（）SetFocus（）设置焦点 GetNextWindow（）
+GetNextDlgTabItem（）-》SetFocus（）
+
+
+修改窗口
+在窗口创建之前
+	1.可以重写窗口类，注册后在cs.lpszClass中应用，AfxGetInstanceHandle（）获取窗口句柄
+	2.用cs的参数来修改窗口
+	3.AfxRegisterWndClass（）修改窗口
+在窗口创建之后
+	1.SetWindowLong（m_hWnd，）
+	2.SetClassLong（m_hWnd，）

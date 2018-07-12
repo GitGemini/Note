@@ -1,0 +1,484 @@
+C#判断文件是否被打开占用
+using System.IO;
+using System.Runtime.InteropServices;
+[DllImport("kernel32.dll")]
+public static extern IntPtr _lopen(string lpPathName, int iReadWrite);
+[DllImport("kernel32.dll")]
+public static extern bool CloseHandle(IntPtr hObject);
+public const int OF_READWRITE = 2;
+public const int OF_SHARE_DENY_NONE = 0x40;
+public readonly IntPtr HFILE_ERROR = new IntPtr(-1);
+private void button1_Click(object sender, EventArgs e)
+{
+    string vFileName = @"c:\temp\temp.bmp";
+    if (!File.Exists(vFileName))
+    {
+        MessageBox.Show("文件都不存在，你就不要拿来耍了");
+        return;
+    }
+    IntPtr vHandle = _lopen(vFileName, OF_READWRITE | OF_SHARE_DENY_NONE);
+    if (vHandle == HFILE_ERROR)
+    {
+        MessageBox.Show("文件被占用！");
+        return;
+    }
+    CloseHandle(vHandle);
+    MessageBox.Show("没有被占用！");
+}
+
+
+
+
+=========================ConTextMenuStrip右键菜单=========================
+
+右键菜单的东西无需多说,有一个比较实用的技巧是根据不同的情况来决定弹出菜单的内容.比如在列表中选中了一项,则显示添加,删除.没选中,则只显示添加.
+
+contextMenuStrip1.Items["按钮名"].Visible,通过此属性来设置隐藏或者显示
+
+ 
+
+=========================SaveFileDialog/OpenFileDialog======================
+
+就是打开一个保存/打开对话框,这个很常见.比如你另存为时,或者下载时.简单介绍一下相关属性
+
+ 
+
+saveFileDialog1.FileName 获取或设置选定文件字符串:
+
+获取:也就是按下了保存键后,将返回选中文件的绝对路径. string path=saveFileDialog1.FileName
+
+设置:打开对话框时,保存的默认文件名.  saveFileDialog1.FileName="请输入保存名"
+
+ 
+
+saveFileDialog1.Filter 打开保存对话框后,设置保存类型和默认后缀名
+
+saveFileDialog1.Filter="压缩文件|.rar"
+
+ 
+
+saveFileDialog1.InitialDirectory打开对话框时的默认路径.
+
+saveFileDialog1.InitialDirectory="D://Download"那么这次打开对话框就会直接打开D盘的Download文件夹了
+
+ 
+
+ 
+
+============================ListBox====================================
+
+ListBox获取鼠标指向的行号：必须写在鼠标事件里
+
+int Index = listBox2.IndexFromPoint(e.Location);
+
+ 
+
+ 
+
+批量删除：
+
+批量删除原理：由于删掉一行后，删除行下面的每个Item的行号都会减1。所以从上删到下是非常麻烦的。我们可以从下往上删。
+
+ 
+
+假设删除行的行号的index，一直删除直到碰到“停止删除”这一项为止。
+
+Index= listBox2.IndexFromPoint(e.Location); //即鼠标选中那行的行号
+
+for (int i = Index-1; i >= 0; i--)
+                    {
+                        if (i == 0)
+                        {
+                            listBox2.Items.RemoveAt(i);//如果删到了最顶行，先删除第i行，也就是选中行的上一行
+                            listBox2.Items.RemoveAt(i);//然后选中行已经变成第0行，再删一次，删除选中行
+                        }
+                        else if (listBox2.Items[i].toString()=="停止删除")
+                        {
+                            listBox2.Items.RemoveAt(i+1);//碰到停止删除，此时鼠标点击行已经位于“停止删除”行的下方，所以删除上一项时间行+1就行了
+                            break;
+                        }
+                        else
+                        {
+                            listBox2.Items.RemoveAt(i);//否则就删除数据
+                        }
+                    }
+
+ 
+
+ 
+
+ 
+
+============================DataGridView====================================
+
+ 
+
+DataGridView选中一行并且置顶：
+
+dataGridView1.Rows[i].Selected = true;
+dataGridView1.FirstDisplayedScrollingRowIndex = i;
+
+ 
+
+去掉标题列
+
+RowHeadersVisible设为false
+
+去掉自动增加的空行
+
+AllowUserToAddRows设为false
+
+ 
+
+一次选中一行
+
+DataGridView.Rows[DataGridView.SelectedCells[0].RowIndex].Selected = true;
+
+或者在属性中的SelectionMode中设置为fullRowSelect
+
+ 
+
+ 
+
+清除所有选中行
+
+dgvSroleinfo.ClearSelection();
+
+删除选中行
+ DataGridView.Rows.RemoveAt(行号)     ( 获取选中行的行号可参考一次选中一行的代码)
+右键选中:
+DataGridView.Rows[e.RowIndex].Selected = true;//右键选中
+ 
+
+光标
+
+cursor
+
+ 
+
+ 
+
+ 
+
+============================Listview====================================
+
+Listview控件可以理解为一个功能复杂的ListBox.每一项都是一个ListViewItem,这个节点拥有一个name属性,一个text属性,一个Tag属性.Tag是Object类型的,可以指向任何一个对象.每个节点都可以包含一个图片. 不像ListBox的项,一般都是一个简单的String.
+
+Listview的每在StateImageList属性里,绑定一个ImageList
+
+ 
+
+给节点绑定图片:
+
+先把图片放在一个ImageList里面,让Listview控件的StateImageList属性绑定这个ImageList
+
+ 
+
+定义节点,加入到控件里:
+
+既然每一项都是一个节点,那么加入的时候自然要先初始化节点了:
+
+ 
+
+ 
+
+                ListViewItem newItem;//定义节点
+
+                newItem = new ListViewItem();//初始化节点
+
+                newItem.Name = "节点名字";
+
+                newItem.Text = "节点在控件上显示的内容";//节点文本为角色名字
+
+                newItem.Tag = "绑定一个任意类型的变量,也可以是对象"
+
+                newItem.ImageIndex = 0;//绑定图片
+
+                Listview1.Items.Add(newItem);//加载到控件里
+
+ 
+
+然后在外面套个循环,就可以把所有节点都加载上去了.
+
+额外常用的属性:
+
+HideSelection失去焦点时,取消选中项的突出显示.
+
+ 
+
+ 
+
+示例代码:
+
+[c-sharp] view plain copy
+private void LoadRoleName()  
+{  
+    ltvRoleno.Clear();//先清空ltvRoleno的所有项  
+    try  
+    {  
+        List<CommonModel.SRoleInfo> MD_SRoleInfos = BLL_sroleinfo.GetModelList("");//这个在别的地方实现的,你不用管,总之获取到一个MD_SRoleInfos(角色信息的对象集合).包含N个角色信息对象.每个角色信息对象都有roleNo,roleName,remark这3个string型的属性  
+        ltvRoleno.SmallImageList = imageList1;//绑定图片集合  
+        ListViewItem newItem;//定义节点  
+        for (int i = 0; i < MD_SRoleInfos.Count; i++)  
+        {  
+            newItem = new ListViewItem();  
+            newItem.Name = MD_SRoleInfos[i].roleNo;//节点名字为角色ID  
+            newItem.Text = MD_SRoleInfos[i].roleName;//节点文本为角色名字  
+            newItem.Tag = MD_SRoleInfos[i].remark;//节点标记为角色描述  
+            newItem.ImageIndex = 0;//绑定图片  
+            ltvRoleno.Items.Add(newItem);//加载到控件里  
+        }  
+    }  
+    catch (Exception ex)  
+    {  
+        ShowMessage(ex.Message);  
+    }  
+}  
+ 
+
+ 
+
+============================TreeView====================================
+
+废话部分:树形结构是很常用的一个控件.最难弄的是它的加载和读取都要用到递归.但是递归其实很简单,就是方法自己引用自己.网上有很多介绍用递归加载树控件的,仔细看都不难.我是瞌睡的时候悟出来的,然后把思路写在了本子上,第二天回公司实现了这个方法.由此可见它有多简单.
+
+ 
+
+额外的杂项:树形控件的每一个节点,也都包含有name,text,tag属性.也是非常强悍的一个节点.用TreeNode node=new TreeNode()来初始化.
+
+ 
+
+实现思路:因为树形控件的每一个节点,都可能包含子节点.思路就是:
+
+我们每加入一个节点,都要自动找到它的子节点,然后加入到这个节点下面..
+
+那么怎么找到某个的节点的子节点呢?对于子节点来说,它们需要的就是父节点的相关信息.所以只要把节点本身作为参数传进去,就不怕找不到它的子节点.
+
+ 
+
+也就是说,这个方法应该是这样:
+
+ 
+
+        private void GetTreeView(TreeNode fatherNode)
+
+        {
+
+                //先根据参数fatherNode找到它子节点的相关信息.怎么找呢?比如在数据库,可以加载为树形的数据每一行自然一定会包含它父行的ID...如果你是把ID存在树形节点的name属性中,那么就可以用fatherNode.name获取到ID啦.
+
+                for(int i=0;i<结果数量;i++)
+
+                {
+
+ 
+
+ 
+
+                     TreeNode newnode = new TreeNode();//初始化一个节点
+
+                     newnode.Name="节点名";
+
+                     newnode.Text ="节点显示内容";
+
+                     newnode.tag="节点绑定的对象";
+
+                     if (fatherNode == null)
+
+                     { 
+
+                         treeView1.Nodes.Add(newnode);//如果父节点为空,那么是顶层节点,应该加在控件上
+
+                     }
+
+                     else
+
+                     {
+
+                         fatherNode.Nodes.Add(newnode);//父节点不为空,那么就加在父节点下面.
+
+                     }
+
+                }
+
+         }
+
+ 
+
+ 
+
+好的,现在我们随便拿一个节点来,就可以获取,并加载它所有的子节点了.
+
+现在知道递归的朋友应该已经知道,在哪里添加递归了吧!不知道的话,继续看下去
+
+ 
+
+刚才的方法,作用就是我们随便拿一个节点,就可以加载它的所有的儿子.
+
+但是儿子下面可能还有儿子的.我们随便拿的一个节点,它可能是某个节点的父亲,同时也可能是某个节点的爷爷...所以光找出它所有的儿子是不够的.
+
+那么其实很简单,当我们找到一个儿子后,就用这个方法,把儿子做参数传进去,再去找儿子的所有儿子.
+
+ 
+
+方法就变成了:
+
+ 
+
+ 
+
+ 
+
+        private void GetTreeView(TreeNode fatherNode)
+
+        {
+
+                //先根据参数fatherNode找到它子节点的相关信息.怎么找呢?比如在数据库,可以加载为树形的数据每一行自然一定会包含它父行的ID...如果你是把ID存在树形节点的name属性中,那么就可以用fatherNode.name获取到ID啦.
+
+                for(int i=0;i<结果数量;i++)
+
+                {
+
+ 
+
+ 
+
+                     TreeNode newnode = new TreeNode();//初始化一个节点
+
+                     newnode.Name="节点名";
+
+                     newnode.Text ="节点显示内容";
+
+                     newnode.tag="节点绑定的对象";
+
+                     if (fatherNode == null)
+
+                     { 
+
+                         treeView1.Nodes.Add(newnode);//如果父节点为空,那么是顶层节点,应该加在控件上
+
+                     }
+
+                     else
+
+                     {
+
+                         fatherNode.Nodes.Add(newnode);//父节点不为空,那么就加在父节点下面.
+
+                     }
+
+                     GetTreeView(newnode );//把儿子的儿子再找出来.
+
+                }
+
+         }
+
+ 
+
+ 
+
+ 
+
+那么这个方法就变成了:我们随便拿一个节点,就可以加载它的所有的儿子.每加载一个儿子,就会再次用这个方法,再加载儿子所有的儿子....一直加载下去,直到找不到儿子为止.这就是递归,自己用自己.
+
+ 
+
+ 
+
+在数据库加载时怎么优化:
+
+可以看到这个方法,每次都会去找它的儿子.那么如果我们每次递归都要根据父节点的某个属性,去数据库寻找它的子节点.就会连接很多次数据库.最好的办法是先把整张关系表都加载进来,然后在表里面找.
+
+ 
+
+示例代码:
+
+[c-sharp] view plain copy
+/// <summary>  
+/// 用递归方式生成树状结构.已经优化.  
+/// </summary>  
+/// <param name="fatherNode">第一次使用NULL</param>  
+/// <param name="dt">所有查询结果</param>  
+private void GetTreeView(TreeNode fatherNode,DataTable dt)  
+{  
+    DataView dtview = new DataView(dt);//这是用来删选DataTable的好工具  
+    if(fatherNode==null)  
+    {  
+        dtview.RowFilter = "fatherNo=0";//如果父节点为空,那么删选出顶层节点.我的数据库结构,fatherNo=0的行,都表示顶层节点.  
+    }else  
+    {  
+        dtview.RowFilter = string.Format("fatherNo= {0}",fatherNode.name);//删选出所有父id为fatherNode.name的节点.因为ID存在Name里  
+    }  
+    foreach (DataRowView row in dtview)  
+    {  
+        TreeNode newnode = new TreeNode();  
+        newnode.Name=row["No"].ToString();  
+        newnode.Text = row["Name"].ToString();  
+        if (fatherNode == null)  
+        {  
+            treeView1.Nodes.Add(newnode);  
+        }  
+        else  
+        {  
+            fatherNode.Nodes.Add(newnode);  
+        }  
+          
+        GetTreeView(newnode,dt);  
+    }  
+}  
+ 
+
+ 
+
+同样,遍历树也是一样的道理,要用递归:
+
+[c-sharp] view plain copy
+private void Read(TreeNode fatherNode)  
+{  
+    if (fatherNode == null)  
+    {  
+        fatherNode.Nodes=treeView1.Nodes;//如果父节点为空,要遍历的就是顶层节点.  
+    }  
+    foreach (TreeNode node in fatherNode.Nodes)  
+    {  
+        string No=node.name  
+        string Name=node.text  
+        Read(node);//继续递归  
+    }  
+}  
+ 
+
+ 
+
+====================================DataView======================================
+
+DataView允许在已经加载到内存里的Datatable里执行二次操作.结果返回一个新的Datatable
+
+ 
+
+初始化一个DataView:
+
+DataView DV=new DataView(Datatable);
+
+ 
+
+使用DataView的删选方法:
+
+DV.RowFilter="删选条件的写法,和SQL语句where段的写法一样"
+
+DV就相当于一个删选后的Datatable.
+
+ 
+
+==============================DataRowView==================================
+
+DataRowView一般都来表示Datatable的一行..使遍历整个Datatable变得很简单
+
+foreach(DataRowView DRV in Datatable)
+
+{
+
+      DRV ["列名"]
+
+}
+
+ 

@@ -1,0 +1,53 @@
+Request封装了请求报文
+Response封装了响应报文
+
+
+Request对象的常用成员
+1.Request.UrlReferrer：请求的来源，
+可以根据这个判断从百度搜的哪个关键词，
+防下载盗链，防图片盗链，
+可以伪造(比如迅雷)(使用全局一般处理程序)
+
+2.Request.UserHostAddress获得访问者的IP地址
+可以用于禁止某些IP访问
+
+
+3.Request.MapPath(virtulPath)；将虚拟路径转换为磁盘上的物理路径 
+Server.MapPath里就是调用Request.MapPath
+
+4.Request.Forms 获取通过post方法传递过来的Form表单键值对
+
+5.Rquest.QueryString 获取通过get方法在Url中传递过来的键值对
+
+6.Request[] 索引器综合了Query String，Forms，Cookies
+
+Response对象的主要成员
+1.Response.Buffer、Response.BufferOutput：
+经过Reflector反编译，发现两个属性是一样的，
+Buffer内部就是调用BufferOutput
+这个属性用来控制是否响应缓存,默认为true
+true意味着会将Response.Write中的字符串放在缓冲区中，最后一起发给客户端
+false会将Response.Write中的字符串立即发给客户端
+
+
+2.Response.Flush 将缓冲区的数据直接发给客户端
+
+3.Response.Clear() 清空缓冲区
+
+4.Response.ContentEncoding输出流的编码
+
+5.Response.ContentType 输出流的内容类型
+比如(text/html,image/png,text/plain....)
+
+6.Response.Write() 向客户端发送字符串
+WriteFile()向客户端发送文件
+
+7.Response.OutputStream 拿到当前的输出流
+在输出图片、Excel文件等非文本内容时需要使用它
+
+8.Response.End() 终止响应，将之前缓存的数据发给浏览器，
+End()之后的代码不会继续执行。
+在遇到一些非法请求的时候可以用End()立即终止请求
+
+
+

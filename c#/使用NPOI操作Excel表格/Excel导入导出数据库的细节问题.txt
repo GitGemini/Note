@@ -1,0 +1,120 @@
+//空值处理与其他的问题
+
+//1.导出
+string sql = "select * from T_Seats";
+using(SqlDataReader reader = SqlHelper.ExecuteReader(sql,CommandType.Txext))
+{
+	if(reader.HasRows)
+	{
+		IWorkbook wk = new HSSFWorkbook();
+		ISheet sheet = wk.CreateSheet("TableName.xls");	
+		//列名
+		IRow firstRow = sheet.CreateRow(0);
+		for(int col=0; col<reader.FieldCount; col++)
+		{
+			firstRow.CreateCell(col).SetValue(reader.GetName(col));	
+		}
+		//=========================
+		int index = 1;
+		while(reader.Read())
+		{
+			IRow currentRow = sheet.CreateRow(index);
+			index++;
+			
+			int autoId = reader.GetInt32(0);
+			string loginId = reader.GetString(1);
+			string password = reader.GetString(2);	
+			string username = reder.GetString(3);
+			int errorTimes = reader.GetInt32(4);
+			DateTime? lockDate = reader.IsDBNull(5)?null:(DateTime?)reader.GetDateTime(5);
+			int? testInt = reader.IsDBNull(6)?null:(int?)reader.GetInt32(6);
+
+			currentRow.CreateCell(0).SetValue(autoId)
+			currentRow.CreateCell(1).SetValue(loginId); 
+			currentRow.CreateCell(2).SetValue(password); 
+			currentRow.CreateCell(3).SetValue(username); 
+			currentRow.CreateCell(4).SetValue(errorTimes); 
+			if(lockDate==null)
+			{
+				currentRow.CreateCell(5).SetCellType(CellType.BLANK);
+			}
+			else			
+			{
+				//样式设置
+				ICellStyle cellStyle = wk.CreateCellStyle();
+				cellStyle.DataFormat=HSSFDataFormat.GetBuiltinFormat("mm/dd/yyyy hh:mm:ss");
+				ICell cell = currentRow.CreateCell(5);
+				cell.CellStyle = cellStyle;
+				cell.SetValue((DateTime)lockDate); 
+			}
+			if(testInt==null)
+			{	
+				currentRow.CreateCell(6).SetCellType(CellType.BLANK); 	
+			}
+			else
+			{
+				currentRow.CreateCell(6).SetValue((int)testInt); 
+			}
+		}
+		//写入
+		using(FileStream fw = File.Open(excelPath))
+		{
+			wk.Write(fw); 
+		}
+	}	 
+}
+
+
+//2.导入
+//表的复制(空表)  select top 0 * into NewTabe from OldTable
+using(FileStrem fr = File.Open("***.xls"))
+{
+	//创建工作簿
+	IWorkbook wk = new HFFSWorkbook(fr);
+	//创建工作表
+	ISheet sheet = wk.GetSheetAt(0);
+	string sql ="insert into TableName values(@uid,@pwd,@name,@name,@errorTimes,@lockDate,@testInt)";
+	
+	//遍历所有行
+	for(int r=1; r<=sheet.LastRowNum； r++)
+	{
+		IRow currentRow = sheet.GetRow(r);
+		SqlParameter[] pms = new SqlParameter[]
+		{
+			new SqlParameter("@uid",SqlDbType.NVarChar,50),
+			new SqlParameter("@pwd",SqlDbType.VarChar,50),
+			new SqlParameter("@name",SqlDbType.NVarChar,50),
+			new SqlParameter("@errorTimes",SqlDbType.Int),
+			new SqlParameter("@lockDate",SqlDbType.DateTime),
+			new SqlParameter("@testInt",SqlDbType.Int)
+		};
+		if(currentRow!=null)
+		{
+			//遍历每一个单元格
+			for(int c=1; c<=currentRow.LastCellNum； c++) 
+			{
+				ICell currentCell = currentRow.GetCell(c);
+				if(currentCell==null||current.CellType==CellType.BLANK)
+				{
+					//表示空值
+					pms[c-1].Value=	DBNull.Value;
+				}
+				else
+				{
+					if(c==5)
+					{
+						//pms[c-1].Value=DateTime.Parse(currentCell.ToString())引发异常;
+						//如果说当前列是一个日期类型，可以直接把该值作为一个Number类型来读取，再通过DateTime.FromOADate()来转换
+						pms[c-1].Value=DateTime.FromOADate(currentCell.NumericCellValue);
+					}
+					else
+					{
+						pms[c-1].Value=currentCell.ToString();	
+					}
+			}
+			SqlHelper.ExecuteNonQuery(sql,CommandType.Text,pms);	
+		}
+		
+	}
+		
+}

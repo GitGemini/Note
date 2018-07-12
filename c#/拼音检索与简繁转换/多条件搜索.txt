@@ -1,0 +1,35 @@
+1.关于Sql语句的拼写
+使用一个List集合来保存所有的搜索条件,最后用and拼接，作为整个搜索条件放到Sql语句中
+
+参数也是利用List 集合来保存每个参数
+
+eg:
+StringBuilder sbSql = new StringBuilder("select * from Biao ");
+List<string> wheres = new List<string>();
+List<SqlParameter>parameters = new List<SqlParameter>();
+if(title.Length>0)
+{
+	wheres.Add(" bookname like @name ");
+	parameters.Add(new SqlParameter("@name", "%"+title+"%"));
+}
+if(anthor.Length>0)
+{
+	wheres.Add(" author like @author ");
+	parameters.Add(new SqlParameter("@author", "%"+anthor+"%"));
+}
+if(pub.Length>0)
+{
+	wheres.Add(" pub like @pub ");
+	parameters.Add(new SqlParameter("@pub", "%"+pub+"%"));
+}
+
+if(wheres.Count>0)
+{
+	sbSql.Append(" where ");
+	sbSql.Append(string.Join(" and ",wheres.ToArray()));
+	
+}
+
+SqlParameter[] pms = parameters.ToArray();
+
+SqlHelper........

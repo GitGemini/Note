@@ -1,0 +1,112 @@
+ 三、触发器
+
+对某个表进行【增/删/改】操作的前后触发一些操作即为触发器，如果希望触发增删改的行为之前或之后做操作时，可以使用触发器，触发器用于自定义用户对表的行进行【增/删/改】前后的行为。
+1、创建基本语法
+复制代码
+
+# 插入前
+CREATE TRIGGER tri_before_insert_tb1 BEFORE INSERT ON tb1 FOR EACH ROW
+BEGIN
+    ...
+END
+
+# 插入后
+CREATE TRIGGER tri_after_insert_tb1 AFTER INSERT ON tb1 FOR EACH ROW
+BEGIN
+    ...
+END
+
+# 删除前
+CREATE TRIGGER tri_before_delete_tb1 BEFORE DELETE ON tb1 FOR EACH ROW
+BEGIN
+    ...
+END
+
+# 删除后
+CREATE TRIGGER tri_after_delete_tb1 AFTER DELETE ON tb1 FOR EACH ROW
+BEGIN
+    ...
+END
+
+# 更新前
+CREATE TRIGGER tri_before_update_tb1 BEFORE UPDATE ON tb1 FOR EACH ROW
+BEGIN
+    ...
+END
+
+# 更新后
+CREATE TRIGGER tri_after_update_tb1 AFTER UPDATE ON tb1 FOR EACH ROW
+BEGIN
+    ...
+END
+
+复制代码
+
+ 
+
+特别的：NEW表示即将插入的数据行，OLD表示即将删除的数据行。
+复制代码
+
+delimiter //
+CREATE TRIGGER tri_before_insert_tb1 BEFORE INSERT ON tb7 FOR EACH ROW
+BEGIN
+
+IF NEW. user = 'qq' THEN
+    INSERT INTO tb2 (NAME) VALUES ('aa');
+END IF;
+END //
+delimiter ;
+
+复制代码
+复制代码
+
+delimiter //
+CREATE TRIGGER tri_after_insert_tb1 AFTER INSERT ON tb7 FOR EACH ROW
+BEGIN
+    IF NEW. licnese = 666 THEN
+        INSERT INTO tb2 (NAME)
+        VALUES
+            ('666'),
+            ('666') ;
+    ELSEIF NEW. licnese = 555 THEN
+        INSERT INTO tb2 (name)
+        VALUES
+            ('555'),
+            ('555') ;
+    END IF;
+END//
+delimiter ;
+
+复制代码
+ 
+2、删除触发器
+
+DROP TRIGGER tri_after_insert_tb1;
+
+3、使用触发器
+
+触发器无法由用户直接调用，而由对表的【增/删/改】操作被动触发的。
+
+insert into tb1(num) values(666)
+
+ 4、查看触发器
+
+ show triggers FROM 库名\G
+ SHOW TRIGGERS\G
+
+5、查看触发器创建语句
+
+show create trigger trigger_name\G
+
+6、 触发器的执行顺序
+
+我们建立的数据库一般都是 InnoDB 数据库，其上建立的表是事务性表，也就是事务安全的。这时，若SQL语句或触发器执行失败，MySQL 会回滚事务，有：
+ 
+1、如果 BEFORE 触发器执行失败，SQL 无法正确执行。
+2、SQL 执行失败时，AFTER 型触发器不会触发。
+3、AFTER 类型的触发器执行失败，SQL 会回滚。
+
+
+
+
+ 

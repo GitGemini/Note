@@ -1,0 +1,39 @@
+//尽量一次请求只用一个上下文
+
+public class DbContextHelper
+{
+	public static MyDbContext GetCurrentDbContext()
+	{
+		MyDbContext dbContext = HttpContext.Current.Items["MyDbContext"] as MyDbContext;
+		
+		if(dbContext==null){
+			dbContext = new MyDbContext();
+			
+			HttpContext.Current.Items["MyDbContext"]=dbContext;
+		
+		}
+		return dbContext;
+	}
+}
+
+
+//CallContext
+
+public class DbContextHelper
+{
+	public static MyDbContext  GetCurrentDbContext()
+	public static MyDbContext  GetCurrentDbContext()
+	public static MyDbContext  GetCurrentDbContext()
+	{
+		MyDbContext dbContext = CallContext.GetData("MyDbContext") as MyDbContext;
+		
+		if(dbContext==null){
+			dbContext = new MyDbContext();
+			 
+			CallContext.SetData("MyDbContext",dbContext);
+			
+		}
+		return dbContext;
+	}
+}
+

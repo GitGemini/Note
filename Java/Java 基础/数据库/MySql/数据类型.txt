@@ -1,0 +1,81 @@
+整型
+	类型	 字节	最小值		最大值
+	TINYINT   1 	-128/0		127/255
+	SMALLINT  2     -32768/0    32767/65535
+	mediumint 3     -2^23/0   2^23-1/2^24-1
+	int       4     -2^31/0   2^31-1/2^32-1
+	bigint    8     -2^63/0   2^63-1/2^64-1
+	
+	在mysql 中可以通过指定unsigned 来设置无符号
+	
+	eg:
+	create table tbl
+	(
+		a tinyint unsigned
+	);
+	
+	还可以定义显示宽度(001,002,003,004....010,011,012...100,101) 即使用前导零填充
+	create table tbl
+	(
+		a tinyint unsigned,
+		b tinyint(3) zerofill ; //最小显示3位
+	);
+	
+小数类型
+	
+	类型		字节  		精度
+	float		  4  		默认6	
+	double		  8			默认16
+	decimal		(m,d)		   d
+	
+	在decimal 中 m表示所有数值位，m-d 表示整数位，d表示小数位
+	
+	小数也支持zerofill
+	
+日期时间类型      字节        表现形式
+	年月日时分秒  8 DateTime   yyyy-MM-dd HH:mm:ss 
+	年月日     3   Date         yyyy-MM-dd
+	时间戳	4  Timestamp  存储时是整型，但表现出来的是yyyy-MM-dd HH:mm:ss，插入是也按照这个格式插入，检索是+0 得到yyyyMMddHHmmss	
+	时分秒   3  Time         HH:mm:ss    
+	年      1    Year      yyyy
+	
+范围  DateTime	   1000-01-01 00:00:00 - 9999-12-31 23:59:59	插入时可以使用任何分隔符
+	  Timestamp    1970-01-01 00:00:00 - 2038-01-19 03:14:07
+	  Date         1000-01-01 - 9999-12-31
+	  Year         1901-2155
+	  TIME    -838:59:59-838:59:59 
+	  
+	Time可以表示一天中的时间，还可以表示时间间隔用天表示  D HH:mm:ss
+	
+	
+字符串类型
+	类型		最大长度		备注
+	char    	 255			 char(n) n字符数
+	
+	varchar		65535(65532)	 GBK<=32767 ,utf8<=21845
+	
+	tinyText,    L+n L为最大长度2^8+1
+	text,			2^16+2	  定义时 通常不用指定长度，          
+	mediumText      2^24+3    可以自己计算
+	longtext,       2^32+4				
+	
+	enum		 枚举选项，65535		内部存储的是整数形式，字段值只能是某一个
+	
+	set   1,2,3,4,8 元素数量64		最多64个状态
+	
+	Binary			Binary(char)
+	varbinary 		varbinary(varchar)	二进制数据
+	blob			blob(text)	
+	
+对于varchar 来说 总的长度最大为65535 个字节，当数据操作255个字节时，需要2个字节来表示长度，可为null时又需要一个字节来保存空值，
+所以可用长度 65535-2-1 = 65532 ，除非所有的字节都不为null，这个字节才可以省略，一个记录不管有多少个可为null的字段，都使用一个统一的字节来表示，而不是每个字段一个字节
+
+每条数据的总记录长度最大也是65535
+
+
+类型选择：
+	1.尽量精确
+	2.考虑应用语言处理
+	3.考虑兼容性
+	
+	

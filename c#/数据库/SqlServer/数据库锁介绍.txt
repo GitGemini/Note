@@ -1,0 +1,19 @@
+数据库中：
+	update,delete，insert会对表添加x锁,即排它锁(独享，只有表上没有其他锁时才能添加排它锁)
+	select会对表添加s锁,即共享锁(只有表上没有其他锁时或只有x锁时才能添加共享锁)
+
+with(nolock)可以忽略锁
+
+数据库本身有一个查询系统来检测当前系统有没有死锁
+
+开发中避免死锁:
+1、sql操作表的顺序尽量一致
+2、当数据要求不是很严格时查询sql中添加with(nolock)（比如qq聊天记录，而银行账户则一定要加锁）
+3、连接查询非常多而导致死锁时，可以使用临时表(select * into NewTable from #OldTable)
+[
+原表1与临时表进行连接查询-》临时表与原表2进行连接查询。。。。。。
+]
+
+--select * from #t1
+--临时表存储在tempdb中。以#开头
+--select * into #t1 from PhoneType

@@ -1,0 +1,115 @@
+ 
+四、存储过程 
+
+存储过程是一个SQL语句集合，当主动去调用存储过程时，其中内部的SQL语句会按照逻辑执行。
+1、创建存储过程
+
+无参数存储过程
+复制代码
+
+-- 创建存储过程
+
+delimiter //　　#修改结束符号，为//
+create procedure p1()
+BEGIN
+    select * from t1;
+END//
+delimiter ;
+
+
+
+-- 执行存储过程
+
+call p1()
+
+复制代码
+
+ 对于存储过程，可以接收参数，其参数有三类：
+
+    in          仅用于传入参数用
+    out        仅用于返回值用
+    inout     既可以传入又可以当作返回值
+
+关于变量设置，对于调用存储过程或者函数时，外部传入参数或者获取参数，需加符号@，例如set @t=1；在本次会话内这些带@的变量都可以被获取到。断开连接后变量失效。
+
+有参数存储过程
+复制代码
+
+-- 创建存储过程
+delimiter \\
+create procedure p1(
+    in i1 int,
+    in i2 int,
+    inout i3 int,
+    out r1 int
+)
+BEGIN
+    DECLARE temp1 int;
+    DECLARE temp2 int default 0; 
+    set temp1 = 1;
+    set r1 = i1 + i2 + temp1 + temp2;  
+    set i3 = i3 + 100;
+end\\
+delimiter ;
+
+-- 执行存储过程
+SET @t2=3;
+CALL p1 (1, 2 ,@t1, @t2);
+SELECT @t1,@t2;
+
+复制代码
+
+ 
+
+delimiter //　 将结束符号;修改为//
+DECLARE　　声明变量。如果没有DEFAULT子句，初始值为NULL。用于内部变量申明。
+SET　　　　  变量赋值。用于内部变量赋值，和传参数时参数赋值。 
+2、删除存储过程
+
+drop procedure proc_name;
+
+3、执行存储过程
+复制代码
+
+-- 无参数
+call proc_name();
+
+-- 有参数，全in
+call proc_name(1,2);
+
+-- 有参数，有in，out，inout
+set @t1=3;
+call proc_name(1,2,@t1,@t2);
+
+复制代码
+复制代码
+
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import pymysql
+
+conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='123', db='t1')
+cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+# 执行存储过程
+cursor.callproc('p1', args=(1, 22, 3, 4))
+# 获取执行完存储的参数
+cursor.execute("select @_p1_0,@_p1_1,@_p1_2,@_p1_3")
+result = cursor.fetchall()
+
+conn.commit()
+cursor.close()
+conn.close()
+
+
+print(result)
+
+复制代码
+ 4、查看存储过程
+
+列出所有的存储过程
+SHOW  PROCEDURE  STATUS;
+
+ 5、查看存储过程生成语句
+
+查看存储过程
+SHOW CREATE PROCEDURE 存储过程名\G

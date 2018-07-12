@@ -1,0 +1,45 @@
+/*
+ * 停止线程的方法
+ * 1、stop 已过时 具有固定的不安全性  suspend 已招到反对 具有死锁倾向
+ * 
+ * 2、run方法结束
+ * 怎么控制线程的任务结束呢
+ * 线程中通常都有循环结构，只要控制住循环就可以结束任务
+ * 
+ * 控制循环经常可以使用定义标记来解决
+ * 
+ * 但是如果线程处于冻结状态，就无法读取标记
+ * interrupt 将线程的冻结状态清除掉，让线程恢复到具备cpu执行资格的状态
+ * 当时强制动作会发生InterruptException 记得要处理
+ * 
+ * while(flag)
+		{
+			try {
+				this.wait();
+			}
+			catch (InterruptedException e) {
+				// TODO: handle exception
+				System.out.println(Thread.currentThread().getName()+"....."+e);
+				flag=false;//break;
+			}
+			System.out.println(Thread.currentThread().getName()+".......");
+		}
+线程的其他方法
+守护线程(后台线程)：
+特点：前台线程必须手动结束，如果所有的前台线程都结束了，后台线程自动结束
+setDaemon 设置后台线程
+isDaemon 判断是否是后台线程
+
+setPriority(int newPriority)更改线程的优先级。  1-10 优先级越大，获取cpu执行权概率越大，默认优先级5
+getPriority 获取线程的优先级。 
+
+join
+public final void join() throws InterruptedException等待该线程终止。。  临时加入一个线程运算时 可以使用join方法
+
+ThreadGroup 线程组
+
+yield
+public static void yield()暂停当前正在执行的线程对象，并执行其他线程。
+
+
+ * */

@@ -1,0 +1,81 @@
+六、事务
+
+事务用于将某些操作的多个SQL作为原子性操作，一旦有某一个出现错误，即可回滚到原来的状态，从而保证数据库数据完整性。
+
+定义存储过程：
+复制代码
+
+delimiter \\
+drop PROCEDURE if EXISTS p1;
+create PROCEDURE p1(
+    OUT p_return_code tinyint
+)
+BEGIN 
+  DECLARE exit handler for sqlexception     -- 定义错误处理
+  BEGIN 
+    -- ERROR 
+    set p_return_code = 1; 
+    rollback; -- 回滚
+  END; 
+ 
+  DECLARE exit handler for sqlwarning     -- 定义告警处理
+  BEGIN 
+    -- WARNING 
+    set p_return_code = 2; 
+    rollback; 
+  END; 
+ 
+  START TRANSACTION; -- 开始事务，使下面的多条SQL语句操作变成原子性操作
+        UPDATE tb7 set licnese=(licnese-5) WHERE nid=21; 
+        UPDATE tb7 set licnese=(licnese+5) WHERE nid=22; 
+
+  COMMIT; 
+ 
+  -- SUCCESS 
+  set p_return_code = 0; 
+ 
+END\\
+delimiter ;
+
+复制代码
+
+ 
+ 执行存储过程：
+
+call p1(@p);
+SELECT @p;
+
+ 
+七、SQL防注入之动态SQL
+
+在高级语言的DB API不提供防注入的参数化查询功能时，可以使用这种方法来防止SQL注入。在pymysql中的调用点这里。
+
+定义存储过程：
+复制代码
+
+delimiter \\
+DROP PROCEDURE IF EXISTS proc_sql \\
+CREATE PROCEDURE proc_sql (
+    in nid1 INT,
+    in nid2 INT,
+    in callsql VARCHAR(255)
+    )
+BEGIN
+    set @nid1 = nid1;
+    set @nid2 = nid2;
+    set @callsql = callsql;
+        PREPARE myprod FROM @callsql;
+--     PREPARE prod FROM 'select * from tb2 where nid>? and  nid<?';    传入的值为字符串，？为占位符
+--     用@nid1，和@nid2填充占位符
+        EXECUTE myprod USING @nid1,@nid2;
+    DEALLOCATE prepare myprod; 
+
+END\\
+delimiter ;
+
+复制代码
+
+set @nid1=12;
+set @nid2=15;
+set @callsql = 'select * from tb7 where nid>? and nid<?';
+CALL proc_sql(@nid1,@nid2,@callsql)

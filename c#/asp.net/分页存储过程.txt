@@ -1,0 +1,50 @@
+CREATE PROC usp_tscripts_dividepage 
+ @pageSize INT = 5,
+ @pageIndex INT = 1
+AS
+BEGIN
+	--查询出所需要的数据
+	SELECT
+		*
+	FROM
+		(
+			SELECT
+				*, 
+				rn = ROW_NUMBER () OVER (ORDER BY TScripts.ScriptId ASC)
+			FROM
+				TScripts
+		) AS t
+	WHERE
+		t.rn BETWEEN @pageSize * (@pageIndex - 1) + 1 AND @pageIndex*@pageSize
+	END
+	
+尽量少用存储过程
+将sql脚本写在dal层中，去查询
+SELECT
+		*
+	FROM
+		(
+			SELECT
+				*, 
+				rn = ROW_NUMBER () OVER (ORDER BY TScripts.ScriptId ASC)
+			FROM
+				TScripts
+		) AS t
+	WHERE
+		t.rn BETWEEN @pageSize * (@pageIndex - 1) + 1 AND @pageIndex*@pageSize
+或者	
+		
+SELECT
+	top (@pageSize) *
+	FROM TScripts
+	where TScripts.ScriptId not in
+		(
+			SELECT
+				top (@pageSize*(@pageIndex-1)) TScripts.ScriptId	
+			FROM
+				TScripts
+			order by TScripts.ScriptId ASC
+		)
+	order by TScripts.ScriptId ASC
+		
+		

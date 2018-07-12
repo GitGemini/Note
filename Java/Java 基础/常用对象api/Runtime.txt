@@ -1,0 +1,18 @@
+/*
+ * Runtime 类 没有构造方法摘要，有一个静态方法返回类的一个实例对象  单例模式的一个应用
+ * 每个 Java 应用程序都有一个 Runtime 类实例，使应用程序能够与其运行的环境相连接。
+ * 可以通过 getRuntime 方法获取当前运行时。 应用程序不能创建自己的 Runtime 类实例。 
+ * 
+ * 使用getRuntime获取实例
+ * 方法:
+ *  void addShutdownHook(Thread hook)  注册新的虚拟机来关闭钩子。 
+ *	int availableProcessors() 向 Java 虚拟机返回可用处理器的数目。 
+ *	Process exec(String command) 在单独的进程中执行指定的字符串命令。 
+ *  void exit(int status) 通过启动虚拟机的关闭序列，终止当前正在运行的 Java 虚拟机 
+ *  long freeMemory() 返回 Java 虚拟机中的空闲内存量。 
+ *  void gc() 运行垃圾回收器。 
+ *  void halt(int status)  强行终止目前正在运行的 Java 虚拟机。 
+ *  void load(String filename) 加载作为动态库的指定文件名。 
+ *	void loadLibrary(String libname) 加载具有指定库名的动态库。 
+ *	long totalMemory() 返回 Java 虚拟机中的内存总量。 
+ */

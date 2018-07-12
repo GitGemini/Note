@@ -1,0 +1,93 @@
+---------T_SQL---------
+
+--1.声明变量
+declare @name nvarchar(20)
+declare @age int
+--一次声明多个变量
+--declare @name nvarchar(20),@age int
+
+
+--2.变量赋值
+set @name='zs'
+select @age=18
+
+------------------------------------
+set和select的区别
+--当一个查询语句的结果赋值给变量时
+declare @a int
+
+set @a = (select count(*) from Table)必须加括号
+select @a =count(*) from Table
+
+当返回值不是一个值时
+set @a = (select age from Table)报错
+
+但是通过select为变量赋值的时候会将最后一个赋值给变量
+select @a =age from Table
+------------------------------------------
+--3.输出
+select '姓名',@name
+select '年龄',@age
+
+print @name
+
+
+--4.while循环
+--break,continue与c#一样
+declare @count int=1  --声明变量时同时赋值
+while @count<100
+begin
+	print 'Hello'
+	set @count=@count+1
+end
+
+--计算1-100之间的和
+declare @i int=1  
+declare @sum int=0 --变量使用前必须赋初值
+while @i<=100
+begin
+	set @sum=@sum+@i
+	set @i=@i+1
+end
+
+print @sum
+
+
+--5.条件语句
+declare @n int=10;
+if @n>10
+begin 
+	print 'n大于10'
+end
+else if @n>5
+begin 
+	print 'n大于5小于等于10'
+end
+else
+begin
+	print 'n小于等于5'
+end
+
+
+
+--计算1-100之间奇数的和
+declare @count int=1,@sum int=0;
+while @count<=100
+begin
+	if @count%2<>0
+	begin
+		set @sum=@sum+@count;
+	end
+	set @count=@count+1
+end
+
+print @sum
+
+
+--带两个@@符号的一般表示系统变量,不能更改
+print @@version       --当前数据库的版本
+print @@Error		  --上一条sql语句的错误代码
+print @@rowcount	  --受上一条sql语句影响的行数
+print @@language      --当前版本的语言
+print @@servername    --当前的服务器名称
+--........

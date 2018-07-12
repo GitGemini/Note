@@ -1,0 +1,97 @@
+ALTER trigger [make_transactions] on [dbo].[GpOrder] for insert
+as
+	declare @order_id bigint,@user_id bigint,@stock_id int,@type int,
+	@price money,@undealed int,@dealed int,@canceled int
+	
+	select @order_id=order_id,@user_id=user_id,@stock_id=stock_id,
+	@type=type,@price=price,@undealed=undealed,@dealed=dealed,@canceled=canceled from inserted;
+	
+	if @type=0
+	begin
+		declare @sell_order_id bigint,@sell_order_undealed int,
+			@sell_order_dealed int
+		declare sell_orders cursor for select order_id,undealed,dealed from GpOrder
+		where type=1 and stock_id=@stock_id and price<=@price and undealed>0 order by price,order_id
+		open sell_orders
+		while @undealed>0
+		begin
+			fetch next from sell_orders into
+				@sell_order_id,@sell_order_undealed,@sell_order_dealed
+			if @@fetch_status!=0 break
+			if (@sell_order_undealed<@undealed)
+			begin
+				set @undealed=@undealed-@sell_order_undealed
+				set @dealed=@dealed+@sell_order_undealed
+				set @sell_order_dealed=@sell_order_dealed+@sell_order_undealed
+				update GpOrder set dealed=@sell_order_dealed,
+								   undealed=0
+								where order_id=@sell_order_id
+				declare @new_trans_id bigint
+				select @new_trans_id=isnull(max(trans_id)+1,50000001) from GpTransaction
+				insert	into GpTransaction values(@new_trans_id,@order_id,@sell_order_undealed,@sell_order_id,getdate())
+				set @sell_order_undealed=0
+			end
+			else if (@sell_order_undealed>=@undealed)
+			begin
+				set @sell_order_undealed=@sell_order_undealed-@undealed
+				set @sell_order_dealed=@sell_order_dealed+@undealed
+				
+				update GpOrder set dealed=@sell_order_dealed,
+								   undealed=@sell_order_undealed
+								where order_id=@sell_order_id
+				select @new_trans_id=isnull(max(trans_id)+1,50000001) from GpTransaction
+				insert	into GpTransaction values(@new_trans_id,@order_id,@undealed,@sell_order_id,getdate())
+
+				set @dealed=@dealed+@undealed
+				set @undealed=0
+				break
+			end
+		end
+		update GpOrder set dealed=@dealed,undealed=@undealed where order_id=@order_id
+		close sell_orders
+		deallocate sell_orders
+	end
+	else if (@type=1)
+	begin
+		declare @buy_order_id bigint,@buy_order_undealed int,
+			@buy_order_dealed int
+		declare buy_orders cursor for select order_id,undealed,dealed from GpOrder
+		where type=0 and stock_id=@stock_id and price>=@price and undealed>0 order by price,order_id
+		open buy_orders
+		while @undealed>0
+		begin
+			fetch next from buy_orders into
+				@buy_order_id,@buy_order_undealed,@buy_order_dealed
+			if @@fetch_status!=0 break
+			if (@buy_order_undealed<@undealed)
+			begin
+				set @undealed=@undealed-@buy_order_undealed
+				set @dealed=@dealed+@buy_order_undealed
+				set @buy_order_dealed=@buy_order_dealed+@buy_order_undealed
+				update GpOrder set dealed=@buy_order_dealed,
+								   undealed=0
+								where order_id=@buy_order_id
+				select @new_trans_id=isnull(max(trans_id)+1,50000001) from GpTransaction
+				insert	into GpTransaction values(@new_trans_id,@buy_order_id,@buy_order_undealed,@order_id,getdate())
+				set @buy_order_undealed=0
+			end
+			else if (@buy_order_undealed>=@undealed)
+			begin
+				set @buy_order_undealed=@buy_order_undealed-@undealed
+				set @buy_order_dealed=@buy_order_dealed+@undealed
+				
+				update GpOrder set dealed=@buy_order_dealed,
+								   undealed=@buy_order_undealed
+								where order_id=@buy_order_id
+				select @new_trans_id=isnull(max(trans_id)+1,50000001) from GpTransaction
+				insert	into GpTransaction values(@new_trans_id,@buy_order_id,@undealed,@order_id,getdate())
+			
+				set @dealed=@dealed+@undealed
+				set @undealed=0
+				break
+			end
+		end
+		update GpOrder set dealed=@dealed,undealed=@undealed where order_id=@order_id
+		close buy_orders
+		deallocate buy_orders
+	end

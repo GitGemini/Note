@@ -1,0 +1,17 @@
+//windows 验证方式
+string constr = "Data source=localhost;Initial catalog=MyDataBase;Integrated security=true";
+//默认情况下ado.net启用连接池，此时调用con.close()并不会关闭连接，而是把连接对象放入连接池中
+//关闭连接池
+string constr = "Data source=localhost;Initial catalog=MyDataBase;Integrated security=true;Pooling=false";
+
+//SqlServer 验证
+string constr = "Data source=localhost;Initial catalog=MyDataBase;User Id=sa;Password=123456";
+
+
+
+------ado.net连接池使用注意事项
+1.凡是用到池的地方，一般存在两种情况：
+//创建对象比较费时，
+//创建对象比较繁琐
+//池的作用：提高了创建对象的效率
+

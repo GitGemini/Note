@@ -1,0 +1,10 @@
+[MetadataType(typeof(AValidate))]
+public partial class A{
+	public string Name{get;set;}
+}
+
+//为Name加特性
+public class AValidate{
+[StringLength(5,ErrorMessage="来自伙伴类的元数据")]
+	public string Name{get;set;}
+}

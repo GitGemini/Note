@@ -1,0 +1,15 @@
+Server属性是HttpServerUtility的一个实例
+提供对服务器上的方法和属性的访问
+
+1.Sever.MapPath == Request.MapPath
+将虚拟路径转换为实际路径
+
+2.Server.Excute() ,Server.Transfer() 
+执行另一个页面的脚本
+
+3.Server.UrlEncode与Server.UrlDecode
+与js中的decodeURI和encodeURI一样可以转换请求地址
+
+4.Server.HtmlEncode 与 Server.HtmlDecode
+将Html标签代码转换为普通文本
+

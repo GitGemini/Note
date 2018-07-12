@@ -1,0 +1,19 @@
+ /*集合使用技巧
+  * 单列集合:Collection
+  * 双列集合:Map
+  *  需要唯一吗？
+  *  	需要:set
+  *  		需要顺序吗？
+  *  			需要：TreeSet
+  *  			需要一个和存储顺序一样的顺序:LinkedHashSet
+  *  			不需要:HashSet
+  *  	不需要 List
+  *  
+  * 看到Array:就要想到数组，查询快，有角标
+  * 看到Link:就要想到链表，插入删除快，add，get First，Last
+  * 看到Hash:哈希表，元素唯一。元素要覆盖equals和hashCode方法
+  * 看到Tree:想到树，想到排序，两个接口Comparable,Comparator
+  * 
+  * 通常集合都是不同步的，
+  * 同步的集合只有Vector 单列，HashTable双列
+  * */

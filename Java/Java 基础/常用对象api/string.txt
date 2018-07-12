@@ -1,0 +1,60 @@
+/* 字符串是一个特殊的对象
+ * 字符串一旦被初始化就不可以被改变
+ * 
+ * 下面两种方法有什么区别??
+ * String str="abc";    //存储在字符串常量池中 有就拿出来用，没有才创建 
+ * String str = new String("abc");// 在堆中创建一个新对象，构造时接收一个字符串对象，并未在字符串常量池中进行任何动作
+ * String 使用 new 在堆中创建了两个对象 一个new 一个字符串对象在堆内存中
+ * 
+ * == 比较两个对象的地址
+ * 字符串的equals重写了Object的方法  比较两个字符串的内容
+ * 
+ * 常用方法
+ * String s= new String(); //创建一个"" 字符串 等价于 String s = ""; 
+ * byte[] arr = new byte[]{97,65};
+	String s1 = new String(arr);//"aA"
+ * char[] arr= new char[]{' ','a','A'};
+		String s = new String(arr);" aA"
+ * 常用功能:
+ * 1、获取字符串长度  length()
+ * 2、获取某个位置上的字符 charAt(int index)
+ * 3、获取字符/字符串 第一次出现的索引  从下标0开始    indexOf('a')
+ * 4、获取字符/字符串 第一次出现的索引  从字符串末尾开始    lastIndexOf('a')
+ * 5、返回指定子字符串在此字符串中第一次出现处的索引，从指定的索引开始 int indexOf(String str, int fromIndex) 
+ * 6、 String intern() 返回字符串对象的规范化表示形式。
+ * 7、获取一部分子串    substring(beginIndex,endIndex) 包括开始不包括结束==>CharSequence subSequence(beginIndex,endIndex)
+ * 		substring(beginIndex) 从beginIndex到结尾
+ * 
+ * 8、转换
+ * 	8.1、字符串变成字符串数组(字符串切割)  String[] split(String regex) 根据给定正则表达式的匹配拆分此字符串。 
+ *								String[] split(String regex, int limit) 根据匹配给定的正则表达式来拆分此字符串。 
+ * 	limit 参数控制模式应用的次数，因此影响所得数组的长度。如果该限制 n 大于 0，则模式将被最多应用 n - 1 次，数组的长度将不会大于 n，
+ *  而且数组的最后一项将包含所有超出最后匹配的定界符的输入。如果 n 为负，那么模式将被应用尽可能多的次数，
+ *  而且数组可以是任何长度。如果 n 为 0，那么模式将被应用尽可能多的次数，数组可以是任何长度，并且结尾空字符串将被丢弃。 
+ *	
+ *	8.2、 将字符串转换成字符组 toCharArray()
+ *	
+ *	8.3、将字符串转成字节数组  getBytes 
+ *	
+ *	8.4、字母大小写转换 toLowerCase 小写 toUpperCase 大写
+ *	
+ *	8.5、替换 replace  replaceAll  replaceFirst
+ *	
+ * 	8.6、去掉两端的空格 trim()
+ *
+ *	8.7、String concat(String str) 将指定字符串连接到此字符串的结尾。 
+ *	
+ *9、判断两个字符串是否相等 
+ *	boolean equals(Object anObject) 将此字符串与指定的对象比较。 
+ *	boolean equalsIgnoreCase(String anotherString) 将此 String 与另一个 String 比较，不考虑大小写。 	
+ *  boolean contains(CharSequence s) 当且仅当此字符串包含指定的 char 值序列时，返回 true。 
+ *  boolean endsWith(String suffix)  测试此字符串是否以指定的后缀结束。	
+ *	boolean startsWith(String prefix) 测试此字符串是否以指定的前缀开始。 
+ *	boolean startsWith(String prefix, int toffset)  测试此字符串从指定索引开始的子字符串是否以指定前缀开始。 
+ *	boolean isEmpty() 当且仅当 length() 为 0 时返回 true。 
+ *  
+ *10、比较
+ *	 int compareTo(String anotherString) 按字典顺序比较两个字符串。 
+ *	 int compareToIgnoreCase(String str) 按字典顺序比较两个字符串，不考虑大小写。 
+ *
+ * */

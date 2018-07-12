@@ -1,0 +1,77 @@
+//导 出到Excel
+//1.读取表中数据
+string sql = "select * from TableName";
+using(SqlDataReader reader = SqlHelper.ExcuteReader(sql,CommandType.Text)
+{	
+	if(reader.HasRows)
+	{
+		//把读出的数据写入到Excel中
+		//创建IWorkbook和Sheet
+		IWorkbook wk = new HSSFWorkbook();
+		ISheet sheet = wk.CreateSheet("TAbleName");
+		int index=0;
+		while(reader.Read())
+		{	
+			IRow currentRow = sheet.CreateRow(index);
+			index++;
+			int areaId = reader.GetInt32(0);
+			string areaName = reader.GetString(1);
+			int areaPid = reader.GetInt32(2);
+			
+			//创建单元格
+			currentRow.CreateCell(0).SetValue(areaId);
+			currentRow.CreateCell(1).SetValue(areaName);
+			currentRow.CreateCell(2).SetValue(areaPid);			
+		}
+		//将Workbook写入到磁盘上
+		using(FileStram fw = File.OpenWrite("TableName.xls");
+		{
+			wk.Write(fw);
+		}
+	}
+}
+
+//Excel导入到数据库
+//1.从Excel中读取数据
+//2.将数据插入到数据库中
+using(FileStream fr = File.Open(excelFilePath))
+{
+	//创建workbook对象
+	IWorkbook wk = new HFFSWorkbook(fr);
+	//获取sheet
+	ISheet sheet = wk.GetSheetAt(0);
+	//插入语句
+	string sql = "insert into TableName values(@name,@pid)";
+	//遍历所有行
+	for(int r=0; r<sheet.LastRowNum; r++)
+	{
+		//获取每一行
+		IRow currentRow = sheet.GetRow(r);
+		//listCell保存每行的所有单元格的内容
+		List<ICell> listCell = new List<ICell>();
+		SqlParameter[] pms = new SqlParameter[]
+		{
+			new SqlParameter("@name",SqlDbType.NVarChar,50),
+			new SqlParameter("@name",SqlDbType.Int)
+		};
+		
+		//获取每个单元格
+		for(int c=1; c<currentRow.LastRowNum; c++)
+		{
+			ICell curentCell = currentRow.GetCell(c);
+			listCell.Add(currentCell);
+		}
+		
+		for(int i=0 ; i<listCell.Count; i++)
+		{
+			pms[i].value=listCell[i].ToString();
+		}
+		//执行sql语句
+		SqlHelper.ExecuteNonQuery(sql,CommandType.Text,pms);
+	}
+}
+
+
+
+
+

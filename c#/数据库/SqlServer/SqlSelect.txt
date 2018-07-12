@@ -1,0 +1,315 @@
+﻿--自动编号问题
+INSERT时如果要用到从1开始自动增长的数字做唯一关键字, 应该先建立一个序列号.
+CREATE SEQUENCE 序列号的名称 (最好是表名+序列号标记) INCREMENT BY 1 START WITH 1 MAXVALUE 99999 NOCYCLE NOCACHE;
+其中最大的值按字段的长度来定,比如定义的自动增长的序列NUMBER(6) , 最大值为999999
+INSERT 语句插入这个字段值为: 序列号的名称.NEXTVAL
+例子: SQL> insert into s_dept(id, name, region_id) values (s_dept_id.nextval, ‘finance’, 2);
+1 row created.
+只有运行了序列号的名称. nextval后序列号的名称. currval 才有效才有值.
+
+sql中有两种方式表示不等于，一种是"<>"(不含引号)，另一种是"!="(不含引号)，用法是一样的。
+*表示查询所有列 
+不加where 表示查询所有行
+
+select * from student （查询所有列所有行）
+
+select 列名，+ from student （查询指定的列）
+
+select * from student where tSId = 5 （查询Id为5的学生信息）
+
+为查询结果集中地列起别名
+方式1：
+select 
+	tSName as 学生姓名，
+	tSId as 学生编号
+from student
+
+方式2：
+select 
+	tSName '(学生姓名)', //可以省略as ，有特殊符号需用''
+	tSId 学生编号
+from student
+
+方式3；
+select 
+	tSName = 学生姓名，
+	tSId = 学生编号，
+	是否违规='否'//可以为查询结果添加一列
+from student
+
+select 后也可以跟函数或者表达式，可以单独使用select，并不一定要和fron结合使用
+select 当前系统日期=getdate()
+select 1+1
+
+
+Distinct（针对已经查询出来的结果，去除重复数据）
+select distinct * from student
+
+
+order by 排序
+
+select * from student order by tSAge desc --降序排序
+select * from student order by tSAge asc --升序排序   默认升序排序
+
+top（获取前几条数据，一般与order by 连用）
+
+select top 5 * from TblScore order by tMath desc --获取数学成绩最高的前五名
+select top 5 * from TblScore order by tMath asc  --获取数学成绩最低的前五名
+
+--如果top后跟的不是数字，而是一个表达式，需要用（）将表达式括起来
+select top (2*2) * from TblScore order by tMath asc
+--按百分比取
+select top 30 percent * from TblScore order by tMath desc
+
+----聚合函数--
+
+五个常用的聚合函数(NULL值不计)
+MAX
+MIN
+AVG
+SUM
+COUNT
+
+统计学生年龄的总和
+select sum（tSAge) as 年龄总和 from tStudent
+
+--统计学生人数
+select count(*) from tStudent
+
+计算平均年龄
+select 平均年龄=(select sum(tSAge) from tStudent)/(select count(*) from tStudent)  
+select avg(tSAge) from tStudent
+
+MAX MIN 相似
+
+1.聚合函数不统计空值
+2.如果使用聚合函数时没有手动group by 分组，那么聚合函数会把整个表中的数据作为一组来统计
+
+
+//条件查询
+--查询没有及格的学生
+select tSId 
+from TblScore
+where tMath <60 or tEnglish<60
+
+--查询年龄在20-30之间的男学生信息
+select * 
+from TblStudent 
+where tSAge<=30 and tSAge<=20 and tSGender='男'(where tSAge between 20 and 30 and tSGender='男')  
+
+--数学成绩在80-90之间
+
+select * from TblScore
+where tMath between 80 and 90
+
+--查询3，4，5班的学生
+select * from TblStudent
+where tClassId in (3,4,5) <==>(where tClassId=3 or tClassId=4 or tClassId=5)
+--对于in或者or查询，如果查询中的条件是连续几个值，最好使用<= 和 >= 或者 between..and..
+
+--模糊查询（针对字符串的查询）
+--通配符 - % [] ^
+注意:能写a%就不要写%a
+1)-:表示任意的单个字符
+--查询姓张的学生，且姓名为两个字
+select * from TblStudent where tSName like '张_'(tSName like '张%' and len(tSName)=2)
+2)%:匹配任意多个的任意字符
+--查询姓张的学生
+select * from TblStudent where tSName like '张%'  
+update TblStudent set tSName = replace(tSName,'(女)','')  
+3)[]:表示范围，筛选,同正则，默认忽略大小写
+select * from TblStudent where tSName like '张[a-z0-9]妹' 
+4)^：表示非
+select * from TblStudent where tSName like '张[^a-z0-9]妹' 
+
+--查询所有姓名包含百分号的学生，将通配符放入[]就转义了
+select * from TblStudent where tSName like '%[%]%'   (*%*)
+select * from TblStudent where tSName like '%[[]%'  (*[*)
+select * from TblStudent where tSName like '%]%'   (*]*)
+
+--ESCAPE 自定义转义符
+
+select * from TblStudent where tSName like '%\%%' ESCAPE '\'  (*%*)
+select * from TblStudent where tSName like '%\[%\]%' ESCAPE '\'  (*[*]*)
+
+--空值处理
+--查询所有年龄是null的学生 (null值无法使用=或者<>来进行比较(unknow)) 判断null值使用 is null 和is not null
+
+select * from TblStudent where tSAge is null
+--任何值与null进行运算结果都是null
+--order by 语句 进行排序
+1.降序排序 order by 列名 desc
+2.升序排序 order by 列名 asc  默认升序排序
+3.order by 语句必须一定要放在整个Sql语句的最后来执行
+
+--先根据英语成绩排序，再根据数学成绩排序
+select * from TblScroe order order by tEnglish desc,tMath desc
+
+select 
+	*,
+	平均分=(tEnglish+tMath)*1.0/2
+from TblScroe
+order by 平均分 desc    
+
+--Group by 按照一定条件进行分组  一般配合聚合函数来使用
+
+--1.请从学生表中查询出每个班的班级Id和班级人数
+select tSClassId as 班级ID,班级人数=count(*) 
+from TblStudent
+group by tSClassId
+
+--请统计出班级中男同学与女同学的人数分别是多少
+select 
+	性别=tSGender,
+	人数=count(*)
+from TblStudent   
+group by tSGender
+
+--请从学生表中查询每个班级的班级Id和班级中男同学的人数S
+select 班级Id=tSClassId,男生人数=count(*) 
+where Gender='男'
+group by tSClassId   
+
+--注意：当使用了分组语句或者聚合函数时，select后面不能再跟其他列名，除非该列同时出现在Group by中，或者使用聚合函数
+
+--Having  对分组后的数据进行筛选 ,位于group by 后面，只可以可以使用聚合函数或者分组后包含的列名，where后面不能使用聚合函数
+--where 子句的作用是在对查询结果进行分组前，将不符合where条件的行去掉，即在分组之前过滤数据，条--件中不能包含聚组函数，使用where条件显示特定的行。
+--having 子句的作用是筛选满足条件的组，即在分组之后过滤数据，条件中经常包含聚组函数，使用having --条件显示特定的组，也可以使用多个分组标准进行分组。
+select tSClassId as 班级ID,班级人数=count(*) 
+from TblStudent
+group by tSClassId 
+having count(*)>10
+
+
+--热销商品排名表
+select 
+	商品名称，
+	sum(销售数量) as 销售数量
+from Orders
+group by 商品名称
+order by 销售数量 desc
+
+--请统计销售总价超过3000元的商品名称和销售总价，按销售总价降序排序
+select 
+	商品名称，
+	销售总价=sum（销售数量*销售价格）
+from Orders
+group by 商品名称
+having sum(销售数量*销售价格)>3000
+order by 销售总价 desc
+
+--统计出每个客户对可口可乐的喜爱度
+select 
+	购买人,
+	购买数量=sum(销售数量)
+from Orders
+where 商品名称='可口可乐'
+group by 购买人
+order by 购买数量 desc
+
+
+--cast convert 类型转换函数
+--cast(值 as 数据类型)  eg:cast('1000' as int)
+--convert(数据类型,值,[style])  eg:convert(int,'1000',[style]) style可有可无
+
+--union 联合查询 将两个查询的结果联合起来，行联合，而join是列联合
+--union all 与 union的差别，union会去除重复，并自动排序
+--联合的两次查询必须列数相等，且同列的数据必须可以相互兼容
+
+
+--表备份(将一个表的结构和数据备份到另一个表，不包括表的约束)
+select * from oldTable into newTable
+
+--只拷贝表结构，不拷贝数据
+select top 0 * from oldTable into newTable
+（select * from oldTable into newTable where 1<>1)
+
+
+--一次性插入多条数据 
+insert into TableName 
+select 列1，列2....
+from TableName
+where .....
+
+
+--字符串函数
+--LEN()  计算字符的个数
+
+
+--datalength() 返回所占用的字节个数 
+--字符串前不加N，中文字符两个字节，英文字符一个字节
+--加N为unicode编码，中文英文都占两个字节
+
+--upper()转换大写
+--lower()转换小写
+
+
+--去掉两端的字符
+--ltrim() 去掉左边字符
+--rtrim()去掉右端字符
+print '====='+rtrim(ltrim('   hello   ')) + '=====' (=====hello====)
+
+--字符串截取
+--left(string,i)  从左边开始截取i个字符
+--right(string,i) 从右边开截取i个字符，如right('123456',3)=>(456)
+--substring(string,i,j)从string的第i个字符开始截取j个字符
+
+
+--日期函数
+--getdate() 打印时间
+
+--sysdatetime() 打印时间精度更高
+
+--dateadd()   在当前日期上在加一些时间 dateadd(day,200,getdate())天数上加200天，dateadd(month,200,getdate()) 月上加200月 以此类推
+
+--datediff() 计算两个日期的差   datediff(day,'1990-12-1',getdate()) 1990-12-1
+到当前日期差多少天 以此类推
+
+
+
+--统计入职n年的员工的人数（1年  3； 2年  5）
+select 
+	入职年数 = diff(year,JoinDate,getdate()),
+	人数 = count(*)
+from Employee
+group by diff(year,JoinDate,getdate())
+
+
+--获取日期的部分值 datepart返回数字形式； datename 返回字符串形式 用法一样
+--datepart(year,getdate) 当前日期的年部分
+--datepart(month,getdate) 当前日期的月部分
+--datepart(day,getdate) 当前日期的天部分 以此类推
+
+--不同年份入职的员工个数
+select 
+	入职年份=datepart(year,JoinDate),
+	count(*) as 人数
+from Employee
+group by datepart(year,JoinDate)
+
+
+
+
+--
+select 
+	*,
+	'通话时长(秒)' = datediff(second,StartDateTime,EndDateTime)
+from CallReader
+order by '通话时长(秒)' desc 
+
+select 
+	top 5
+	呼叫员编号 = CallerNumber,
+	'通话时长(秒)' = sum(datediff(second,StartDateTime,EndDateTime))
+from CallReader
+where DATEDIFF(month,StartDateTime,'2010-07-31')=0
+group by CallerNumber
+order by '通话时长(秒)' desc
+
+
+select 
+	呼叫员编号 = CallerNumber,
+	呼叫次数 = COUNT(*)
+from CallReader
+group by CallerNumber
+order by 呼叫次数 desc

@@ -1,0 +1,458 @@
+　　数据库操作：
+创建数据库
+create database database_name
+查看数据库
+show databases
+使用数据库
+use dbname
+删除数据库
+drop database dbname
+导出整个数据库
+mysqldump -u username -p database_name > d:/dbfile.sql
+导出一个表
+mysqldump -u username -p database_name tablename >d:/tablename.sql
+导出一个数据库结构
+mysqldump -u username -p -d --add-drop-table database_name >d:/file.sql
+导入数据库
+source filename
+mysql -u username -p database_name <filepath
+将文本导入数据库(excel与之相同)
+load data infile "table.txt" into table tablename
+将数据表导出为文本文件(excel与之相同)
+select * into outfile "filepath" from tablename
+
+
+　　表操作：
+创建新表
+create table if not exists 'tb_name'(
+　　　　id tinyint unsigned not null auto_increment,　　　　　#id值，无符号、非空、递增、唯一性，可做主键。
+　　　　Sno varchar(20) not null,
+　　　　name varchar(60) not null,
+　　　　score tinyint unsigned not null default 0,　　　　 　　#设置默认列值为0
+　　　　Tno varchar(20) not null references teacher(no), 　　#设置外键，关联teacher表的no
+　　　　primary key(id,Sno) 　　　　　　　　　　　　　　　-- 设置表主键，id和Sno
+)
+engine=InnoDB 　　 #设置表的存储引擎，一般常用innodb和myisam；innodb可靠，支持事务；myisam高效不支持全文检索
+default charset=utf8; 　　/*设置默认的编码，防止数据库中文乱码*/
+
+复制表
+create table tab_new like tab_old (使用旧表创建新表)
+create table tab_new as select col1,col2… from tab_old definition only
+创建临时表
+create temporary table tb_name(这里和创建普通表一样)
+查看数据库中可用的表
+show tables
+查看表的结构
+show columns from tablename　　describe tb_name
+删除新表
+drop table if exists tbname
+表重命名
+alter table name_old rename name_new
+
+添加列
+alter table tabname add column col varchar(8) not null
+修改列
+alter table tablename change id id1 varchar(10) not null
+删除列
+alter table tablename drop col
+
+添加主键
+alter table tabname add primary key(col)
+删除主键
+alter table tabname drop primary key(col)
+创建索引
+create [unique] index idxname on tabname(col….)
+alter table tablename add index idxname on (col1,col2)
+删除索引
+alter table tablename drop index idxname
+创建视图
+create view viewname as select statement
+删除视图
+drop view viewname
+
+基本数据操作：
+筛选：select * from tbname where id=1
+插入：insert into tbname(field1,field2) values(value1,value2)
+删除：delete from tbname where id=1
+更新：update tbname set field1=value1 where id=1
+查询：select * from tbname where field1 like ’%value1%’
+查询前两条：select * from tablename limit 0,2
+去重查询：select distinct name from tbname
+排序：select * from tbname order by field1,field2 [desc/asc]
+总数：select count(field1) as totalcount from tbname
+求和：select sum(field1) as sumvalue from tbname
+平均：select avg(field1) as avgvalue from tbname
+最大：select max(field1) as maxvalue from tbname
+最小：select min(field1) as minvalue from tbname
+
+查询：
+select * from tbname; 　　查询所有数据
+select name,age from tbname where age between 18 and 22; 　　范围查询
+select * from tbname where Name like '%小%'; 　　%通配符代表任意多个字符
+select * from tbname where Name like '_小茗'; 　　_通配符代表任意一个字符
+select Sname,year(now()) - year(Sbirthday) from student; 　　查询学生的姓名和年龄
+
+排序：
+select * from tbname order by age asc; 　　　按照年龄升序排列,默认为ASC升序
+select * from tbname order by age desc; 　　  按照年龄降序排列
+select * from tbname order by age asc,score desc; 　　 按照两列进行排序，前面的为主要的
+
+连接：
+select * from table1 inner | left | right join table2 on conditiona
+table1 通常称为左表，table2 称为右表。on 关键字用于设定匹配条件
+left join 获取得左表（table1）全部记录，即使右表（table2）并无对应匹配记录
+right join 获取得右表（table2）全部记录，即使左表（table2）并无对应匹配记录
+inner join（内连接,或等值连接）取得两个表中存在连接匹配关系的记录(取两表交集)
+注意：mysql不支持full join,不过可以通过union 关键字来模拟full join.
+
+术语字符介绍：
+？ 　　　　　　　　　   任何一个单一的字符
+_ 　　　　　　　　　　 匹配单个任意字符
+* 　　　　　　　　　　  任意长度的字符
+% 　　　　　　　　　　匹配任意类型和长度的字符，如果是中文，使用两个百分号即%%
+# 　　　　　　　　　　 0~9之间的单一数字
+= 　　　　　　　　　　 等于
+!= 　　　　　　　　　　不等于，某些数据库系统也写作 <>
+[] 　　　　　　　　　　 指定一个字符、字符串或范围，要求所匹配对象为它们中的任一个
+[^] 　　　　　　　　　   匹配对象为指定字符以外的任意一个字符
+[字符列表] 　　　　　　 在字符列表里的任意一值
+[！字符列表] 　　　　　 不在字符列表里的任一值
+[a-z] 　　　　　　　　　指定字符范围，两边的值分别为其上下限
+[not] like 　　　　　　　 检验一个字符串数据的字段值(不)包含匹配的指定模式
+is [not] null 　　　　　　(不)是空
+var 　　　　　　　　　  方差
+stdev 　　　　　　　　  标准误差
+first 　　　　　　　　　 第一个值
+last 　　　　　　　　　  最后一个值
+having 　　　　　　　　子句作用于组,在聚合后对组记录进行筛选
+union 　　　　　　　　  用于合并两个或多个 SELECT 语句的结果集，并消去表中任何重复行
+any　　 　　　　　　　  与比较操作符联合使用，表示与子查询返回的任何值比较为true，则返回true。
+some　　　　　　　　   any 的别名，较少使用。
+all　　　　　　　　　　 与比较操作符联合使用，表示与子查询返回的所有值比较都为true，则返回true。
+[not]in(子查询) 　　　　  检查表达式的值是否匹配子查询返回的一组值的某个值
+[not]exists (子查询) 　　  检测子查询是否返回任何记录
+
+逻辑运算符：优先级为not、and、or
+书写顺序：select--from--where--group by--having--order by
+执行顺序：from--where--group by--having--select--order by
+# 　　　　 注释直到该行结束
+-- 　　　　 注释直到该行结束(注意--后面必须有一个空格)
+/* */ 　　　  在行中间的注释
+
+数据库分页
+select top 10 b.* from (select top 20 主键字段,排序字段 from tbname order by 排序字段
+desc) a,tbname1 b where b.主键字段 = a.主键字段 order by a.排序字段
+
+前10条记录
+select top 10 * form tbname where datatime between time1 and time2
+
+选择从10到15的记录
+select top 5 * from (select top 15 * from tbname order by id asc) anothername order by id desc
+
+MySQL 为日期增加一个时间间隔：date_add()
+set @dt = now();
+select date_add(@dt, interval 1 hour); -加1小时
+select date_add(@dt, interval 1 day); - 加1天
+select date_add(@dt, interval 1 week);-加1周
+select date_add(@dt, interval 1 month);-加1月
+select date_add(@dt, interval 1 quarter);-加1季
+select date_add(@dt, interval 1 year);-加1年
+MySQL 为日期减去一个时间间隔：date_sub()
+
+mysql的正则表达式：
+
+select * from tb_name where name REGEXP  '^[a-d]' 　　　　#找出以a-d为开头的name
+
+mysql数据类型
+MySQL支持多种类型，大致可以分为四类：数值型、浮点型、日期/时间和字符串(字符)类型。
+数值数据类型 integer、smallint、decimal、numeric，关键字int是integer的同义词，关键字dec是decimal的同义词
+近似数值数据类型	float、real、double precision
+mysql也支持整数类型tinyint、mediumint 和 bigint
+整数类型 　　   字节 　　 范围（有符号） 　　 　　　　　　 范围（无符号） 　　　　　　　　　　　 用途
+TINYINT 　　   1字节　    (-128，127)　　　　 　　　　　　(0，255) 　　　　　　　　　　　　　　 小整数值
+SMALLINT 　   2字节 　   (-32 768，32 767) 　　　　　　　 (0，65 535) 　　　　　　　　　　　　  大整数值
+MEDIUMINT 　3字节 　   (-8 388 608，8 388 607) 　　　　  (0，16 777 215) 　　　　　　　　　　  大整数值
+INT或INTEGER 4字节 　  (-2 147 483 648，2 147 483 647)   (0，4 294 967 295) 　　　　　　　　　大整数值
+BIGINT 　8字节   (-9 233 372 036 854 775 808，9 223 372 036 854 775 807)    (0，18 446 744 073 709 551 615)    极大整数值
+FLOAT 　 4字节   (-3.402 823 466 E+38，1.175 494 351 E-38)，0，(1.175 494 351 E-38，3.402 823 466 351 E+38) 　　　　　　　　　　　　　　　　　　　　0，(1.175 494 351 E-38，3.402 823 466 E+38) 　　　　 单精度浮点数值
+DOUBLE   8字节 　　(1.797 693 134 862 315 7 E+308，2.225 073 858 507 201 4 E-308)，0，(2.225 073 858 507 201 4 E-308，1.797 693 134 862 315 7 E+308) 　　　0，(2.225 073 858 507 201 4 E-308，1.797 693 134 862 315 7 E+308)     双精度浮点数值
+DECIMAL 　　对DECIMAL(M,D) ，如果M>D，为M+2否则为D+2 依赖于M和D的值 依赖于M和D的值 　　小数值
+
+字符串类型指 　　 char、varchar、binary、varbinary、blob、text、enum、set
+字符串类型 　　　 　　 字节大小 　　　　　　　　　　   描述及存储需求
+CHAR　　　　　　　　0-255字节 　　　　　　　　　　 定长字符串
+VARCHAR 　　　　　   0-255字节 　　　　　　　　　　 变长字符串
+TINYBLOB 　　　　　  0-255字节 　　　　　　　　　　 不超过 255 个字符的二进制字符串
+TINYTEXT 　　　　　  0-255字节 　　　　　　　　　　  短文本字符串
+BLOB 　　　　　　　   0-65535字节 　　　　　　　　　 二进制形式的长文本数据
+TEXT　　　　　　　　 0-65535字节 　　　　　　　　　 长文本数据
+MEDIUMBLOB 　　　   0-16 777 215字节 　　　　　　   二进制形式的中等长度文本数据
+MEDIUMTEXT 　　　   0-16 777 215字节 　　　　　　    中等长度文本数据
+LOGNGBLOB 　　　　 0-4 294 967 295字节 　　　　　  二进制形式的极大文本数据
+LONGTEXT 　　　　　 0-4 294 967 295字节 　　　　　  极大文本数据
+VARBINARY(M) 　　　 　　　　　　　　　　允许长度0-M个字节的定长字节符串，值的长度+1个字节
+BINARY(M) M 　　　　 　　　　　　　　　　允许长度0-M个字节的定长字节符串
+
+日期和时间类型
+类型 　　大小(字节) 　　　范围 　　　　 　　 　　　　　　 格式 　　　　　　 　　　　　　　 用途
+DATE 　　 4 　　　　　1000-01-01/9999-12-31 　　　　YYYY-MM-DD 　　　　 　　　　　　 日期值
+TIME 　　 3　　　　　  '-838:59:59'/'838:59:59' 　　　　HH:MM:SS 　　　　　　　　　　 时间值或持续时间
+YEAR 　   1 　　　　　　 1901/2155 　　　　　　　　　　 YYYY 　　　　　　　　　　　　　 年份值
+DATETIME    8 　 1000-01-01 00:00:00/9999-12-31 23:59:59 YYYY-MM-DD HH:MM:SS 　　混合日期和时间值
+TIMESTAMP 4 　 1970-01-01 00:00:00/2037 年月时 　　YYYYMMDD HHMMSS 混合日期和时间值，时间戳
+
+登陆mysql数据库
+mysql -u username -p
+开启/关闭mysql服务
+service mysql start/stop
+查看mysql的状态
+service mysql status
+
+Windows启动MySQL服务
+net start/stop MYSQL57
+
+Shell 登入 MySQL
+mysql -u root -p
+　　MySQL在Windows下都不区分大小写，区分字段值的大小写，则需要设置BINARY属性
+
+用户管理：
+新建用户
+create user username identified by 'password';
+更改密码
+set password for name=password('password');
+权限管理
+show grants for name; 　　　　　　　　　　　  #查看name用户权限
+grant select on db_name.* to name;　　　　　   #给name用户db_name数据库的所有权限
+revoke select on db_name.* to name;　　　　　 #grant的反操作，去除权限；
+查询数据库版本
+select version()
+查询当前用户
+select user()
+分配权限 grant
+grant select,update,delete,insert on dbname.* to username
+grant all privileges on dbname.* to username@localhost
+
+撤销用户权限
+REVOKE privilege ON databasename.tablename FROM username;
+
+1. MYISAM和INNODB的不同？
+答：主要有以下几点区别：
+a)构造上的区别
+MyISAM在磁盘上存储成三个文件，其中.frm文件存储表定义；.MYD (MYData)为数据文件；.MYI (MYIndex)为索引文件。
+而innodb是由.frm文件、表空间（分为独立表空间或者共享表空间）和日志文件（redo log）组成。
+b)事务上的区别
+myisam不支持事务；而innodb支持事务。
+c)锁上的区别
+myisam使用的是表锁；而innodb使用的行锁（当然innodb也支持表锁）。
+表级锁：直接锁定整张表，在锁定期间，其他进程无法对该表进行写操作，如果设置的是写锁，那么其他进程读也不允许，因此myisam支持的并发量低，但myisam不会出现死锁；
+行级锁：只对指定的行进行锁定，其他进程还是可以对表中的其他行进行操作的。因此行锁能大大的减少数据库操作的冲突，但有时会导致死锁。
+d)是否支持外键的区别
+myisam不支持外键，innodb支持外键
+e) select count(*)的区别
+对于没有where的count(*)使用MyISAM要比InnoDB快得多。因为MyISAM内置了一个计数器，count(*)时它直接从计数器中读，而InnoDB必须扫描全表。
+f)myisam只把索引都load到内存中，而innodb存储引擎是把数据和索引都load到内存中
+
+2.如果发现CPU，或者IO压力很大，怎么定位问题？
+答：
+1、首先我会用top命令和iostat命令，定位是什么进程在占用cpu和磁盘io；
+2、如果是mysql的问题，我会登录到数据库，通过show full processlist命令，看现在数据库在执行什么sql语句，是否有语句长时间执行使数据库卡住；
+3、执行show innodb engine status命令，查看数据库是否有锁资源争用；
+4、查看mysql慢查询日志，看是否有慢sql；
+5、找到引起数据库占用资源高的语句，进行优化，该建索引的建索引，索引不合适的删索引，或者根据情况kill掉耗费资源的sql语句等
+复制代码
+
+  1 -- http://www.cnblogs.com/aqxss/p/6563625.html
+  2 use webapp;
+  3 show tables；
+  4 describe student
+  5 select * from teacher
+  6 drop table course
+  7 
+  8 create table if not exists student( 
+  9 id tinyint unsigned not null auto_increment,
+ 10 Sno varchar(20) not null,
+ 11 Sname varchar(20) not null,
+ 12 Ssex varchar(20) not null,
+ 13 Sbirthday datetime,Class varchar(20), 
+ 14 Class varchar(20),
+ 15 CreateTime datetime not null,
+ 16 UpdateTime datetime not null,
+ 17 primary key(id,Sno)
+ 18 )
+ 19 COLLATE='utf8_general_ci'
+ 20 ENGINE=InnoDB
+ 21 
+ 22 create table if not exists teacher(
+ 23 id tinyint unsigned not null auto_increment,
+ 24 Tno varchar(20) not  null,
+ 25 Tname varchar(20) not null,
+ 26 Tsex varchar(20) not null,
+ 27 Tbirthday datetime,
+ 28 Prof varchar(20),
+ 29 Depart varchar(20) not null,
+ 30 CreateTime datetime not null,
+ 31 UpdateTime datetime not null,
+ 32 primary key(id,Tno)
+ 33 )
+ 34 COLLATE='utf8_general_ci'
+ 35 ENGINE=InnoDB
+ 36 
+ 37 create table if not exists course(
+ 38 id tinyint unsigned not null auto_increment,
+ 39 Cno varchar(20) not null,
+ 40 Cname varchar(20) not null,
+ 41 Tno varchar(20) not null references teacher(Tno),
+ 42 CreateTime datetime not null,
+ 43 UpdateTime datetime not null,
+ 44 primary key(id,Cno,Tno)
+ 45 )
+ 46 COLLATE='utf8_general_ci'
+ 47 ENGINE=InnoDB
+ 48 
+ 49 create table if not exists score(
+ 50 id tinyint unsigned not null auto_increment,
+ 51 Sno varchar(20) not null references student(Sno),
+ 52 Cno varchar(20) not null references course(Cno),
+ 53 Degree Decimal(4,1),
+ 54 CreateTime datetime not null,
+ 55 UpdateTime datetime not null,
+ 56 primary key(id,Sno,Cno)
+ 57 )
+ 58 COLLATE='utf8_general_ci'
+ 59 ENGINE=InnoDB
+ 60 
+ 61 alter table student add column Class varchar(20);
+ 62 
+ 63 insert student(Sno,Sname,Ssex,Sbirthday,Class,CreateTime,UpdateTime) values
+ 64 (103,'陆君','男','1974-06-03','95031',now(),now());
+ 65 
+ 66 insert teacher(Tno,Tname,Tsex,Tbirthday,Prof,Depart,CreateTime,UpdateTime) values
+ 67 (831,'刘冰','女','1977-08-14','助教','电子工程系',now(),now());
+ 68 
+ 69 insert course (Cno,Cname,Tno,CreateTime,UpdateTime)values
+ 70 ('9-888','高等数学',831,now(),now());
+ 71 
+ 72 insert score (Sno,Cno,Degree,CreateTime,UpdateTime)values
+ 73 ('108','6-166',81,now(),now());
+ 74  
+ 75 select Sname,Ssex,Class from student 
+ 76 
+ 77 select distinct Depart from teacher
+ 78 
+ 79 select * from student
+ 80 
+ 81 select * from score where Degree between '68' and '79'
+ 82 
+ 83 select * from score where Degree in (85,86,88)
+ 84 
+ 85 select * from student where Class='95031' or Ssex='女'
+ 86 select * from student order by Class desc
+ 87 
+ 88 select * from score order by Cno asc,Degree desc;
+ 89 
+ 90 select count(*) from student where Class='95031';
+ 91 
+ 92 select Sno,Cno,Degree from score where Degree=(select max(Degree) from score)
+ 93 select Sno,Cno,Degree from score order by Degree desc limit 0,1;
+ 94 
+ 95 select Cno,avg(Degree) from score group by Cno
+ 96 
+ 97 select Cno,avg(Degree) from score where 
+ 98 Cno in (select Cno from score group by Cno having count(*) >=5) 
+ 99 and Cno like '3%';
+100 
+101 select Cno,avg(Degree) from score where Cno like '3%' group by Cno having count(*)>=5;
+102 
+103 select Sno,Degree from score where Degree>70 and  Degree<90;
+104 
+105 select Sname,Cno,Degree from student as s,score as c where s.Sno= c.Sno;
+106 select Sno,Cname,Degree from score,course where score.Cno=course.Cno;
+107 select Sname,Cname,Degree from student as st,score as sc,course as co where
+108 st.Sno=sc.Sno and co.Cno=sc.Cno;
+109 select Sname,Cname,Degree from student join score on score.Sno=student.Sno 
+110 join course on course.Cno=score.Cno;
+111 
+112 select avg(Degree) from score where 
+113 Sno in(select Sno from student where Class='95033')
+114 group by score.Cno;
+115 
+116 select * from score where score.Cno='3-105' and Degree >
+117 (select max(Degree) from score where Sno='109' and Cno='3-105');
+118 
+119 select * from score where Degree >
+120 (select max(Degree) from score where Sno='109' and Cno='3-105');
+121 
+122 select Sno,Sname,Sbirthday from student where year(Sbirthday)=
+123 (select year(Sbirthday) from student where Sno='108') or year(Sbirthday)=
+124 (select year(Sbirthday) from student where Sno='101');
+125 
+126 select s.Sname,r.Degree from student as s,score as r,course as c where 
+127 c.Tno=(select Tno from teacher where Tname='张旭') and r.Cno=c.Cno;
+128 
+129 select Tname from teacher where Tno=
+130 (select Tno from course where Cno in 
+131 (select Cno from score group by Cno having count(Cno)>5))
+132 
+133  select Tname from Teacher, Course where Teacher.Tno=Course.Tno and 
+134  Course.Cno =(select Cno from Score group by Cno having count(*)>5)
+135 
+136 select * from student where Class in ('95033','95031')
+137 
+138 select Cno from score where Degree>85;
+139 
+140 select * from score where Cno in(select Cno from course where Tno in(
+141 select Tno from teacher where Depart='计算机系'))
+142 
+143 select Tname,Prof from teacher where Depart='计算机系' and Prof not in
+144 (select Prof from teacher where Depart='电子工程系') union
+145 select Tname,Prof from teacher where Depart='电子工程系' and Prof not in
+146 (select Prof from teacher where Depart='计算机系')
+147 
+148 select Cno,Sno,Degree from score where
+149 
+150 
+151 select Cno,Sno,Degree from score where Cno='3-105' and Degree>
+152 any(select Degree from score where Cno='3-245') order by Degree Desc
+153 
+154 select Cno,Sno,Degree from score where Cno='3-105' and Degree> 
+155 all(select Degree from score where Cno='3-245') order by Degree desc
+156 
+157 select Tname,Tsex,Tbirthday from teacher union
+158 select Sname,Ssex,Sbirthday from student
+159 
+160 select Tname,Tsex,Tbirthday from teacher where Tsex='女' union
+161 select Sname,Ssex,Sbirthday from student where Ssex='女'
+162 
+163 select  Cno,avg(Degree) from score group by Cno
+164 
+165 select Sno,Degree from score a where Degree<
+166 (select avg(Degree) from score b where b.Cno=a.Cno)
+167 
+168 select Tname,Depart from teacher where Tno in (select Tno from course)
+169 
+170 select Tname,Depart from teacher where Tno not in (select Tno from course where
+171  Cno in (select Cno from score))
+172 
+173 select Class from student where Ssex='男' group by Class having count(*)>=2
+174 select class from student where ssex='男' group by class having count(*)>1
+175 
+176 select * from student where Sname not like '王%%'
+177 
+178 select Sname,year(now()) - year(Sbirthday) from student
+179 
+180 select max(Sbirthday),min(Sbirthday) from student
+181 
+182 select * from student order by Class desc,Sbirthday desc
+183 
+184 select Cname from course as c,teacher as t where t.Tsex='男' and t.Tno=c.Tno
+185 
+186 select Sno,Cno,Degree from score where Degree=(select max(Degree) from score)
+187 
+188 select Sname from student where Ssex=(select Ssex from student where Sname='李军')
+189 
+190 select Sname from student where Ssex=(select Ssex from student where Sname='李军') and
+191 Class=(select Class from student where Sname='李军')
+192 
+193 
+194 select Sno,Cno,Degree from score where Cno=(select Cno from course where Cname='计算机导论') and
+195 Sno in(select Sno from student where Ssex='男')

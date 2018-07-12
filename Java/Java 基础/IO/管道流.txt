@@ -1,0 +1,43 @@
+/* 管道流 成对出现，两个线程一个读取，一个写入 ,结合多线程使用的流
+ * 字节管道流:
+ * 管道输入流
+ * 	InputStream
+ * 		l--PipedInputStream
+ * 			构造函数
+ * 				PipedInputStream() 创建尚未连接的 PipedInputStream。 
+ *				PipedInputStream(int pipeSize) 创建一个尚未连接的 PipedInputStream，并对管道缓冲区使用指定的管道大小。 
+ *				PipedInputStream(PipedOutputStream src) 创建 PipedInputStream，使其连接到管道输出流 src。 
+ *				PipedInputStream(PipedOutputStream src, int pipeSize)  创建一个 PipedInputStream，使其连接到管道输出流 src，并对管道缓冲区使用指定的管道大小。 
+ *			实例方法:
+ *				int available() 返回可以不受阻塞地从此输入流中读取的字节数。 
+ *				void close() 关闭此管道输入流并释放与该流相关的所有系统资源。 
+ *				void connect(PipedOutputStream src) 使此管道输入流连接到管道输出流 src。 
+ *				int read() 读取此管道输入流中的下一个数据字节。 
+ *				int read(byte[] b, int off, int len) 将最多 len 个数据字节从此管道输入流读入 byte 数组。 
+ *				protected  void receive(int b) 接收数据字节。 
+ *
+ * 管道输出流
+ * 	OutputStream
+ * 		l--PipedOutputStream
+ * 		
+ * 		实例方法:
+ * 			void close()   关闭此管道输出流并释放与此流有关的所有系统资源。 
+ *		    void connect(PipedInputStream snk) 将此管道输出流连接到接收者。 
+ *			void flush()  刷新此输出流并强制写出所有缓冲的输出字节。 
+ *			void write(byte[] b, int off, int len) 将 len 字节从初始偏移量为 off 的指定 byte 数组写入该管道输出流。 
+ *			void write(int b) 将指定 byte 写入传送的输出流。 
+ *
+ * 管道输入流应该连接到管道输出流；管道输入流提供要写入管道输出流的所有数据字节。
+ * 通常，数据由某个线程从 PipedInputStream 对象读取，并由其他线程将其写入到相应的 PipedOutputStream。
+ * 不建议对这两个对象尝试使用单个线程，因为这样可能死锁线程。
+ * 管道输入流包含一个缓冲区，可在缓冲区限定的范围内将读操作和写操作分离开。
+ * 如果向连接管道输出流提供数据字节的线程不再存在，则认为该管道已损坏。
+ * 
+ * 字符管道流
+* 管道输入流
+ * 	Reader
+ * 		l--PipedReader
+ * 管道输出流
+ * 	Writer
+ * 		l--PipedWriter
+ * */

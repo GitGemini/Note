@@ -1,0 +1,50 @@
+*  List:
+ *  	l--Vector  内部的数据结构是数组，是同步的，线程安全的 1.0,现在几乎不用了，都用ArrayList 需要同步的话自己加同步控制语句，容量以此扩充一倍，增删查询都很慢
+ *  		Vector内部特有的方法 elements 获取Enumeration遍历集合 现在已被Iterator替代。
+ *  		还有很多带Element的方法都是，不过这个类很少用了
+ *  	l--ArrayList 内部的数据结构是数组，不是同步的，替代了Vector，容量一次扩充一半，效率更高，查询速度快
+ *  
+ *  
+ *      l--LinkedList 内部是链表数据结构 ，不是同步的，增删元素的速度很快
+ *      	addFirst addLast
+ *          offerFirst offerLast
+ *      	获取不移除
+ *      	getFirst getLast  链表为空时，会抛出异常NullSuchElementException，
+ *          
+ *          peek peekFirst peekLast  链表为空时，返回null 
+ *          
+ *          获取并移除
+ *          removeFirst removeLast 链表为空时，会抛出异常NullSuchElementException，
+ *      	pollFirst pollLast 链表为空时，返回null 
+ *      	双向的列表
+ *      	1、添加
+ *      		add  addLast  将指定元素添加到此列表的结尾。
+ *       		addFirst      将指定元素添加到此列表的结尾。
+ *       	    boolean addAll(Collection<? extends E> c) 添加指定 collection 中的所有元素到此列表的结尾，顺序是指定 collection 的迭代器返回这些元素的顺序。 
+ *				boolean addAll(int index, Collection<? extends E> c) 将指定 collection 中的所有元素从指定位置开始插入此列表。 
+ *				boolean offer(E e) 将指定元素添加到此列表的末尾（最后一个元素）。 
+ *				boolean offerFirst(E e) 在此列表的开头插入指定的元素。 
+ *				boolean offerLast(E e)  在此列表末尾插入指定的元素。 
+ *  			void push(E e)  将元素推入此列表所表示的堆栈。
+ *			2、获取 删除
+ *				getFirst()  element()  返回此列表的第一个元素。
+ *              getLast() 返回此列表的最后一个元素。
+ *              peek() 获取但不移除此列表的头（第一个元素）。 
+ *				E peekFirst() 获取但不移除此列表的第一个元素；如果此列表为空，则返回 null。 
+ *				E peekLast() 获取但不移除此列表的最后一个元素；如果此列表为空，则返回 null。 
+ *				E poll() 获取并移除此列表的头（第一个元素） 
+ *				E pollFirst()  获取并移除此列表的第一个元素；如果此列表为空，则返回 null。 
+ *				E pollLast()  获取并移除此列表的最后一个元素；如果此列表为空，则返回 null。 
+ *				removeFirst()  removeFirst 获取并移除此列表的第一个元素            
+ *          	E pop() 从此列表所表示的堆栈处弹出一个元素。  
+ *          
+ *          3、迭代
+ *          	Iterator<E> descendingIterator()  返回以逆向顺序在此双端队列的元素上进行迭代的迭代器。
+ *              ListIterator<E> listIterator(int index) 返回此列表中的元素的列表迭代器（按适当顺序），从列表中指定位置开始。  
+ *              Iterator<E> iterator()  返回以正向顺序在此双端队列的元素上进行迭代的迭代器
+ *      为什么使用ArrayList 不使用 Vector
+ *      1.因为vector是线程安全的，所以效率低，这容易理解，类似StringBuffer
+ *		2.Vector空间满了之后，扩容是一倍，而ArrayList仅仅是一半
+ *  	3.Vector分配内存的时候需要连续的存储空间，如果数据太多，容易分配内存失败 
+ *		4.只能在尾部进行插入和删除操作，效率低
+ */

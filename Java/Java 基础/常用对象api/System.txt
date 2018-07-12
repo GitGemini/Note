@@ -1,0 +1,35 @@
+/**
+ * System类 不能被实例化(构造函数私有)
+ * 
+ * 类中的属性和字段都是静态的
+ * 属性:
+ * 	out: 标准输出流，一个静态的PrintStream 对象
+ * 	in: 标准输入流，一个静态的InputStream 对象
+ *  error:标准错误输出流，一个静态的PrintStream对象
+ * 
+ * 方法: 只列举一些
+ * 	static long currentTimeMillis()  返回以毫秒为单位的当前时间。 
+ *  Properties getProperties() 获取系统的属性信息
+ *  static String getProperty(String key)  获取指定键指示的系统属性。 
+ *	static String getProperty(String key, String def)  获取用指定键描述的系统属性。 
+ *  static Console console()  返回与当前 Java 虚拟机关联的唯一 Console 对象（如果有）。 
+ *	static void exit(int status) 终止当前正在运行的 Java 虚拟机。 
+ *
+ *//**
+ * System类 不能被实例化(构造函数私有)
+ * 
+ * 类中的属性和字段都是静态的
+ * 属性:
+ * 	out: 标准输出流，一个静态的PrintStream 对象
+ * 	in: 标准输入流，一个静态的InputStream 对象
+ *  error:标准错误输出流，一个静态的PrintStream对象
+ * 
+ * 方法: 只列举一些
+ * 	static long currentTimeMillis()  返回以毫秒为单位的当前时间。 
+ *  Properties getProperties() 获取系统的属性信息
+ *  static String getProperty(String key)  获取指定键指示的系统属性。 
+ *	static String getProperty(String key, String def)  获取用指定键描述的系统属性。 
+ *  static Console console()  返回与当前 Java 虚拟机关联的唯一 Console 对象（如果有）。 
+ *	static void exit(int status) 终止当前正在运行的 Java 虚拟机。 
+ *
+ */

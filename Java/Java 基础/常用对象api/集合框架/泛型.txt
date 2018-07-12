@@ -1,0 +1,76 @@
+/**
+ * 泛型: 1.5 以后出现的安全机制
+ * 好处：将运行时的ClassCastException 转到了编译时期，避免了强制转换的麻烦
+ * 
+ * 什么时候用：当操作的引用数据类型不确定的时候，就是用<>,将要操作的引用数据类型传入即可
+ * 其实<> 就是一个用于接收具体引用类型的参数范围
+ * 
+ * 在程序中只要用到了带有<> 的类或者接口，就要明确传入的具体引用数据类型
+ * 
+ * 泛型技术是给编译器使用的技术，用于编译时期，确保了类型的安全
+ * 运行时会将泛型去掉，生成的class文件中是不带泛型的。这个称之为泛型擦除
+ * 为什么擦出呢？为了兼容运行的类加载器(ClassLoader)
+ * 
+ * 泛型补偿：在运行时通过获取元素的类型进行转换动作，不用使用者在强制转换
+ * 
+ * 泛型类:
+ * 	public class Tool<T>
+ *	{
+ *		private T e;
+ *
+ *		public T getElement() 
+ *		{
+ * 			return e;
+ *		}
+ *
+ *		public void setElement(T e) 
+ *		{
+ *			this.e = e;
+ *		}
+ *	}
+ *	
+ *  
+ *	泛型方法:
+ *	public <W> void print(W w)
+ *	{
+ *		System.out.println(w);
+ *	}
+ *  注意:当方法静态时不能访问类上的泛型，只能将泛型定义在方法上
+ *  
+ *  泛型接口:
+ *  interface Inter<T>
+ *	{
+ *		void show(T t);
+ *	}
+ *  
+ *  两种实现
+ *  class InterImpl implements Inter<String>
+ *	{
+ * 
+ *		@Override
+ *		public void show(String t)
+ *		{
+ *		
+ *		}
+ *	}
+ *
+ *	class Inter2Impl<T> implements Inter<T>
+ *	{
+ *
+ *		@Override
+ *		public void show(T t) 
+ *		{	
+ *			
+ *		}
+ *	
+ *	}
+ *  
+ *  泛型限定(泛型约束):
+ *  1、泛型通配符 ? 未知类型
+ *  
+ *  可以对类型进行限定 
+ *  	? extends E 接收E 或者E的子类型对象 .上限是E，存元素通常用上限，不会出现安全隐患  
+ *  	boolean addAll(Collection<? extends E> c)将指定 collection 中的所有元素都添加到此 collection 中（可选操作）。 
+ *  	? super E	接收E类型或者E的父类型对象 。下限是E, 通常对集合中的元素进行取出操作时用下限
+ *      TreeSet(Comparator<? super E> comparator) 构造一个新的空 TreeSet，它根据指定比较器进行排序。
+ */

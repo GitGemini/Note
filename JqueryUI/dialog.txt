@@ -1,0 +1,762 @@
+对话框（dialog），是jQuery UI 非常重要的一个功能。它彻底的代替了JavaScript
+的alert()、prompt()等方法，也避免了新窗口或页面的繁杂冗余。
+
+一．开启多个dialog
+   只要设置不同的id 即可实现。
+?
+1
+2
+	
+$('#x').dialog(); 
+$('#y').dialog(); 
+
+二．修改dialog 样式
+   在弹出的dialog 对话框中，在火狐浏览器中打开Firebug 或者右击->查看
+元素。可以看看dialog 的样式，对dialog 的标题背景进行修改。
+?
+1
+2
+3
+4
+5
+6
+	
+//无须修改ui 里的CSS，直接用style.css 替代掉 
+.ui-widget-header { 
+  
+  background:url(../img/xxx.png); 
+  
+} 
+
+三．dialog()方法的属性
+   对话框方法有两种形式：1.dialog(options)，options 是以对象键值对的形式
+传参，每个键值对表示一个选项；2.dialog('action', param)，action 是操作对
+话框方法的字符串，param则是options 的某个选项。
+dialog 外观选项 属性
+	默认值/类型
+	说明
+title
+	无/字符串
+	对话框的标题，可以直接设置在DOM 元素上
+buttons
+	无/对象
+	
+以对象键值对方式，给dialog 添加按钮。键是按钮
+的名称，值是用户点击后调用的回调函数
+
+?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+	
+$('#reg').dialog({ 
+  
+ title : '注册', 
+  
+ buttons : { 
+  
+   '按钮' : function () {} 
+  
+ } 
+  
+); 
+
+dialog 页面位置选项 属性
+	默认值/类型
+	说明
+position
+	center/字符串
+	
+设置一个对话框窗口的坐标位置，默认为center。
+其他设置值为：left top、top right、bottom left、
+right bottom（四个角）、top、bottom（顶部或底
+部，宽度居中）、left 或right（左边或右边，高度
+居中）、center（默认值）
+
+?
+1
+2
+3
+4
+5
+	
+$('#reg').dialog({ 
+  
+  position : 'left top'
+  
+}); 
+
+dialog 大小选项 属性
+	默认值/类型
+	说明
+width
+	300/数值
+	对话框的宽度。默认为300，单位是像素。
+height 
+	auto/数值
+	对话框的高度。默认为auto，单位是像素。
+minWidth 
+	150/数值
+	对话框的最小宽度。默认150，单位是像素。
+minHeight 
+	150/数值
+	对话框的最小高度。默认150，单位是像素。
+maxWidth 
+	auto/数值
+	对话框的最大宽度。默认auto，单位是像素。
+maxHeight 
+	auto/数值
+	对话框的最大高度。默认auto，单位是像素。
+
+?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+	
+$('#reg').dialog({ 
+  
+  height : 500, 
+  
+  width : 500, 
+  
+  minWidth : 300, 
+  
+  minHeight : 300, 
+  
+  maxWidth : 800, 
+  
+  maxHeight : 600 
+  
+}); 
+
+dialog 视觉选项 属性
+	默认值/类型
+	说明
+show 
+	false/布尔值
+	显示对话框时，默认采用淡入效果。
+hide 
+	false 布尔值
+	关闭对话框时，默认采用淡出效果。
+
+?
+1
+2
+3
+4
+5
+6
+7
+	
+$('#reg').dialog({ 
+  
+  show : true, 
+  
+  hide : true
+  
+}); 
+
+注意：设置true 后，默认为淡入淡出，如果想使用别的特效，可以使用以下表格中的字符串参数。
+show 和hide 可选特效 特效名称
+	说明
+blind 
+	对话框从顶部显示或消失
+bounce 
+	对话框断断续续地显示或消失，垂直运动
+clip 
+	对话框从中心垂直地显示或消失
+slide 
+	对话框从左边显示或消失
+drop 
+	对话框从左边显示或消失，有透明度变化
+fold 
+	对话框从左上角显示或消失
+highlight 
+	对话框显示或消失，伴随着透明度和背景色的变化
+puff 
+	对话框从中心开始缩放。显示时“收缩”，消失时“生长”
+scale 
+	对话框从中心开始缩放。显示时“生长”，消失时“收缩”
+pulsate 
+	对话框以闪烁形式显示或消失
+
+?
+1
+2
+3
+4
+5
+6
+7
+	
+$('#reg').dialog({ 
+  
+  show : 'blind', 
+  
+  hide : 'blind'
+  
+}); 
+
+dialog 行为选项 属性
+	默认值/类型
+	说明
+autoOpen 
+	true/布尔值
+	
+默认为true，调用dialog()方法时就会打开对话框；
+如果为false，对话框不可见，但对话框已创建，可
+以通过dialog('open')才能可见。
+draggable 
+	true/布尔值
+	默认为true，可以移动对话框，false 无法移动。
+resizable 
+	true/布尔值
+	默认为true，可以调整对话框大小，false 无法调整
+modal 
+	false/布尔值
+	
+默认为false，对话框外可操作，true 对话框会遮罩
+一层灰纱，无法操作。
+closeText
+	无/字符串
+	设置关闭按钮的title 文字
+
+?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+	
+$('#reg').dialog({ 
+  
+  autoOpen : false, 
+  
+  draggable : false, 
+  
+  resizable : false, 
+  
+  modal : true, 
+  
+  closeText : '关闭'
+  
+}); 
+
+四．dialog()方法的事件
+   除了属性设置外，dialog()方法也提供了大量的事件。这些事件可以给各种不同状态
+时提供回调函数。这些回调函数中的this 值等于对话框内容的div 对象，不是整个对话框
+的div。
+dialog 事件选项 事件名
+	说明
+focus
+	
+当对话框被激活时（首次显示以及每次在上面点击）会
+调用focus 方法，该方法有两个参数(event, ui)。此事件中
+的ui 参数为空。
+create
+	
+当对话框被创建时会调用create 方法，该方法有两个参
+数(event, ui)。此事件中的ui 参数为空。
+open
+	
+当对话框被显示时（首次显示或调用dialog('open')方法）
+会调用open 方法，该方法有两个参数(event, ui)。此事件
+中的ui 参数为空。
+beforeClose
+	
+当对话框将要关闭时（ 当单击关闭按钮或调用
+dialog('close')方法），会调用beforeclose 方法。如果该函
+数返回false，对话框将不会被关闭。关闭的对话框可以
+用dialog('open')重新打开。该方法有两个参数(event, ui)。
+此事件中的ui 参数为空。
+close
+	
+当对话框将要关闭时（ 当单击关闭按钮或调用
+dialog('close')方法），会调用close 方法。关闭的对话框可
+以用dialog('open')重新打开。该方法有两个参数(event,
+ui)。此事件中的ui 参数为空。
+drag
+	
+当对话框移动时，每次移动一点均会调用drag 方法。该
+方法有两个参数。该方法有两个参数(event, ui)。此事件
+中的ui 有两个属性对象：
+1.position，得到当前移动的坐标，有两个子属性：top 和
+left。
+2.offset，得到当前移动的坐标，有两个子属性：top 和left。
+dragStart
+	
+当开始移动对话框时，会调用dragStart 方法。该方法有
+两个参数(event, ui)。此事件中的ui 有两个属性对象：
+1.position，得到当前移动的坐标，有两个子属性：top 和
+left。
+2.offset，得到当前移动的坐标，有两个子属性：top 和left。
+dragStop
+	
+当开始移动对话框时，会调用dragStop 方法。该方法有
+两个参数(event, ui)。此事件中的ui 有两个属性对象：
+1.position，得到当前移动的坐标，有两个子属性：top 和
+left。
+2.offset，得到当前移动的坐标，有两个子属性：top 和left。
+resize
+	
+当对话框拉升大小的时候，每一次拖拉都会调用resize
+方法。该方法有两个参数(event, ui)。此事件中的ui 有四
+个属性对象：
+1.size，得到对话框的大小，有两个子属性：width 和
+height。
+2.position，得到对话框的坐标，有两个子属性：top 和left。
+3.originalSize，得到对话框原始的大小，有两个子属性：
+width 和height。
+4.originalPosition，得到对话框原始的坐标，有两个子属
+性：top 和left。
+resizeStart
+	
+当开始拖拉对话框时，会调用resizeStart 方法。该方法有
+两个参数(event, ui)。此事件中的ui 有四个属性对象：
+1.size，得到对话框的大小，有两个子属性：width 和
+height。
+2.position，得到对话框的坐标，有两个子属性：top 和left。
+3.originalSize，得到对话框原始的大小，有两个子属性：
+width 和height。
+4.originalPosition，得到对话框原始的坐标，有两个子属
+性：top 和left。
+resizeStop
+	
+当结束拖拉对话框时，会调用resizeStart 方法。该方法有
+两个参数(event, ui)。此事件中的ui 有四个属性对象：
+1.size，得到对话框的大小，有两个子属性：width 和
+height。
+2.position，得到对话框的坐标，有两个子属性：top 和left。
+3.originalSize，得到对话框原始的大小，有两个子属性：
+width 和height。
+4.originalPosition，得到对话框原始的坐标，有两个子属
+性：top 和left。
+
+?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+	
+//当对话框获得焦点后 
+$('#reg').dialog({ 
+  
+  focus : function (e, ui) { 
+  
+   alert('获得焦点'); 
+  
+  } 
+  
+}); 
+  
+//当创建对话框时 
+$('#reg').dialog({ 
+  
+  create : function (e, ui) { 
+  
+   alert('创建对话框'); 
+  
+  } 
+  
+}); 
+  
+//当将要关闭时 
+$('#reg').dialog({ 
+  
+  beforeClose : function (e, ui) { 
+  
+   alert('关闭前做的事！'); 
+  
+   return flag; 
+  
+  } 
+  
+}); 
+  
+//关闭对话框时 
+$('#reg').dialog({ 
+  
+  close : function (e, ui) { 
+  
+   alert('关闭！'); 
+  
+  } 
+  
+}); 
+  
+//对话框移动时 
+$('#reg').dialog({ 
+  
+  drag : function (e, ui) { 
+  
+   alert('top:' + ui.position.top + '\n'
+  
+        + 'left:' + ui.position.left); 
+  
+  } 
+  
+}); 
+  
+//对话框开始移动时 
+$('#reg').dialog({ 
+  
+  dragStart : function (e, ui) { 
+  
+   alert('top:' + ui.position.top + '\n'
+  
+        + 'left:' + ui.position.left); 
+  
+  } 
+  
+}); 
+  
+//对话框结束移动时 
+$('#reg').dialog({ 
+  
+  dragStop : function (e, ui) { 
+  
+   alert('top:' + ui.position.top + '\n'
+  
+        + 'left:' + ui.position.left); 
+  
+  } 
+  
+}); 
+  
+//调整对话框大小时 
+$('#reg').dialog({ 
+  
+  resize : function (e, ui) { 
+  
+   alert('size:' + ui.size.width + '\n'
+  
+        + 'originalSize:' + ui.originalSize.width); 
+  
+  } 
+  
+}); 
+  
+//开始调整对话框大小时 
+$('#reg').dialog({ 
+  
+  resizeStart : function (e, ui) { 
+  
+   alert('size:' + ui.size.width + '\n'
+  
+        + 'originalSize:' + ui.originalSize.width); 
+  
+  } 
+  
+}); 
+  
+//结束调整对话框大小时 
+$('#reg').dialog({ 
+  
+  resizeStop : function (e, ui) { 
+  
+   alert('size:' + ui.size.width + '\n'
+  
+        + 'originalSize:' + ui.originalSize.width); 
+  
+  } 
+  
+}); 
+
+dialog('action', param)方法 方法
+	返回值
+	说明
+dialog('open')
+	 jQuery 对象
+	打开对话框
+dialog('close')
+	jQuery 对象
+	关闭对话框
+dialog('destroy')
+	 jQuery 对象
+	删除对话框，直接阻断了dialog
+dialog('isOpen') 
+	布尔值
+	判断对话框是否打开状态
+dialog('widget') 
+	jQuery 对象
+	获取对话框的jQuery 对象
+dialog('option', param) 
+	一般值
+	获取options 属性的值
+dialog('option', param, value)
+	jQuery 对象
+	设置options 属性的值
+
+?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+	
+//初始隐藏对话框 
+$('#reg').dialog({ 
+  
+  autoOpen : false
+  
+}); 
+  
+//打开对话框 
+$('#reg_a').click(function () { 
+  
+  $('#reg').dialog('open'); 
+  
+}); 
+  
+//关闭对话框 
+$('#reg').click(function () { 
+  
+  $('#reg').dialog('close'); 
+  
+}); 
+  
+//判断对话框打开或关闭状态 
+$(document).click(function () { 
+  
+  alert($('#reg').dialog('isOpen')); 
+  
+}); 
+  
+//将指定对话框置前 
+$(document).click(function () { 
+  
+  $('#reg').dialog('moveToTop'); 
+  
+}); 
+  
+//获取某个options 的param 选项的值 
+var title = $('#reg').dialog('option', 'title'); 
+  
+alert(title); 
+  
+  
+//设置某个options 的param 选项的值 
+$('#reg').dialog('option', 'title', '注册'); 
+
+五．dialog 中使用on()
+   在dialog 的事件中，提供了使用on()方法处理的事件方法。
+on()方法触发的对话框事件 特效名称
+	说明
+dialogfocus 
+	得到焦点时触发
+dialogopen 
+	显示时触发
+dialogbeforeclose 
+	将要关闭时触发
+dialogclose 
+	关闭时触发
+dialogdrag 
+	每一次移动时触发
+dialogdragstart
+	开始移动时触发
+dialogdragstop 
+	移动结束后触发
+dialogresize 
+	每次调整大小时触发
+dialogresizestart 
+	开始调整大小时触发
+dialogresizestop 
+	结束调整大小时触发
+
+?
+1
+2
+3
+4
+5
+	
+$('#reg').on('dialogclose', function () { 
+  
+  alert('关闭'); 
+  
+}); 

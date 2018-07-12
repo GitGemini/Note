@@ -1,0 +1,198 @@
+第一步：创建上下文对象
+
+using(var db = new Entities())
+{
+    //数据操作
+}
+
+新增
+复制代码
+
+    UserInfo user = new UserInfo()
+    {
+        UserName = "zhangsan1",
+        UserPass = "123123"
+    };
+    db.UserInfo.Add(user);
+
+复制代码
+删除
+复制代码
+
+    user = new UserInfo()
+    {
+        UserID = 4, //根据主键删除
+        UserName = "zhangsan",
+        UserPass = "12312311111"
+    };
+    db.Entry<UserInfo>(user).State = System.Data.Entity.EntityState.Deleted;
+
+复制代码
+
+说明：此例中虽然指定了UserName和UserPass属性值，但是EF执行的时候只会根据主键UserID生成查询条件，所以只需要制定UserID即可。
+删除 方法2
+复制代码
+
+    user = new UserInfo()
+    {
+        UserID = 13 //根据主键删除
+    };
+    //Attach的实体事先不能已经在内存中,否则上下文会追踪到两个相同键名的实体
+    db.UserInfo.Attach(user);//将对象添加到EF管理容器中 ObjectStateManager
+    db.UserInfo.Remove(user);//将对象包装类状态标识为删除
+
+复制代码
+删除 先查询-再删除
+复制代码
+
+    //先加载整个实体 再删除 执行了2次sql 效率略低 
+    using (var db = new Entities())
+    {
+        var user = (from v in db.UserInfo
+                    where v.UserID == 14
+                    select v).Single();
+        db.UserInfo.Remove(user);
+        db.SaveChanges();
+    }
+
+复制代码
+修改
+复制代码
+
+    user = new UserInfo()
+    {
+        UserID = 12,
+        UserName = "zhangsan",
+        UserPass = "987654"
+    };
+    db.Entry<UserInfo>(user).State = System.Data.Entity.EntityState.Modified;
+
+复制代码
+修改单个属性
+复制代码
+
+    user = new UserInfo()
+    {
+        UserID = 12,
+        UserName = "zhangsan"
+    };
+    db.UserInfo.Attach(user);
+    db.Entry<UserInfo>(user).Property<string>(v => v.UserName).IsModified = true;
+
+复制代码
+
+说明：将UserID=12的用户名称改为 zhangsan
+修改单个实体 先查询-再修改
+复制代码
+
+    using (var db = new Entities())
+    {
+        var user = (from v in db.UserInfo
+                    where v.UserName == "zhangsan"
+                    select v).Single();
+        user.UserPass = "123456";
+        db.SaveChanges();
+    }
+
+复制代码
+
+说明：将用户名为 zhangsan的用户 密码修改为：123456
+查询所有实体
+
+    var users = db.UserInfo;
+    foreach (var v in users)
+    {
+        ObjectDumper.Write(v);//打印实体
+    }
+
+查询单个实体 主键查询
+
+    using (var db = new Entities())
+    {
+        var user = db.UserInfo.Find(12);
+        ObjectDumper.Write(user);
+    }
+
+说明：查询UserID=12的用户
+
+ 
+
+备注：所有增删改操作都需要调用 db.SaveChanges() 方法，才能更新到数据库。
+
+ 
+
+完整案例：
+
+ 
+复制代码
+
+using(var db = new Entities())
+{
+    //新增
+    UserInfo user = new UserInfo()
+    {
+        UserName = "zhangsan1",
+        UserPass = "123123"
+    };
+    db.UserInfo.Add(user);
+                
+    //删除
+    user = new UserInfo()
+    {
+        UserID = 4, //根据主键删除
+        UserName = "zhangsan",
+        UserPass = "12312311111"
+    };
+    db.Entry<UserInfo>(user).State = System.Data.Entity.EntityState.Deleted;
+
+    //删除 方法2
+    user = new UserInfo()
+    {
+        UserID = 13 //根据主键删除
+    };
+    //Attach的实体事先不能已经在内存中,否则上下文会追踪到两个相同键名的实体
+    db.UserInfo.Attach(user);//将对象添加到EF管理容器中 ObjectStateManager
+    db.UserInfo.Remove(user);//将对象包装类状态标识为删除
+
+    //删除单个实体
+    //先加载整个实体 再删除 执行了2次sql 效率略低 
+    user = (from v in db.UserInfo
+                where v.UserID == 14
+                select v).Single();
+    db.UserInfo.Remove(user);
+    db.SaveChanges();
+
+    //修改
+    user = new UserInfo()
+    {
+        UserID = 12,
+        UserName = "zhangsan",
+        UserPass = "987654"
+    };
+    db.Entry<UserInfo>(user).State = System.Data.Entity.EntityState.Modified;
+                
+    //修改单个属性
+    db.UserInfo.Attach(user);
+    db.Entry<UserInfo>(user).Property<string>(v => v.UserName).IsModified = true;
+
+    //修改单个实体
+    user = (from v in db.UserInfo
+                where v.UserName == "zhangsan"
+                select v).Single();
+    user.UserPass = "abcd";
+    db.SaveChanges();
+
+    //查询遍历
+    var users = db.UserInfo;
+    foreach (var v in users)
+    {
+        ObjectDumper.Write(v);
+    }
+
+    //查询单个实体
+    user = db.UserInfo.Find(12);
+    ObjectDumper.Write(user);
+
+    //保存更新到数据库
+    db.SaveChanges();
+}

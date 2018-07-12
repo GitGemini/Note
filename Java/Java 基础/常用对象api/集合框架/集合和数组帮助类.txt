@@ -1,0 +1,75 @@
+/* 集合工具类
+ * Collections：集合框架的工具类，里面的方法都是静态的
+ *	sort
+ *	binarySearch
+ *	max
+ *	min
+ *  swap
+ *  reverse  对List集合反转
+ *  reverseOrder  它强行逆转实现了 Comparable 接口的对象 collection 的自然顺序。用于可以使用Comparator接口的集合
+ *  replaceAll
+ *  fill 用指定元素替换集合中的所有元素
+ *  shuffle 使用默认的或者自定义的随机元对List集合进行随机打乱
+ *  toArray() 返回object数组
+ *  toArray(T[]) 如果T的长度小于集合的长度，那么则会创建一个和集合长度一样的数组，如果长度大于集合的长度，则会使用指定的数组，存储集合中的元素后多余的赋值为null
+ *  所以建议长度指定为集合的长度
+ *  
+ *  
+  *  返回同步集合
+ *  <T> Collection<T> synchronizedCollection(Collection<T> c) 返回指定 collection 支持的同步（线程安全的）collection。 
+ *  static <T> List<T> synchronizedList(List<T> list) 返回指定列表支持的同步（线程安全的）列表。 
+ *	static <K,V> Map<K,V> synchronizedMap(Map<K,V> m) 返回由指定映射支持的同步（线程安全的）映射。 
+ *	static <T> Set<T> synchronizedSet(Set<T> s) 返回指定 set 支持的同步（线程安全的）set。 
+ *	原理
+ *	class MyCollections
+ *	{
+ *		public static <T> List<T> synList(List<T> list)
+ *		{
+ *			return new MyList<>(list);
+ *		}
+ *		
+ *		static class MyList<T> implements List<T>
+ *		{
+ *			private List<T> list;
+ *			private final Object obj = new Object();
+ *			
+ *			public MyList(List<T> list) 
+ *			{
+ *				this.list=list;
+ *			}
+ *			
+ *			public boolean add(T t)
+ *			{ 
+ *				synchronized(obj) 
+ *				{
+ *					return list.add(t);
+ *				}		
+ *			}
+ *			
+ *			public boolean remove(Object t)
+ *			{
+ *				
+ *				synchronized(obj) 
+ *				{
+ *					return list.remove(t);
+ *				}	
+ *			}
+ *		}
+ *	}
+ *
+ * Arrays：操纵数组的工具类
+ * 	
+ * 	asList 将数组转成集合，是Array和Collection之间的桥梁，
+ * 			一定要注意，1、但是转成集合后不能使用会改变集合长度的方法，因为数组的长度是固定的不然出现java.lang.UnsupportedOperationException
+ * 					2、如果数组中的元素是对象，那么转成集合时,直接将数组中的元素转成集合中的元素进行集合存储
+ * 						如果数组中的元素是基本数据类型值，那么将该数组作为集合中的元素进行存储
+ *  binarySearch
+ *  copyOf
+ *  copyOfRange
+ *  equals(boolean[] a, boolean[] a2)  如果两个指定的 boolean 型数组彼此相等，则返回 true。
+ *  static void fill(Object[] a, Object val) 将指定的 Object 引用分配给指定 Object 数组的每个元素。 
+ *  static void sort(short[] a, int fromIndex, int toIndex)  对指定 short 型数组的指定范围按数字升序进行排序。 
+ *	static <T> void sort(T[] a, Comparator<? super T> c) 根据指定比较器产生的顺序对指定对象数组进行排序。 
+ *	static <T> void sort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) 根据指定比较器产生的顺序对指定对象数组的指定范围进行排序。 
+ *
+ */
